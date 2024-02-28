@@ -52,14 +52,14 @@ class SPE(object):
                 for line in file:
                     line = line.strip()
 
-                    output = self.process_line(line)
+                    new_file_flag = self.process_line(line)
+                    txt_file = f'{self.file_name}_{self.file_start}.txt'
+                    txt_path = os.path.join(self.file_out, txt_file)
+                    out = open(txt_path, 'a')
 
-                    file = f'{self.file_name}_{self.file_start}.txt'
-
-                    out = open(self.file_out + file, 'a')
-                    if output == True:
+                    if new_file_flag == True:
                         out.close()
-                        self.create_pdf(file)
+                        self.create_pdf(txt_file)
                         self.file_start = self.file_start + 1
                     else:
                         out.write(line + '\n')
@@ -82,7 +82,8 @@ class SPE(object):
         No Returns.
         '''
         folder = os.path.join(self.file_out, folder)
-        os.mkdir(folder)
+        if not os.path.exists(folder):
+            os.mkdir(folder)
     
     def create_pdf(self, file):
         '''

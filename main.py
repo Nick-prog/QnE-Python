@@ -9,9 +9,13 @@ from pathlib import Path
 
 def run(file, download, fileName):
     obj = core.SPE(file, download, fileName)
+    # obj.create_txt_files()
+    obj.process_txt_files()
+
+
     # obj.read_file()
-    obj.process_file()
-    obj.remove_txt_files()
+    # obj.process_file()
+    # obj.remove_txt_files()
     return obj.file_start
 
 if __name__ == "__main__":

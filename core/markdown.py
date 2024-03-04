@@ -12,16 +12,12 @@ class Markdown(object):
         self.last = ''
         self.middle = ''
 
-    def process_line(self, line):
-        if line.startswith('BGN!'):
-            return True
+    def applicant(self, line):
+        if line.startswith('IN2!05!') and self.last == '': # Last name
+            self.last = line[7:-2]
+        elif line.startswith('IN2!02!') and self.first == '': # First name
+            self.first = line[7:-2]
+        elif line.startswith('IN2!03!') and self.middle == '': # Middle name
+            self.middle = line[7:-2]
         else:
-            self.applicant_name(line)
-
-    def applicant_name(self, line):
-        if line.startswith('IN2!05!'):
-            self.last = self.line[6:-1]
-        elif line.startswith('IN2!02!'):
-            self.first = self.line[6:-1]
-        elif line.startswith('IN2!03!'):
-            self.middle = self.line[6:-1]
+            pass

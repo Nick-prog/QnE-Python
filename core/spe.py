@@ -96,7 +96,7 @@ class SPE(object):
         if not os.path.exists(folder):
             os.mkdir(folder)
     
-    def create_pdf(self, file):
+    def create_pdf(self, file_path):
         '''
         PDF creation method for all files once criteria is meet, line starts with BGN!.
         Names file based on file passed in process_file method.
@@ -106,18 +106,21 @@ class SPE(object):
         pdf.add_page()
         pdf.set_font("Arial", "B",7)
 
-        txt_path = os.path.join(self.file_out, file)
+        # txt_path = os.path.join(self.file_out, file)
 
-        pdf_out = open(txt_path, 'r')
+        # pdf_out = open(txt_path, 'r')
+        pdf_file = open(file_path, 'r')
 
-        for txt in pdf_out:
+        for txt in pdf_file:
             pdf.cell(200, 10, txt=txt, ln=1, align='L')
 
-        today = date.today()
-        today_formatted = today.strftime("%m.%d.%y")
-        pdf_path = os.path.join(self.file_out, f"{today_formatted}/{file[:-4]}.pdf")
+        # today = date.today()
+        # today_formatted = today.strftime("%m.%d.%y")
+        # pdf_path = os.path.join(self.file_out, f"{today_formatted}/{file[:-4]}.pdf")
+            
+        pdf_out = os.path.join(self.file_out, "test.pdf")
 
-        pdf.output(pdf_path)
+        pdf.output(pdf_out)
 
     def remove_txt_files(self):
         '''

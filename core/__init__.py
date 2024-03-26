@@ -1,9 +1,10 @@
-from .spe import *
-from .markdown import *
+from .process import *
+from .csvgen import *
+from .reportgen import *
+from .reportsyntax import *
 
-from datetime import date
 
-__version__  = '1.0'
-__title__ = 'SPE to PDF'
+__version__ = "Beta"
 __author__ = "Nickolas Rodriguez"
-__date__ = f"{date.today()}"
+__version__ = "1.5"
+__description__ = "An instant PDF generator for ApplyTexas Applications. Utilizes various libraries with reportlab being the main engine for its purpose."

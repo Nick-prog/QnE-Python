@@ -3,16 +3,6 @@
 # QnE-Python
  Python application equivalent to the Java Quick 'n' Easy counterpart.
 
- <br />
- <p align="center">
-  <a href="https://github.com/Nick-Prog/QnE-Python">
-    <img src="images/SPEEDE.png" alt="Logo" width="350" height="200">
-    <img src="images/redcross.png" alt="Logo" width="350" height="200">
-    <img src="images/python logo.jpg" alt="Logo" width="350" height="200">
-  </a>
-   </p>
-</p>
-
 ## What is Quick 'n' Easy?
 
 Quick 'n' Easy (QNE) software is a free Java-based program developed by SPEEDE. It serves as a modern alternative to the traditional DOS platform, enabling users to print and acknowledge both college applications and high school transcripts. The software aims to streamline the process of handling transcripts and applications, making it more efficient and user-friendly.

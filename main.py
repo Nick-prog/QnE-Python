@@ -27,7 +27,12 @@ def run_target(key, apps):
         "domestic": domestic
         }
     
-    out_folder = os.path.abspath(f"{current_dir}/core/output/{fileName[:-4]}")
+    output_folder = os.path.abspath(f"{current_dir}/core/output")
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    out_folder = os.path.abspath(f"{output_folder}/{fileName[:-4]}")
 
     report = core.ReportGen(in_file, app_types[key], apps, key)
     report.capture_student_names(apps)
@@ -72,7 +77,13 @@ def run(file, fileName):
         for key in app_types:
             print(key, len(app_types[key]))
             for apps in range(len(app_types[key])):
-                out_folder = os.path.abspath(f"{current_dir}/core/output/{fileName[:-4]}")
+
+                output_folder = os.path.abspath(f"{current_dir}/core/output")
+
+                if not os.path.exists(output_folder):
+                    os.makedirs(output_folder)
+
+                out_folder = os.path.abspath(f"{output_folder}/{fileName[:-4]}")
 
                 report = core.ReportGen(in_file, app_types[key], apps, key)
                 report.capture_student_names(apps)

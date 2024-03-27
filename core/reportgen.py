@@ -46,7 +46,6 @@ class ReportGen(object):
                 self.names = name
                 name = []
 
-
     def create_pages_structure(self, select_app):
 
         page_count = 0
@@ -89,7 +88,6 @@ class ReportGen(object):
 
         name = "_".join(self.names)
         out_file = os.path.join(out_folder, f"{name}.pdf")
-        # out_file = os.path.join(out_folder, f"result_{self.file_count}.pdf")
 
         page_count = 0
         template = PdfReader(self.in_file, decompress=False)

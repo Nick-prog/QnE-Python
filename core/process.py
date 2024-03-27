@@ -1,5 +1,6 @@
 # https://www.pythonguis.com/examples/python-pdf-report-generator/
 import csv
+import os
 from pprint import pprint
 
 
@@ -8,7 +9,7 @@ class Process(object):
     def __init__(self, file):
          self.csv_file = file
          self.data = []
-        
+
     def find_largest_row(self, data):
 
         largest = 0

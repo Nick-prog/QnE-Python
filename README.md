@@ -3,11 +3,15 @@
 # QnE-Python
  Python application equivalent to the Java Quick 'n' Easy counterpart.
 
- <div style="text-align:center">
-  <img src="speede_server_image.jpg" alt="SPEEDE Server" />
-  <img src="cross_symbol.jpg" alt="Cross Symbol" />
-  <img src="python_symbol.jpg" alt="Python Symbol" />
- </div>
+ <br />
+ <p align="center">
+  <a href="https://github.com/Nick-Prog/QnE-Python">
+    <img src="images/SPEEDE.png" alt="Logo" width="350" height="200">
+    <img src="images/redcross.png" alt="Logo" width="350" height="200">
+    <img src="images/python logo.png" alt="Logo" width="350" height="200">
+  </a>
+   </p>
+</p>
 
 ## What is Quick 'n' Easy?
 

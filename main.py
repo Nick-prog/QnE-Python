@@ -9,6 +9,31 @@ from pprint import pprint
 from tkinter.filedialog import askopenfilename
 from pathlib import Path
 
+def run_target(key, apps):
+
+    current_dir = os.getcwd()
+    csv_file = os.path.abspath(f'{current_dir}/core/csv/all.csv')
+    in_file = f"{current_dir}/core/templates/template_empty.pdf"
+
+    c = core.CSVGen(file, csv_file)
+    c.spe_to_csv()
+
+    p = core.Process(csv_file)
+    p.read_csv_file()
+    foreign, domestic = p.create_data_list(p.data)
+
+    app_types = {
+        "foreign": foreign, 
+        "domestic": domestic
+        }
+    
+    out_folder = os.path.abspath(f"{current_dir}/core/output/{fileName[:-4]}")
+
+    report = core.ReportGen(in_file, app_types[key], apps, key)
+    report.capture_student_names(apps)
+    report.create_pages_structure(apps)
+    report.create_canvas(out_folder, apps)
+
 def find_spe_file():
 
     try:
@@ -60,4 +85,5 @@ def run(file, fileName):
 
 if __name__ == "__main__":
     file, fileName = find_spe_file()
-    run(file, fileName)
+    # run(file, fileName)
+    run_target("domestic", 144)

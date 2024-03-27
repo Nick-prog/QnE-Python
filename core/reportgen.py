@@ -37,7 +37,7 @@ class ReportGen(object):
             conv = syntax.page_structure()
 
 
-            if conv == "First Name" or conv == "Last Name" or conv == "Middle Name" or conv == "Middle Initial":
+            if conv == "First Name" or conv == "Last Name" or conv == "Middle Name" or conv == "Middle Initial" or conv == "Suffix":
                 current = "".join(_str[-1]).replace("\\", "")
                 name.append(current)
 
@@ -51,7 +51,6 @@ class ReportGen(object):
 
         page_count = 0
         pend_sep = 0
-        extra_sep = 0
 
         page_list = [self.page_1, self.page_2, self.page_3]
         page_idx = [self.page_1_idx, self.page_2_idx, self.page_3_idx]
@@ -126,98 +125,137 @@ class ReportGen(object):
 
         # Starting points
         xstart = 50
-        ystart = 960
+        ystart = 1100
 
         #Increment
         yadd = 0
 
         current_idx = -1 # Allows us to target the str itself
-        extra_sep = 0 # temp val to capture a one time move for extra curriculars
-        award_sep = 0 # temp val to capture a one time move for awards
-        vol_sep = 0 # temp val to capture a one time move for vol
-        other_sep = 0 # "temp val to campture a one time move for Employment/Internships/Summer Activities"
+        found = 0
+
+
+        opt_list = ["Community or Volunteer Service", "Award/Acheivement", "Employment/Internships/Summer Activities"]
+        
+        opt_sep = {
+            "Extra Curricular Activities": 0, 
+            "Community or Volunteer Service": 0, 
+            "Award/Acheivement": 0, 
+            "Employment/Internships/Summer Activities": 0
+            }
+
 
         canvas.setFont("Helvetica", 7)
-        canvas.setPageSize((8.5*inch, 14*inch))
-        # canvas.setFillColor(HexColor('#FFFFFF'))
+        canvas.setPageSize((8.5*inch, 16*inch))
         
         for val in self.page_1:
             current_idx += 1
 
             if val == "App ID":
                 xstart = 400
-                ystart = 960
                 yadd = 0
             elif val == "Start Student Contact Info":
                 xstart = 50
-                ystart = 880
+                ystart = 1020
                 yadd = 0
             elif val == "Start Extra Contact Info":
                 xstart = 400
-                ystart = 880
+                ystart = 1020
                 yadd = 0
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
                 yadd -= 10
-            elif val == "Extra Curricular Activities" and extra_sep == 0:
+            elif val == "Extra Curricular Activities" and opt_sep[val] == 0:
                 canvas.setFont("Helvetica", 7)
-                extra_sep = 1
+                opt_sep[val] = 1
                 xstart = 50
-                ystart = 720
+                ystart = 860
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
                 canvas.setFont("Helvetica", 6 )
-            elif val == "Community or Volunteer Service" and vol_sep == 0:
+            elif val in opt_list and opt_sep[val] == 0:
                 canvas.setFont("Helvetica", 7)
-                vol_sep = 1
                 xstart = 50
-                if extra_sep == 0:
-                    ystart = 720
-                else:
-                    ystart = ystart+yadd-10
+                ystart = ystart+yadd-10
+                opt_sep[val] = 1
+
+                for key, value in opt_sep.items():
+                    if key != val and value == 0:
+                        found += 1
+
+                if found == 0:
+                    ystart = 860
+                
+                found = 0
                 yadd = 0
-                canvas.drawString(xstart, ystart+yadd, "Community/Volunteer Service(s):")
-                yadd = -10
-                canvas.setFont("Helvetica", 6)
-            elif val == "Award/Acheivement" and award_sep == 0:
-                canvas.setFont("Helvetica", 7)
-                award_sep = 1
-                xstart = 50
-                if extra_sep == 0 and vol_sep == 0:
-                    ystart = 720
-                else:
-                    ystart = ystart+yadd-10
-                yadd = 0
-                canvas.drawString(xstart, ystart+yadd, "Award(s)/Achievement(s):")
-                yadd = -10
-                canvas.setFont("Helvetica", 6)
-            elif val == "Employment/Internships/Summer Activities" and other_sep == 0:
-                canvas.setFont("Helvetica", 7)
-                other_sep = 1
-                xstart = 50
-                if extra_sep == 0 and vol_sep == 0 and award_sep == 0:
-                    ystart = 720
-                else:
-                    ystart = ystart+yadd-10
-                yadd = 0
-                canvas.drawString(xstart, ystart+yadd, "Employment/Internships/Summer Activities:")
+                canvas.drawString(xstart, ystart+yadd, f"{val}:")
                 yadd = -10
                 canvas.setFont("Helvetica", 6)
             elif val == "Semester":
                 canvas.setFont("Helvetica", 7)
                 xstart = 50
-                ystart = 930
+                ystart = 1070
                 yadd = 0
+
+            # elif val == "Community or Volunteer Service" and opt_sep[val] == 0:
+            #     canvas.setFont("Helvetica", 7)
+            #     opt_sep[val] = 1
+            #     xstart = 50
+
+            #     if opt_sep["Extra Curricular Activities"] == 0:
+            #         ystart = 720
+            #     else:
+            #         ystart = ystart+yadd-10
+            #     yadd = 0
+            #     canvas.drawString(xstart, ystart+yadd, "Community/Volunteer Service(s):")
+            #     yadd = -10
+            #     canvas.setFont("Helvetica", 6)
+            # elif val == "Award/Acheivement" and opt_sep[val] == 0:
+            #     canvas.setFont("Helvetica", 7)
+            #     opt_sep[val] = 1
+            #     xstart = 50
+            #     if opt_sep["Extra Curricular Activities"] == 0 and opt_sep["Community or Volunteer Service"] == 0:
+            #         ystart = 720
+            #     else:
+            #         ystart = ystart+yadd-10
+            #     yadd = 0
+            #     canvas.drawString(xstart, ystart+yadd, "Award(s)/Achievement(s):")
+            #     yadd = -10
+            #     canvas.setFont("Helvetica", 6)
+            # elif val == "Employment/Internships/Summer Activities" and opt_sep[val] == 0:
+            #     canvas.setFont("Helvetica", 7)
+            #     opt_sep[val] = 1
+            #     xstart = 50
+            #     if opt_sep["Extra Curricular Activities"] == 0 and opt_sep["Community or Volunteer Service"] == 0 and opt_sep["Award/Acheivement"] == 0:
+            #         ystart = 720
+            #     else:
+            #         ystart = ystart+yadd-10
+            #     yadd = 0
+            #     canvas.drawString(xstart, ystart+yadd, "Employment/Internships/Summer Activities:")
+            #     yadd = -10
+            #     canvas.setFont("Helvetica", 6)
 
             _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
             conv = syntax.find_page_syntax(val)
 
             canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            # canvas.drawString(xstart, ystart+yadd, _str) # prints natural values
-            # canvas.drawString(xstart, ystart+yadd, val) # prints structure values
             
             yadd -= 10 # clear separation
+
+        # Ethnicity and Race Legend
+        ystart = 990
+        xstart = 240
+        canvas.setFont("Helvetica", 6)
+        canvas.setFillColor(HexColor('#FF0000'))
+        canvas.drawString(xstart, ystart-10, "W = No")
+        canvas.drawString(xstart, ystart-20, "R = Yes")
+
+        canvas.setFillColor(HexColor('#0000FF'))
+        canvas.drawString(xstart, ystart-30, "S = White")
+        canvas.drawString(xstart, ystart-40, "Q = Black or African American")
+        canvas.drawString(xstart, ystart-50, "U = Asian")
+        canvas.drawString(xstart, ystart-60, "V = Native Hawaiian or Other Pacific Islander")
+
 
         return current_idx
 

@@ -8,7 +8,7 @@
   <a href="https://github.com/Nick-Prog/QnE-Python">
     <img src="images/SPEEDE.png" alt="Logo" width="350" height="200">
     <img src="images/redcross.png" alt="Logo" width="350" height="200">
-    <img src="images/python logo.png" alt="Logo" width="350" height="200">
+    <img src="images/python logo.jpg" alt="Logo" width="350" height="200">
   </a>
    </p>
 </p>

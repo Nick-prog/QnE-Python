@@ -1,5 +1,6 @@
 import core
 
+import re
 from datetime import datetime
 
 class ReportSyntax(object):
@@ -14,7 +15,7 @@ class ReportSyntax(object):
         four_mark_structure = {
             'IN1104PG1': "Start Parent 1 Contact Info",
             'IN1104PG2': "Start Parent 2 Contact Info",
-            'RQSAQZZ$  1': 'Rellis Campus ?/Pre-Veterinary Medicine',
+            'RQSAQZZ$  1': 'Multi type question',
             'RQSAQZZ$  2': 'Faculty Mentor ?',
             'RQSAQZZ$  3': 'Consultant Agency ?',
             'RQSAQZZ$  4': 'Alumni ?',
@@ -127,15 +128,129 @@ class ReportSyntax(object):
                     break
 
         return converted_mark
+    
+    def long_med_req_value(self, _str):
+
+        # print(_str)
+
+        target = _str[3]
+
+        parent_value = {
+            '32\\' : 'Mother',
+            '33\\' : 'Father',
+            '49\\' : "High School Diploma or GED",
+            '26\\' : "Bachelor's/Four-year Degree",
+            '34\\' : "Other Adult",
+            '48\\' : "Stepmother",
+            'PG1YY\\': 'Some College',
+            'PG1YN\\': 'No College',
+            'PG1N\\': 'Parent/Guardian 1',
+            'PG2N\\': 'Parent/Guardian 2',
+            'PG2YY\\': 'Some College',
+            'PG2YN\\': 'No College',
+            'ZZ\\': "Unknown",
+        }
+
+        med_value = {
+            'DUAL CREDIT': f'Are you applyting to take college courses to be completed while you are still a high school student (Dual Credit or Concurrent Enrollment)? {_str[-1]}',
+            'IB DIPLOMA': f'IB Diploma? {_str[-1]}',
+            'RESUME SWITCH': f'Resume? {_str[-1]}',
+            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
+            'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {_str[-1]}',
+            'HOME SCHOOLED': f'Home schooled? {_str[-1]}',
+            'COLLEGE WORK': f'Number of college credit hours by high school graduation date: {_str[-1]}',
+            'RES: DETERM': f'Applytexas Residency Determination: {_str[-1]}',
+            'REVERSE TRANSFER': f'Reverse transfer? {_str[-1]}',
+            'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
+            'APPLICATION SHARING': f'Application sharing on denied admission? {_str[-1]}'
+        }
+
+        long_value = {
+            'COUNSELOR OPT IN': f'Opt-In for Counselor? {_str[-1]}',
+            'PERM COUNTY INFO' : f'Permanent County Info--{_str[-1]}',
+            'PERM COUNTRY INFO' : f'Permanent Country Info--{_str[-1]}',
+            'PERM ADDR STND' : f'Mailing/Permanent Address Standardized: {_str[-1]}',
+            'CURR COUNTY INFO' : f'Current County CODE Info--{_str[-1]}',
+            'CURR COUNTRY INFO' : f'Current Country Info--{_str[-1]}',
+            'PHYS ADDR STND' : f'Physical Address Standardized: {_str[-1]}',
+            'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {_str[-1]}',
+            'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {_str[-1]}',
+            'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {_str[-1]}',
+            'CONSERVATORSHIP SWITCHES' : f'At anytime in your life were you placed in foster care or adopted from foster care in Texas? {_str[-1]}',
+            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {_str[-1]}',
+            'HS GED TYPE': f'If you did not graduate from high school, do you have a DEG or have you completed another high school equivalency program? {_str[4]}',
+            'PARENT 1 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
+            'PARENT 2 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
+            'PARENT OR GUARDIAN INFO': f'Parent or Guardian Education Info: ',
+            'CTRY SELF': f'Country: {_str[-1]}',
+            'FAMILY': f'Family? {_str[-1]}',
+            'RES: PREVIOUS ENROLLMENT': f"During the 12 months prior to you applying, did you register for a public college or university in Texas? {_str[-1]}", # f'Previous College? {_str[-1]}',
+            'RES: RESIDENCY CLAIM': f'Of what state or country are you a resident? {_str[-1]}',
+            'RES: HS DIPLOMA OR GED': f'High school atteneded: {_str[-1]}',
+            'RES: BASIS OF CLAIM': f'If you were born outside of the United States and can claim US citizenship, please indicate the basis of your citizenship below. {_str[-1]}',
+            'RES: SELF': _str, # f'{_str[-1]}',
+            'RES: GUAR': _str, # f'{_str[-1]}',
+            'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {_str[-1]}",
+            'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
+            'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {_str[-1]}'
+        }
+
+        dictionaries = [med_value, long_value]
+        parent_check = ['PARENT 1 ED LEVEL RELATIONSHIP', 'PARENT 2 ED LEVEL RELATIONSHIP', 'PARENT OR GUARDIAN INFO']
+        
+        for syntax in dictionaries:
+            for key, value in syntax.items():
+                if key == target:
+                    if key in parent_check:
+                        value = value + parent_value[_str[-1]]
+                    return value
+            
+        return _str
+    
+    def req_and_or_answer_value(self, _str, val):
+
+        target = _str[3]
+
+        req_syntax = {
+            'ALIEN APP/INT\\': f'Is this parent or legal guardian a foreign national whose application for Permanent Resident Status has been preliminarily reviewed? {_str[-1]}',
+            'RES: COMMENTS\\': f'Is there any additional information that you believe your college should know in evaluating your eligibility to be classified as a resident? If so, please provide. {_str[-1]}',
+            'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
+            'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
+            'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
+            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent {_str[-1]}'
+        }
+
+        for key, value in req_syntax.items():
+            if key == target:
+                return value
+            
+        return val
+    
+    def additional_value(self, _str, val):
+
+        target = _str[-1]
+        
+        additional_syntax = {
+            'Area of Emphasis/Concentration\\': "Area of Emphasis/Concentartion",
+            'Pre-Veterinary Medicine\\': "Pre-Veterinary Medicine",
+            'RELLIS Academic Alliance\\': "'RELLIS Academic Alliance ?'"
+        }
+
+
+        for key, value in additional_syntax.items():
+            if key == target:
+                return value
+
+        return val
 
     def find_page_syntax(self, val):
 
-        _str =str(self._str).split("!")
+        _str = str(self._str).split("!")
 
         four_mark_syntax = {
             "Start Parent 1 Contact Info": "First Guardian/Parent:",
             "Start Parent 2 Contact Info": "Second Guardian/Parent:",
-            'Rellis Campus ?/Pre-Veterinary Medicine': 'Rellis Campus ?/Pre-Veterinary Medicine',
+            'Multi type question': 'Multi type question',
             'Faculty Mentor ?': 'Faculty Mentor ?',
             'Consultant Agency ?': 'Consultant Agency ?',
             'Alumni ?': 'Alumni ?',
@@ -155,14 +270,14 @@ class ReportSyntax(object):
             "Start Student Contact Info": "Student:",
             "Extra Curricular Activities": f"{_str[-5:-4]}",
             "Community or Volunteer Service": f"{_str[-4:-2]}",
-            "Award/Acheivement": f"{_str[-5:-4]} \t\t{_str[-1]}",
+            "Award/Acheivement": f"{_str[-5:-4]}",
             "Employment/Internships/Summer Activities":f"{_str[-4:-3]}",
             'Major': f"Major: {_str[-1]}",
             "Area of Interest": f"Area of Interest: {_str[-1]}",
             'Request and/or Answer': _str[-1],
-            'Long REQ': _str[-3:],
+            'Long REQ': _str,
             'Short REQ': _str[-1],
-            'Med REQ': _str[-2:],
+            'Med REQ': _str,
             "Senior Year Course(s)": _str,
             "Issued Date": f"Issued: {_str[-1]}"
         }
@@ -188,7 +303,7 @@ class ReportSyntax(object):
             "Phone": f"Phone: {_str[-1]}",
             "Email": f"Email: {_str[-1]}",
             "Question Answer": _str[-2:-1],
-            "Graduation Date": f"Graduation Date: {_str[-1]}",
+            "Graduation Date": f"Expected Graduation Date: {_str[-1]}",
             "High School Info": f"High School: {_str[-1]}",
             "Current enrolled course": _str,
             "Extra Name": "",
@@ -224,10 +339,17 @@ class ReportSyntax(object):
         for idx in range(len(dictionaries)):
             for key, value in dictionaries[idx].items():
                 if key == val:
+                    if key == "Med REQ" or key == "Long REQ":
+                        value = self.long_med_req_value(_str)
+                    elif key == "Request and/or Answer":
+                        value = self.req_and_or_answer_value(_str, value)
+                    elif key == 'Multi type question':
+                        value = self.additional_value(_str, value)
                     converted_mark = str(value).replace("\\", "")
                     break
 
-        output = str("".join(converted_mark)).strip("[[']")
+        clean_up = str("".join(converted_mark)).strip("[']")
+        # output = re.sub(r's+', ' ', clean_up)
 
-        return output
+        return clean_up
         

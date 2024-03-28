@@ -141,7 +141,6 @@ class ReportGen(object):
             "Employment/Internships/Summer Activities": 0
             }
 
-
         canvas.setFont("Helvetica", 7)
         canvas.setPageSize((8.5*inch, 16*inch))
         
@@ -177,7 +176,7 @@ class ReportGen(object):
                 opt_sep[val] = 1
 
                 for key, value in opt_sep.items():
-                    if key != val and value == 0:
+                    if key != val and value == 1:
                         found += 1
 
                 if found == 0:
@@ -193,44 +192,6 @@ class ReportGen(object):
                 xstart = 50
                 ystart = 1070
                 yadd = 0
-
-            # elif val == "Community or Volunteer Service" and opt_sep[val] == 0:
-            #     canvas.setFont("Helvetica", 7)
-            #     opt_sep[val] = 1
-            #     xstart = 50
-
-            #     if opt_sep["Extra Curricular Activities"] == 0:
-            #         ystart = 720
-            #     else:
-            #         ystart = ystart+yadd-10
-            #     yadd = 0
-            #     canvas.drawString(xstart, ystart+yadd, "Community/Volunteer Service(s):")
-            #     yadd = -10
-            #     canvas.setFont("Helvetica", 6)
-            # elif val == "Award/Acheivement" and opt_sep[val] == 0:
-            #     canvas.setFont("Helvetica", 7)
-            #     opt_sep[val] = 1
-            #     xstart = 50
-            #     if opt_sep["Extra Curricular Activities"] == 0 and opt_sep["Community or Volunteer Service"] == 0:
-            #         ystart = 720
-            #     else:
-            #         ystart = ystart+yadd-10
-            #     yadd = 0
-            #     canvas.drawString(xstart, ystart+yadd, "Award(s)/Achievement(s):")
-            #     yadd = -10
-            #     canvas.setFont("Helvetica", 6)
-            # elif val == "Employment/Internships/Summer Activities" and opt_sep[val] == 0:
-            #     canvas.setFont("Helvetica", 7)
-            #     opt_sep[val] = 1
-            #     xstart = 50
-            #     if opt_sep["Extra Curricular Activities"] == 0 and opt_sep["Community or Volunteer Service"] == 0 and opt_sep["Award/Acheivement"] == 0:
-            #         ystart = 720
-            #     else:
-            #         ystart = ystart+yadd-10
-            #     yadd = 0
-            #     canvas.drawString(xstart, ystart+yadd, "Employment/Internships/Summer Activities:")
-            #     yadd = -10
-            #     canvas.setFont("Helvetica", 6)
 
             _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
@@ -265,7 +226,7 @@ class ReportGen(object):
 
         # Starting points
         xstart = 50
-        ystart = 800
+        ystart = 1100
 
         #Increment
         yadd = 0
@@ -275,34 +236,35 @@ class ReportGen(object):
         current_idx = last_idx
 
         canvas.setFont("Helvetica", 7)
-        canvas.setPageSize((8.5*inch, 12*inch))
+        canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Alumni ?', 'Citzenship ?', 'Text Messaging Option',
                            'SSN Verification Notice', 'Name Verification Notice',
                            'Conduct Question: Conviction', 'Conduct Question: Expulsion',
-                           'Rellis Campus ?/Pre-Veterinary Medicine', 'Faculty Mentor ?',
+                           'Multi type question', 'Faculty Mentor ?',
                            'Consultant Agency ?', 'End of App']
         
         req_start = ['Request and/or Answer', 'Long REQ', 'Med REQ']
+        req_sep_list = [1, 3, 9, 12, 15, 16, 17]
         
         for val in self.page_2:
             current_idx += 1
 
             if val in paragraph_start:
                 yadd -= 10
-            if val in req_start and req_sep == 0:
-                req_sep = 1
+            if val in req_start and req_sep in req_sep_list:
                 yadd -= 10
+
+            req_sep += 1
 
 
             _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
             conv = syntax.find_page_syntax(val)
-    
-            canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            # canvas.drawString(xstart, ystart+yadd, _str)
-            # canvas.drawString(xstart, ystart+yadd, val)
+     
+            canvas.drawString(xstart, ystart+yadd, str(conv))
+            # canvas.drawString(xstart, ystart+yadd, val + _str)
             yadd -= 10
 
         return current_idx
@@ -330,25 +292,25 @@ class ReportGen(object):
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
                            'Name Verification Notice', 'Conduct Question: Conviction',
                            'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?',
-                           'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Rellis Campus ?/Pre-Veterinary Medicine',
-                           'End of App']
+                           'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
+                           'End of App', 'Long REQ']
         
         req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ']
+        req_sep_list = [11, 23, 25, 26, 27, 29, 33]
         
         for val in self.page_3:
             current_idx += 1
 
-            if val in paragraph_start:
+            if val in paragraph_start or val in req_start:
                 yadd -= 10
-            elif val in req_start and req_sep == 0:
-                req_sep = 1
-                yadd -= 10
+            # elif val in req_start and req_sep in req_sep_list:
+            #     yadd -= 10
 
+            req_sep += 1
             _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
             conv = syntax.find_page_syntax(val)
     
             canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            # canvas.drawString(xstart, ystart+yadd, _str)
             # canvas.drawString(xstart, ystart+yadd, val + _str)
             yadd -= 10

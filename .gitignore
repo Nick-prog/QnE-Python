@@ -149,7 +149,7 @@ cython_debug/
 
 # data folders
 output/
-csv/*.csv
+csv/
 
 # PyCharm
 #  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can

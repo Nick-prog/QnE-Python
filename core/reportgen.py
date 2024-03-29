@@ -198,23 +198,8 @@ class ReportGen(object):
             conv = syntax.find_page_syntax(val)
 
             canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            
+            # canvas.drawString(xstart, ystart+yadd, val + _str)
             yadd -= 10 # clear separation
-
-        # Ethnicity and Race Legend
-        ystart = 990
-        xstart = 240
-        canvas.setFont("Helvetica", 6)
-        canvas.setFillColor(HexColor('#FF0000'))
-        canvas.drawString(xstart, ystart-10, "W = No")
-        canvas.drawString(xstart, ystart-20, "R = Yes")
-
-        canvas.setFillColor(HexColor('#0000FF'))
-        canvas.drawString(xstart, ystart-30, "S = White")
-        canvas.drawString(xstart, ystart-40, "Q = Black or African American")
-        canvas.drawString(xstart, ystart-50, "U = Asian")
-        canvas.drawString(xstart, ystart-60, "V = Native Hawaiian or Other Pacific Islander")
-
 
         return current_idx
 
@@ -246,7 +231,7 @@ class ReportGen(object):
                            'Consultant Agency ?', 'End of App']
         
         req_start = ['Request and/or Answer', 'Long REQ', 'Med REQ']
-        req_sep_list = [1, 3, 9, 12, 15, 16, 17]
+        req_sep_list = [1, 3, 6, 9, 12, 15, 16, 17]
         
         for val in self.page_2:
             current_idx += 1

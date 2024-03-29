@@ -162,7 +162,8 @@ class ReportSyntax(object):
             'RES: DETERM': f'Applytexas Residency Determination: {_str[-1]}',
             'REVERSE TRANSFER': f'Reverse transfer? {_str[-1]}',
             'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
-            'APPLICATION SHARING': f'Application sharing on denied admission? {_str[-1]}'
+            'APPLICATION SHARING': f'Application sharing on denied admission? {_str[-1]}',
+            'FORMER STUDENT': f'Are you a former student of this institution? Have you previously applied? {_str[-1]}'
         }
 
         long_value = {
@@ -217,7 +218,8 @@ class ReportSyntax(object):
             'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
             'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
             'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
-            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent {_str[-1]}'
+            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent {_str[-1]}',
+            'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?"
         }
 
         for key, value in req_syntax.items():
@@ -241,6 +243,37 @@ class ReportSyntax(object):
             if key == target:
                 return value
 
+        return val
+    
+    def ethnicity_race_value(self, _str, val):
+
+        target = _str[-1]
+
+        e_r_syntax = {
+            "Ethnicity=\\": "No ethnicity or race listed.",
+            "Ethnicity=R\\": "Hispanic or Latino ethnicity. No race listed.",
+            "Ethnicity=W\\": "Not Hispanic or Latino ethnicity. No race listed.",
+            "Ethnicity=R;Race=S\\": "Hispanic or Latino ethnicity. White race.",
+            "Ethnicity=W;Race=S\\": "Not Hispanic or Latino ethnicity. White race.",
+            "Ethnicity=R;Race=T\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native race.",
+            "Ethnicity=W;Race=T\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native race.",
+            "Ethnicity=R;Race=Q\\": "Hispanic or Latino ethnicity. Black or African American race.",
+            "Ethnicity=W;Race=Q\\": "Not Hispanic or Latino ethnicity. Black or African American race.",
+            "Ethnicity=R;Race=U\\": "Hispanic or Latino ethnicity. Asian race.",
+            "Ethnicity=W;Race=U\\": "Not Hispanic or Latino ethnicity. Asian race.",
+            "Ethnicity=R;Race=V\\": "Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=W;Race=V\\": "Not Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Asian or White race.",
+            "Ethnicity=W;Race=US\\": "Not Hispanic or Latino ethnicity. Asian or White race.",
+            "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=W;Race=Uv\\": "Not Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
+        }
+
+        for key, value in e_r_syntax.items():
+            if key == target:
+                return value
+            
+        print(target)
         return val
 
     def find_page_syntax(self, val):
@@ -345,6 +378,8 @@ class ReportSyntax(object):
                         value = self.req_and_or_answer_value(_str, value)
                     elif key == 'Multi type question':
                         value = self.additional_value(_str, value)
+                    elif key == 'Ethnicity/Race':
+                        value = self.ethnicity_race_value(_str, value)
                     converted_mark = str(value).replace("\\", "")
                     break
 

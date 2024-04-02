@@ -157,13 +157,18 @@ class ReportSyntax(object):
             'RESUME SWITCH': f'Resume? {_str[-1]}',
             'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
             'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {_str[-1]}',
-            'HOME SCHOOLED': f'Home schooled? {_str[-1]}',
+            'HOME SCHOOLED': f'Where you home schooled? {_str[-1]}',
             'COLLEGE WORK': f'Number of college credit hours by high school graduation date: {_str[-1]}',
             'RES: DETERM': f'Applytexas Residency Determination: {_str[-1]}',
             'REVERSE TRANSFER': f'Reverse transfer? {_str[-1]}',
             'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
             'APPLICATION SHARING': f'Application sharing on denied admission? {_str[-1]}',
-            'FORMER STUDENT': f'Are you a former student of this institution? Have you previously applied? {_str[-1]}'
+            'FORMER STUDENT': f'Are you a former student of this institution? Have you previously applied? {_str[-1]}',
+            'VET STATUS': f'U.S. Military-Veteran Status? {_str[-1]}',
+            'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {_str[-1]}',
+            'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {_str[-1]}',
+            'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution: {_str[-1]}',
+            'PAYMENT RECONCILIATION': f'Application Fee Information: {_str[-1]}'
         }
 
         long_value = {
@@ -193,7 +198,9 @@ class ReportSyntax(object):
             'RES: GUAR': _str, # f'{_str[-1]}',
             'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {_str[-1]}",
             'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
-            'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {_str[-1]}'
+            'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
+            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {_str[-1]}',
+            'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law? {_str[-1]}',
         }
 
         dictionaries = [med_value, long_value]
@@ -218,7 +225,7 @@ class ReportSyntax(object):
             'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
             'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
             'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
-            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent {_str[-1]}',
+            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent? {_str[-1]}',
             'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?"
         }
 
@@ -266,7 +273,13 @@ class ReportSyntax(object):
             "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Asian or White race.",
             "Ethnicity=W;Race=US\\": "Not Hispanic or Latino ethnicity. Asian or White race.",
             "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
-            "Ethnicity=W;Race=Uv\\": "Not Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=W;Race=UV\\": "Not Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=R;Race=TS\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
+            "Ethnicity=W;Race=TS\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
+            "Ethnicity=R;Race=ST\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
+            "Ethnicity=W;Race=ST\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
+            "Ethnicity=R;Race=UST\\": "Hispanic or Latino ethnicity. Asian or White or American Indian or Alaska Native race.",
+            "Ethnicity=W;Race=UST\\": "Not Hispanic or Latino ethnicity. Asian or White or American Indian or Alaska Native race.",
         }
 
         for key, value in e_r_syntax.items():
@@ -337,7 +350,7 @@ class ReportSyntax(object):
             "Email": f"Email: {_str[-1]}",
             "Question Answer": _str[-2:-1],
             "Graduation Date": f"Expected Graduation Date: {_str[-1]}",
-            "High School Info": f"High School: {_str[-1]}",
+            "High School Info": f"School Code: {_str[-1]}",
             "Current enrolled course": _str,
             "Extra Name": "",
             "VISA Info": f"Visa: {_str[-1]}",
@@ -351,12 +364,12 @@ class ReportSyntax(object):
             "Address Two": f"{_str[1:]}",
             "Semester": f"Semester: {_str[-1]}",
             "Question statement": _str[-2:-1],
-            "Grade level": _str,
+            "Grade level": f"Date: {_str[1]}",
             "Admissions Test": _str,
-            "Post-Secondary Colleges/Universities": _str,
-            "Hours Earned": _str,
+            "Post-Secondary Colleges/Universities": f"Name of Institution: {_str[-1]}",
+            "Hours Earned": f"Hours Earned: {_str[-1]}",
             "End of App": "End of App",
-            "Degree Earned": "",
+            "Degree Earned": f"Degree Earned: {_str[-1]}",
             "Skip": "",
             'Transfer Information': _str,
             "Language": _str,
@@ -383,8 +396,8 @@ class ReportSyntax(object):
                     converted_mark = str(value).replace("\\", "")
                     break
 
-        clean_up = str("".join(converted_mark)).strip("[']")
-        # output = re.sub(r's+', ' ', clean_up)
+        # clean_up = str("".join(converted_mark)).strip("[']")
+        output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "")
 
-        return clean_up
+        return output
         

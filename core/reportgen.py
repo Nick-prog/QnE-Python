@@ -262,7 +262,7 @@ class ReportGen(object):
 
         # Starting points
         xstart = 50
-        ystart = 800
+        ystart = 1100
 
         #Increment
         yadd = 0
@@ -271,7 +271,7 @@ class ReportGen(object):
         req_sep = 0
 
         canvas.setFont("Helvetica", 7)
-        canvas.setPageSize((8.5*inch, 12*inch))
+        canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -280,7 +280,7 @@ class ReportGen(object):
                            'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
                            'End of App', 'Long REQ']
         
-        req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ']
+        req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
         req_sep_list = [11, 23, 25, 26, 27, 29, 33]
         
         for val in self.page_3:

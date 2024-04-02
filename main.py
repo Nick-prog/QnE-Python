@@ -114,7 +114,3 @@ def run(file, fileName):
 if __name__ == "__main__":
     file, fileName = find_spe_file()
     run(file, fileName)
-    # run_target("domestic", 3)
-    # run_target("domestic", 65)
-    # run_target("domestic", 144)
-    # run_target("domestic", 151)

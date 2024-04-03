@@ -231,20 +231,40 @@ class ReportGen(object):
                            'Consultant Agency ?', 'End of App']
         
         req_start = ['Request and/or Answer', 'Long REQ', 'Med REQ']
-        req_sep_list = [1, 3, 6, 9, 12, 15, 16, 17]
+
+        req_dict = {
+            'DUAL CREDIT': "Biographical Information - continued:",
+            'IB DIPLOMA': "Student Information - continued:",
+            'HS GED TYPE': "Student Information - continued:",
+            'FERPA CERT SWITCH': "Certification of Information:",
+            'PARENT OR GUARDIAN INFO': "Parent or Guardian Info:",
+            'PRE-PROFESSIONAL PGMC': "Educational Information:",
+            'PRE-PROFESSIONAL PGMN': "Educational Information:",
+            'PRE-PROFESSIONAL PGMZ': "Educational Information:",
+            'PRE-PROFESSIONAL PGMD': "Educational Information:",
+            'PERM COUNTY INFO': "Mailing/Permanent Address:",
+            'PERM COUNTRY INFO': "Mailing/Permanent Address:",
+            'CURR COUNTY INFO': "Physical Address:",
+            'CURR COUNTRY INFO': "Physical Address:",
+            'ALIEN APP/INT\\': '',
+            'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):'
+        }
         
         for val in self.page_2:
             current_idx += 1
+            _str = self.nested_list[select_app][current_idx]
 
             if val in paragraph_start:
                 yadd -= 10
-            if val in req_start and req_sep in req_sep_list:
-                yadd -= 10
+            elif val in req_start:
+                target = str(_str).split("!")[3]
+                for key, value in req_dict.items():
+                    if target == key:
+                        yadd -= 10
+                        canvas.drawString(xstart, ystart+yadd, value)
+                        yadd -= 10
+                        req_sep += 1
 
-            req_sep += 1
-
-
-            _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
             conv = syntax.find_page_syntax(val)
      

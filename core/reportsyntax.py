@@ -142,7 +142,7 @@ class ReportSyntax(object):
             '26\\' : "Bachelor's/Four-year Degree",
             '34\\' : "Other Adult",
             '48\\' : "Stepmother",
-            'PG1YY\\': 'Some College',
+            'PG1YY\\': 'Some College/No High School',
             'PG1YN\\': 'No College',
             'PG1N\\': 'Parent/Guardian 1',
             'PG2N\\': 'Parent/Guardian 2',
@@ -168,7 +168,12 @@ class ReportSyntax(object):
             'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {_str[-1]}',
             'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {_str[-1]}',
             'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution: {_str[-1]}',
-            'PAYMENT RECONCILIATION': f'Application Fee Information: {_str[-1]}'
+            'PAYMENT RECONCILIATION': f'Application Fee Information: {_str[-1]}',
+            'GRADUATE AWARD': "", #Skipped
+            'TEST1 SENT': "", #Skipped
+            'TEST2 SENT': "", #Skipped
+            'CUR COLLEGE CRS': f"Present semester course to be completed: {_str[-1]}",
+            'CUR COLLEGE ATT': f"Current college attending code: {_str[-1]}"
         }
 
         long_value = {
@@ -182,12 +187,12 @@ class ReportSyntax(object):
             'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {_str[-1]}',
             'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {_str[-1]}',
             'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {_str[-1]}',
-            'CONSERVATORSHIP SWITCHES' : f'At anytime in your life were you placed in foster care or adopted from foster care in Texas? {_str[-1]}',
+            'CONSERVATORSHIP SWITCHES' : f'At anytime in your life were you placed in foster care or adopted from foster care in Texas? If admitted, would your like to receive student foster care info and benefits? {_str[-1]}',
             'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {_str[-1]}',
             'HS GED TYPE': f'If you did not graduate from high school, do you have a DEG or have you completed another high school equivalency program? {_str[4]}',
             'PARENT 1 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
             'PARENT 2 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
-            'PARENT OR GUARDIAN INFO': f'Parent or Guardian Education Info: ',
+            'PARENT OR GUARDIAN INFO': f'Education Level: ',
             'CTRY SELF': f'Country: {_str[-1]}',
             'FAMILY': f'Family? {_str[-1]}',
             'RES: PREVIOUS ENROLLMENT': f"During the 12 months prior to you applying, did you register for a public college or university in Texas? {_str[-1]}", # f'Previous College? {_str[-1]}',
@@ -199,6 +204,7 @@ class ReportSyntax(object):
             'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {_str[-1]}",
             'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
             'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
+            'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
             'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {_str[-1]}',
             'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law? {_str[-1]}',
         }
@@ -221,12 +227,13 @@ class ReportSyntax(object):
 
         req_syntax = {
             'ALIEN APP/INT\\': f'Is this parent or legal guardian a foreign national whose application for Permanent Resident Status has been preliminarily reviewed? {_str[-1]}',
-            'RES: COMMENTS\\': f'Is there any additional information that you believe your college should know in evaluating your eligibility to be classified as a resident? If so, please provide. {_str[-1]}',
+            'RES: COMMENTS\\': f'Is there any additional information that you believe your college should know in evaluating your eligibility to be classified as a resident? If so, please provide. {_str[-2]}',
             'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
             'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
             'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
             'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent? {_str[-1]}',
-            'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?"
+            'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?",
+            'CONTACT AT WORK\\': "" # Skipped
         }
 
         for key, value in req_syntax.items():
@@ -270,6 +277,8 @@ class ReportSyntax(object):
             "Ethnicity=W;Race=U\\": "Not Hispanic or Latino ethnicity. Asian race.",
             "Ethnicity=R;Race=V\\": "Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
             "Ethnicity=W;Race=V\\": "Not Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
+            "Ethnicity=R;Race=QS\\": "Hispanic or Latino ethnicity. Black or African American or White race.",
+            "Ethnicity=W;Race=QS\\": "Not Hispanic or Latino ethnicity. Black or African American or White race.",
             "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Asian or White race.",
             "Ethnicity=W;Race=US\\": "Not Hispanic or Latino ethnicity. Asian or White race.",
             "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
@@ -294,8 +303,8 @@ class ReportSyntax(object):
         _str = str(self._str).split("!")
 
         four_mark_syntax = {
-            "Start Parent 1 Contact Info": "First Guardian/Parent:",
-            "Start Parent 2 Contact Info": "Second Guardian/Parent:",
+            "Start Parent 1 Contact Info": "First Guardian/Parent Information:",
+            "Start Parent 2 Contact Info": "Second Guardian/Parent Information:",
             'Multi type question': 'Multi type question',
             'Faculty Mentor ?': 'Faculty Mentor ?',
             'Consultant Agency ?': 'Consultant Agency ?',
@@ -312,8 +321,8 @@ class ReportSyntax(object):
         }
 
         three_mark_syntax  = {
-            "Start Extra Contact Info": "Emergency Contact:",
-            "Start Student Contact Info": "Student:",
+            "Start Extra Contact Info": "Emergency Contact Information:",
+            "Start Student Contact Info": "Student Information:",
             "Extra Curricular Activities": f"{_str[-5:-4]}",
             "Community or Volunteer Service": f"{_str[-4:-2]}",
             "Award/Acheivement": f"{_str[-5:-4]}",
@@ -397,7 +406,7 @@ class ReportSyntax(object):
                     break
 
         # clean_up = str("".join(converted_mark)).strip("[']")
-        output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "")
+        output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "").replace("ZZ", "")
 
         return output
         

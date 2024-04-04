@@ -141,7 +141,7 @@ class ReportGen(object):
             "Employment/Internships/Summer Activities": 0
             }
 
-        canvas.setFont("Helvetica", 7)
+        canvas.setFont("Courier", 7)
         canvas.setPageSize((8.5*inch, 16*inch))
         
         for val in self.page_1:
@@ -161,16 +161,16 @@ class ReportGen(object):
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
                 yadd -= 10
             elif val == "Extra Curricular Activities" and opt_sep[val] == 0:
-                canvas.setFont("Helvetica", 7)
+                canvas.setFont("Courier", 7)
                 opt_sep[val] = 1
                 xstart = 50
                 ystart = 860
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
-                canvas.setFont("Helvetica", 6 )
+                canvas.setFont("Courier", 6)
             elif val in opt_list and opt_sep[val] == 0:
-                canvas.setFont("Helvetica", 7)
+                canvas.setFont("Courier", 7)
                 xstart = 50
                 ystart = ystart+yadd-10
                 opt_sep[val] = 1
@@ -186,9 +186,9 @@ class ReportGen(object):
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, f"{val}:")
                 yadd = -10
-                canvas.setFont("Helvetica", 6)
+                canvas.setFont("Courier", 6)
             elif val == "Semester":
-                canvas.setFont("Helvetica", 7)
+                canvas.setFont("Courier", 7)
                 xstart = 50
                 ystart = 1070
                 yadd = 0
@@ -220,7 +220,7 @@ class ReportGen(object):
 
         current_idx = last_idx
 
-        canvas.setFont("Helvetica", 7)
+        canvas.setFont("Courier", 7)
         canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
@@ -246,7 +246,7 @@ class ReportGen(object):
             'PERM COUNTRY INFO': "Mailing/Permanent Address:",
             'CURR COUNTY INFO': "Physical Address:",
             'CURR COUNTRY INFO': "Physical Address:",
-            'ALIEN APP/INT\\': '',
+            'ALIEN APP/INT\\': 'Is this parent or legal guardian a foreign national whose application',
             'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):'
         }
         
@@ -290,7 +290,7 @@ class ReportGen(object):
         current_idx = last_idx
         req_sep = 0
 
-        canvas.setFont("Helvetica", 7)
+        canvas.setFont("Courier", 7)
         canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 

@@ -226,7 +226,7 @@ class ReportSyntax(object):
         target = _str[3]
 
         req_syntax = {
-            'ALIEN APP/INT\\': f'Is this parent or legal guardian a foreign national whose application for Permanent Resident Status has been preliminarily reviewed? {_str[-1]}',
+            'ALIEN APP/INT\\': f'for Permanent Resident Status has been preliminarily reviewed? {_str[-1]}',
             'RES: COMMENTS\\': f'Is there any additional information that you believe your college should know in evaluating your eligibility to be classified as a resident? If so, please provide. {_str[-2]}',
             'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
             'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
@@ -245,17 +245,30 @@ class ReportSyntax(object):
     def additional_value(self, _str, val):
 
         target = _str[-1]
+
+        semester = target[-5:]
         
         additional_syntax = {
             'Area of Emphasis/Concentration\\': "Area of Emphasis/Concentartion",
             'Pre-Veterinary Medicine\\': "Pre-Veterinary Medicine",
-            'RELLIS Academic Alliance\\': "'RELLIS Academic Alliance ?'"
+            'RELLIS Academic Alliance\\': "'RELLIS Academic Alliance ?'",
+            '4.2\\': 'Degree: Masters (M.)',
+            '4.4\\': 'Degree: Doctoral (PhD)',
         }
 
+        semester_syntax = {
+            '0901\\': 'Semester: Fall',
+            '0601\\': 'Semester: Summer',
+        }
 
         for key, value in additional_syntax.items():
             if key == target:
                 return value
+            
+        for key, value in semester_syntax.items():
+            if key == semester:
+                output = f"{value} {target[:-5]}"
+                return output
 
         return val
     
@@ -263,39 +276,47 @@ class ReportSyntax(object):
 
         target = _str[-1]
 
-        e_r_syntax = {
-            "Ethnicity=\\": "No ethnicity or race listed.",
-            "Ethnicity=R\\": "Hispanic or Latino ethnicity. No race listed.",
-            "Ethnicity=W\\": "Not Hispanic or Latino ethnicity. No race listed.",
-            "Ethnicity=R;Race=S\\": "Hispanic or Latino ethnicity. White race.",
-            "Ethnicity=W;Race=S\\": "Not Hispanic or Latino ethnicity. White race.",
-            "Ethnicity=R;Race=T\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native race.",
-            "Ethnicity=W;Race=T\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native race.",
-            "Ethnicity=R;Race=Q\\": "Hispanic or Latino ethnicity. Black or African American race.",
-            "Ethnicity=W;Race=Q\\": "Not Hispanic or Latino ethnicity. Black or African American race.",
-            "Ethnicity=R;Race=U\\": "Hispanic or Latino ethnicity. Asian race.",
-            "Ethnicity=W;Race=U\\": "Not Hispanic or Latino ethnicity. Asian race.",
-            "Ethnicity=R;Race=V\\": "Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
-            "Ethnicity=W;Race=V\\": "Not Hispanic or Latino ethnicity. Native Hawaiian or Other Pacific Islander race.",
-            "Ethnicity=R;Race=QS\\": "Hispanic or Latino ethnicity. Black or African American or White race.",
-            "Ethnicity=W;Race=QS\\": "Not Hispanic or Latino ethnicity. Black or African American or White race.",
-            "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Asian or White race.",
-            "Ethnicity=W;Race=US\\": "Not Hispanic or Latino ethnicity. Asian or White race.",
-            "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
-            "Ethnicity=W;Race=UV\\": "Not Hispanic or Latino ethnicity. Asian or Native Hawaiian or Other Pacific Islander race.",
-            "Ethnicity=R;Race=TS\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
-            "Ethnicity=W;Race=TS\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
-            "Ethnicity=R;Race=ST\\": "Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
-            "Ethnicity=W;Race=ST\\": "Not Hispanic or Latino ethnicity. American Indian or Alaska Native or White race.",
-            "Ethnicity=R;Race=UST\\": "Hispanic or Latino ethnicity. Asian or White or American Indian or Alaska Native race.",
-            "Ethnicity=W;Race=UST\\": "Not Hispanic or Latino ethnicity. Asian or White or American Indian or Alaska Native race.",
+        hispanic_syntax = {
+            "Ethnicity=R;Race=S\\": "Ethnicity=Hispanic or Latino. Race=White.",
+            "Ethnicity=R;Race=T\\": "Ethnicity=Hispanic or Latino. Race=American Indian or Alaska Native.",
+            "Ethnicity=R;Race=Q\\": "Hispanic or Latino ethnicity. Race=Black or African American.",
+            "Ethnicity=R;Race=U\\": "Hispanic or Latino ethnicity. Race=Asian.",
+            "Ethnicity=R;Race=V\\": "Hispanic or Latino ethnicity. Race=Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=QS\\": "Hispanic or Latino ethnicity. Race=Black or African American or White.",
+            "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Race=Asian or White.",
+            "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Race=Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=TS\\": "Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=ST\\": "Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=UST\\": "Hispanic or Latino ethnicity. Race=Asian, White, American Indian or Alaska Native.",
         }
 
-        for key, value in e_r_syntax.items():
-            if key == target:
-                return value
-            
-        print(target)
+        not_hispanic_syntax = {
+            "Ethnicity=W\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=N/A.",
+            "Ethnicity=W;Race=S\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=White.",
+            "Ethnicity=W;Race=T\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian or Alaska Native.",
+            "Ethnicity=W;Race=Q\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Black or African American.",
+            "Ethnicity=W;Race=U\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian.",
+            "Ethnicity=W;Race=V\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=QS\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Black, African American or White.",
+            "Ethnicity=W;Race=US\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian or White.",
+            "Ethnicity=W;Race=UV\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=TS\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=ST\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=UST\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian, White, American Indian or Alaska Native.",
+        }
+
+        other_syntax = {
+            "Ethnicity=\\": "Ethnicity=N/A. Race=N/A.",
+            "Ethnicity=R\\": "Ethnicity=Hispanic or Latino. Race=N/A.",
+        }
+
+        dictionaries = [hispanic_syntax, not_hispanic_syntax, other_syntax]
+
+        for dicts in dictionaries:
+            for key, value in dicts.items():
+                if key == target:
+                    return value
+
         return val
 
     def find_page_syntax(self, val):
@@ -378,7 +399,7 @@ class ReportSyntax(object):
             "Post-Secondary Colleges/Universities": f"Name of Institution: {_str[-1]}",
             "Hours Earned": f"Hours Earned: {_str[-1]}",
             "End of App": "End of App",
-            "Degree Earned": f"Degree Earned: {_str[-1]}",
+            "Degree Earned": f"Degree: {_str[-1]}",
             "Skip": "",
             'Transfer Information': _str,
             "Language": _str,
@@ -398,7 +419,7 @@ class ReportSyntax(object):
                         value = self.long_med_req_value(_str)
                     elif key == "Request and/or Answer":
                         value = self.req_and_or_answer_value(_str, value)
-                    elif key == 'Multi type question':
+                    elif key == 'Multi type question' or key == "Degree Earned" or key == 'Semester':
                         value = self.additional_value(_str, value)
                     elif key == 'Ethnicity/Race':
                         value = self.ethnicity_race_value(_str, value)
@@ -406,7 +427,10 @@ class ReportSyntax(object):
                     break
 
         # clean_up = str("".join(converted_mark)).strip("[']")
-        output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "").replace("ZZ", "")
+
+        output = "".join(converted_mark).translate(str.maketrans("", "", "[],'{}"))
+        
+        # output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "").replace("ZZ", "")
 
         return output
         

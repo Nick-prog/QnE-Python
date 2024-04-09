@@ -221,7 +221,7 @@ class ReportGen(object):
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 16*inch))
+        canvas.setPageSize((11*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Alumni ?', 'Citzenship ?', 'Text Messaging Option',
@@ -253,6 +253,7 @@ class ReportGen(object):
         for val in self.page_2:
             current_idx += 1
             _str = self.nested_list[select_app][current_idx]
+            syntax = core.ReportSyntax(_str)
 
             if val in paragraph_start:
                 yadd -= 10
@@ -263,9 +264,15 @@ class ReportGen(object):
                         yadd -= 10
                         canvas.drawString(xstart, ystart+yadd, value)
                         yadd -= 10
-                        req_sep += 1
+                        
+                        if target == 'HS GED TYPE':
+                            yadd -= 10
+                            hs_list = syntax.hs_ged_syntax(_str)
 
-            syntax = core.ReportSyntax(_str)
+                            for x in range(len(hs_list)):
+                                canvas.drawString(xstart, ystart+yadd, str(hs_list[x]))
+                                yadd -= 10
+
             conv = syntax.find_page_syntax(val)
      
             canvas.drawString(xstart, ystart+yadd, str(conv))
@@ -291,7 +298,7 @@ class ReportGen(object):
         req_sep = 0
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 16*inch))
+        canvas.setPageSize((11*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -301,19 +308,29 @@ class ReportGen(object):
                            'End of App', 'Long REQ']
         
         req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
-        req_sep_list = [11, 23, 25, 26, 27, 29, 33]
-        
+
+        payment_list = []
+
         for val in self.page_3:
             current_idx += 1
-
-            if val in paragraph_start or val in req_start:
-                yadd -= 10
-            # elif val in req_start and req_sep in req_sep_list:
-            #     yadd -= 10
-
-            req_sep += 1
             _str = self.nested_list[select_app][current_idx]
             syntax = core.ReportSyntax(_str)
+
+            if val in paragraph_start or val in req_start:
+                temp = str(_str).split("!")
+                if val == 'Long REQ' and len(temp) == 6:
+                    if temp[3] == 'PAYMENT RECONCILIATION':
+                        payment_list = syntax.payment_syntax(temp)
+                        yadd -= 10
+                        canvas.drawString(xstart, ystart+yadd, "Application Fee Information:")
+                        yadd -= 10
+
+                    for x in range(len(payment_list)):
+                        canvas.drawString(xstart, ystart+yadd, str(payment_list[x]))
+                        yadd -= 10
+
+                yadd -= 10
+
             conv = syntax.find_page_syntax(val)
     
             canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values

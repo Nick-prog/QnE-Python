@@ -167,8 +167,8 @@ class ReportSyntax(object):
             'VET STATUS': f'U.S. Military-Veteran Status? {_str[-1]}',
             'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {_str[-1]}',
             'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {_str[-1]}',
-            'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution: {_str[-1]}',
-            'PAYMENT RECONCILIATION': f'Application Fee Information: {_str[-1]}',
+            'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution? ',
+            'PAYMENT RECONCILIATION': "Billing Information:", #Next line info, displayed on reportgen.py
             'GRADUATE AWARD': "", #Skipped
             'TEST1 SENT': "", #Skipped
             'TEST2 SENT': "", #Skipped
@@ -189,7 +189,7 @@ class ReportSyntax(object):
             'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {_str[-1]}',
             'CONSERVATORSHIP SWITCHES' : f'At anytime in your life were you placed in foster care or adopted from foster care in Texas? If admitted, would your like to receive student foster care info and benefits? {_str[-1]}',
             'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {_str[-1]}',
-            'HS GED TYPE': f'If you did not graduate from high school, do you have a DEG or have you completed another high school equivalency program? {_str[4]}',
+            'HS GED TYPE': f'{_str[4]}',
             'PARENT 1 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
             'PARENT 2 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
             'PARENT OR GUARDIAN INFO': f'Education Level: ',
@@ -217,10 +217,44 @@ class ReportSyntax(object):
                 if key == target:
                     if key in parent_check:
                         value = value + parent_value[_str[-1]]
+                    elif target == 'ULTIMATE DEGREE SOUGHT':
+                        value = value + self.additional_value(_str, value)
                     return value
             
         return _str
     
+    def payment_syntax(self, _str):
+
+        target = _str[-1]
+
+        transaction_time = target[0:8]
+        payment_status = target[15:19]
+        payment_amount = target[19:24]
+        transaction_trace = target[24:36]
+        customer_ref = target[36:48]
+        card_type = target[48]
+        last_4 = target[49:53]
+        card_exp = target[53:57]
+
+
+        payment_list = [f"Transcation Time: {transaction_time}",
+                        f"Payment Status: {payment_status}",
+                        f"Payment Amount: {payment_amount}",
+                        f"Transcation Trace: {transaction_trace}",
+                        f"Customer Reference: {customer_ref}",
+                        f"Card Type: {card_type}",
+                        f"Last 4 digit card number: {last_4}",
+                        f"Card Expiration Date: {card_exp}"]
+        
+        return payment_list
+    
+    def hs_ged_syntax(self, _str):
+
+        hs_list = ['If you did not graduate from high school, do you have a DEG or have you completed',
+                   'another high school equivalency program?']
+        
+        return hs_list
+
     def req_and_or_answer_value(self, _str, val):
 
         target = _str[3]
@@ -426,11 +460,7 @@ class ReportSyntax(object):
                     converted_mark = str(value).replace("\\", "")
                     break
 
-        # clean_up = str("".join(converted_mark)).strip("[']")
-
         output = "".join(converted_mark).translate(str.maketrans("", "", "[],'{}"))
-        
-        # output = str("".join(converted_mark)).replace("[", "").replace("]", "").replace(",", "").replace("'", "").replace("{", "").replace("}", "").replace("ZZ", "")
 
         return output
         

@@ -66,7 +66,7 @@ class ReportSyntax(object):
             'IN209': "Suffix",
             'IN216': "Representative Name",
             'IN218': "Preferred Name",
-            'DMGD8': "Extra Student SKIP",
+            'DMGD8': "Student Gender",
             'COMTE': "Phone",
             'COMAP': "Phone",
             'COMEM': "Email",
@@ -76,7 +76,7 @@ class ReportSyntax(object):
             'SSTB18': "Graduation Date",
             'N1HS': "High School Info",
             'CRSR': "Current enrolled course",
-            'REFPSM': "Extra Name",
+            'REFPSM': "Previous Applicant",
             'REFV2': "VISA Info",
             'DTP036': "VISA end date"
         }
@@ -131,9 +131,9 @@ class ReportSyntax(object):
     
     def long_med_req_value(self, _str):
 
-        # print(_str)
-
         target = _str[3]
+
+        output = str(_str[-1]).replace('Y', 'Yes').replace('N', 'No')
 
         parent_value = {
             '32\\' : 'Mother',
@@ -152,61 +152,62 @@ class ReportSyntax(object):
         }
 
         med_value = {
-            'DUAL CREDIT': f'Are you applyting to take college courses to be completed while you are still a high school student (Dual Credit or Concurrent Enrollment)? {_str[-1]}',
-            'IB DIPLOMA': f'IB Diploma? {_str[-1]}',
-            'RESUME SWITCH': f'Resume? {_str[-1]}',
-            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
-            'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {_str[-1]}',
-            'HOME SCHOOLED': f'Where you home schooled? {_str[-1]}',
-            'COLLEGE WORK': f'Number of college credit hours by high school graduation date: {_str[-1]}',
-            'RES: DETERM': f'Applytexas Residency Determination: {_str[-1]}',
-            'REVERSE TRANSFER': f'Reverse transfer? {_str[-1]}',
-            'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
-            'APPLICATION SHARING': f'Application sharing on denied admission? {_str[-1]}',
-            'FORMER STUDENT': f'Are you a former student of this institution? Have you previously applied? {_str[-1]}',
-            'VET STATUS': f'U.S. Military-Veteran Status? {_str[-1]}',
-            'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {_str[-1]}',
-            'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {_str[-1]}',
+            'DUAL CREDIT': "",
+            'IB DIPLOMA': f'IB Diploma? {output}',
+            'RESUME SWITCH': f'Resume? {output}',
+            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}',
+            'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {output}',
+            'HOME SCHOOLED': f'Where you home schooled? {output}',
+            'COLLEGE WORK': f'Number of college credit hours by high school graduation date: {output}',
+            'RES: DETERM': f'Applytexas Residency Determination: {output}',
+            'REVERSE TRANSFER': f'Reverse transfer? {output}',
+            'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {output}',
+            'APPLICATION SHARING': f'Application sharing on denied admission? {output}',
+            'FORMER STUDENT': '',
+            'VET STATUS': f'U.S. Military-Veteran Status? {output}',
+            'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {output}',
+            'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {output}',
             'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution? ',
             'PAYMENT RECONCILIATION': "Billing Information:", #Next line info, displayed on reportgen.py
             'GRADUATE AWARD': "", #Skipped
             'TEST1 SENT': "", #Skipped
             'TEST2 SENT': "", #Skipped
-            'CUR COLLEGE CRS': f"Present semester course to be completed: {_str[-1]}",
-            'CUR COLLEGE ATT': f"Current college attending code: {_str[-1]}"
+            'CUR COLLEGE CRS': f"Present semester course to be completed: {output}",
+            'CUR COLLEGE ATT': f"Current college attending code: {output}",
+            'COLLEGE WORK IN CLASSROOM': ""
         }
 
         long_value = {
-            'COUNSELOR OPT IN': f'Opt-In for Counselor? {_str[-1]}',
-            'PERM COUNTY INFO' : f'Permanent County Info--{_str[-1]}',
-            'PERM COUNTRY INFO' : f'Permanent Country Info--{_str[-1]}',
-            'PERM ADDR STND' : f'Mailing/Permanent Address Standardized: {_str[-1]}',
-            'CURR COUNTY INFO' : f'Current County CODE Info--{_str[-1]}',
-            'CURR COUNTRY INFO' : f'Current Country Info--{_str[-1]}',
-            'PHYS ADDR STND' : f'Physical Address Standardized: {_str[-1]}',
-            'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {_str[-1]}',
-            'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {_str[-1]}',
-            'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {_str[-1]}',
-            'CONSERVATORSHIP SWITCHES' : f'At anytime in your life were you placed in foster care or adopted from foster care in Texas? If admitted, would your like to receive student foster care info and benefits? {_str[-1]}',
-            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {_str[-1]}',
-            'HS GED TYPE': f'{_str[4]}',
+            'COUNSELOR OPT IN': f'Opt-In for Counselor? {output}',
+            'PERM COUNTY INFO' : f'Permanent County Info--{output}',
+            'PERM COUNTRY INFO' : f'Permanent Country Info--{output}',
+            'PERM ADDR STND' : f'Mailing/Permanent Address Standardized: {output}',
+            'CURR COUNTY INFO' : f'Current County CODE Info--{output}',
+            'CURR COUNTRY INFO' : f'Current Country Info--{output}',
+            'PHYS ADDR STND' : f'Physical Address Standardized: {output}',
+            'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {output}',
+            'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {output}',
+            'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {output}',
+            'CONSERVATORSHIP SWITCHES' : "",
+            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {output}',
+            'HS GED TYPE': '',
             'PARENT 1 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
             'PARENT 2 ED LEVEL RELATIONSHIP': f'Parent Relationship\t',
             'PARENT OR GUARDIAN INFO': f'Education Level: ',
-            'CTRY SELF': f'Country: {_str[-1]}',
-            'FAMILY': f'Family? {_str[-1]}',
-            'RES: PREVIOUS ENROLLMENT': f"During the 12 months prior to you applying, did you register for a public college or university in Texas? {_str[-1]}", # f'Previous College? {_str[-1]}',
-            'RES: RESIDENCY CLAIM': f'Of what state or country are you a resident? {_str[-1]}',
-            'RES: HS DIPLOMA OR GED': f'High school atteneded: {_str[-1]}',
-            'RES: BASIS OF CLAIM': f'If you were born outside of the United States and can claim US citizenship, please indicate the basis of your citizenship below. {_str[-1]}',
+            'CTRY SELF': f'Country: {output}',
+            'FAMILY': f'Family? {output}',
+            'RES: PREVIOUS ENROLLMENT': "",
+            'RES: RESIDENCY CLAIM': f'Of what state or country are you a resident? {output}',
+            'RES: HS DIPLOMA OR GED': f'High school atteneded: {output}',
+            'RES: BASIS OF CLAIM': '',
             'RES: SELF': _str, # f'{_str[-1]}',
             'RES: GUAR': _str, # f'{_str[-1]}',
-            'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {_str[-1]}",
-            'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
-            'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
-            'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {_str[-1]}',
-            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {_str[-1]}',
-            'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law? {_str[-1]}',
+            'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {output}",
+            'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {output}',
+            'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {output}',
+            'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {output}',
+            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output}',
+            'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law? {output}',
         }
 
         dictionaries = [med_value, long_value]
@@ -250,24 +251,108 @@ class ReportSyntax(object):
     
     def hs_ged_syntax(self, _str):
 
+        target = "".join(_str[4]).translate(str.maketrans("", "", "\\0"))
+
+        target = target.replace('N', "No").replace('Y', "Yes")
+
+
         hs_list = ['If you did not graduate from high school, do you have a DEG or have you completed',
-                   'another high school equivalency program?']
+                   'another high school equivalency program?',
+                   f'{target}']
         
         return hs_list
+    
+    def prev_syntax(self, _str):
 
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        target = target.replace('N', "No").replace('Y', "Yes")
+
+        prev_list = ['During the 12 months prior to you applying, did you register',
+                     'for a public college or university in Texas?',
+                     f'{target}']
+        
+        return prev_list
+    
+    def basis_syntax(self, _str):
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
+
+        basis_list = ['Do you file your own federal income tax as an independent tax payer?',
+                      'Are you claimed as a dependent or are you eligible to be claimed as a dependent',
+                      'by a parent or court-appointed legal guardian?',
+                      f'{target}']
+        
+        return basis_list
+    
+    def comment_syntax(self):
+
+        com_list = ['Is there any additional information that you believe your college should know in', 
+                    'evaluating your eligibility to be classified as a resident? If so, please provide.']
+        
+        return com_list
+    
+    def dual_syntax(self, _str):
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        
+        target = target.replace('N', "No").replace('Y', "Yes")
+
+        dual_list = ['Are you applyting to take college courses to be completed while you are still', 
+                     'a high school student (Dual Credit or Concurrent Enrollment)?',
+                     f'{target}']
+        
+        return dual_list
+    
+    def conservator_syntax(self, _str):
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        target = target.replace('N', "No").replace('Y', "Yes")
+
+        conserv_list = ['At anytime in your life were you placed in foster care or adopted from foster care in Texas?',
+                        'If admitted, would your like to receive student foster care info and benefits?',
+                        f'{target}']
+        
+        return conserv_list
+    
+    def alien_syntax(self, _str):
+        
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        alien_list = ['Is this parent or legal guardian a foreign national whose application',
+                      'for Permanent Resident Status has been preliminarily reviewed?',
+                      f'{target}']
+        
+        return alien_list
+    
+    def former_syntax(self, _str):
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
+
+        former_list = ['Are you a former student of this institution?',
+                       'Have you previously applied?',
+                       f'{target}']
+        
+        return former_list
+    
     def req_and_or_answer_value(self, _str, val):
 
         target = _str[3]
 
         req_syntax = {
-            'ALIEN APP/INT\\': f'for Permanent Resident Status has been preliminarily reviewed? {_str[-1]}',
-            'RES: COMMENTS\\': f'Is there any additional information that you believe your college should know in evaluating your eligibility to be classified as a resident? If so, please provide. {_str[-2]}',
+            'ALIEN APP/INT\\': "",
+            'RES: COMMENTS\\': "",
             'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
             'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
             'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
             'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent? {_str[-1]}',
             'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?",
-            'CONTACT AT WORK\\': "" # Skipped
+            'CONTACT AT WORK\\': "", # Skipped
         }
 
         for key, value in req_syntax.items():
@@ -352,6 +437,22 @@ class ReportSyntax(object):
                     return value
 
         return val
+    
+    def gender_value(self, _str, val):
+        
+        target = "".join(_str[3]).translate(str.maketrans("", "", "\\0"))
+
+        gender_syntax = {
+            'F': 'Gender=Female',
+            'M': 'Gender=Male'
+        }
+
+        for key, value in gender_syntax.items():
+           if key == target:
+               return value
+           
+        return val
+        
 
     def find_page_syntax(self, val):
 
@@ -409,14 +510,14 @@ class ReportSyntax(object):
             "Suffix": f"Suffix: {_str[-1]}",
             "Representative Name": f"Rep Name: {_str[-1]}",
             "Preferred Name": f"Preferred: {_str[-1]}",
-            "Extra Student SKIP": "",
+            "Student Gender": "",
             "Phone": f"Phone: {_str[-1]}",
             "Email": f"Email: {_str[-1]}",
             "Question Answer": _str[-2:-1],
             "Graduation Date": f"Expected Graduation Date: {_str[-1]}",
             "High School Info": f"School Code: {_str[-1]}",
             "Current enrolled course": _str,
-            "Extra Name": "",
+            "Previous Applicant": f"Previous Applicant: {_str[-1]}",
             "VISA Info": f"Visa: {_str[-1]}",
             "VISA end date": f"End date: {_str[-1]}"
         }
@@ -457,6 +558,8 @@ class ReportSyntax(object):
                         value = self.additional_value(_str, value)
                     elif key == 'Ethnicity/Race':
                         value = self.ethnicity_race_value(_str, value)
+                    elif key == 'Student Gender':
+                        value = self.gender_value(_str, value)
                     converted_mark = str(value).replace("\\", "")
                     break
 

@@ -164,7 +164,7 @@ class ReportGen(object):
                 canvas.setFont("Courier", 7)
                 opt_sep[val] = 1
                 xstart = 50
-                ystart = 860
+                ystart = 750
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
@@ -180,7 +180,7 @@ class ReportGen(object):
                         found += 1
 
                 if found == 0:
-                    ystart = 860
+                    ystart = 750
                 
                 found = 0
                 yadd = 0
@@ -221,7 +221,7 @@ class ReportGen(object):
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((11*inch, 16*inch))
+        canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Alumni ?', 'Citzenship ?', 'Text Messaging Option',
@@ -246,10 +246,14 @@ class ReportGen(object):
             'PERM COUNTRY INFO': "Mailing/Permanent Address:",
             'CURR COUNTY INFO': "Physical Address:",
             'CURR COUNTRY INFO': "Physical Address:",
-            'ALIEN APP/INT\\': 'Is this parent or legal guardian a foreign national whose application',
-            'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):'
+            'ALIEN APP/INT\\': '',
+            'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):',
+            'CONSERVATORSHIP SWITCHES': '',
+            'FORMER STUDENT': ''
         }
         
+        _list = []
+
         for val in self.page_2:
             current_idx += 1
             _str = self.nested_list[select_app][current_idx]
@@ -258,20 +262,38 @@ class ReportGen(object):
             if val in paragraph_start:
                 yadd -= 10
             elif val in req_start:
-                target = str(_str).split("!")[3]
+                target = str(_str).split("!")
                 for key, value in req_dict.items():
-                    if target == key:
+                    if target[3] == key:
                         yadd -= 10
                         canvas.drawString(xstart, ystart+yadd, value)
                         yadd -= 10
-                        
-                        if target == 'HS GED TYPE':
-                            yadd -= 10
-                            hs_list = syntax.hs_ged_syntax(_str)
 
-                            for x in range(len(hs_list)):
-                                canvas.drawString(xstart, ystart+yadd, str(hs_list[x]))
-                                yadd -= 10
+                        if target[3] == 'HS GED TYPE':
+                            yadd -= 10
+                            _list = syntax.hs_ged_syntax(target)
+
+                        elif target[3] == 'DUAL CREDIT':
+                            yadd -= 10
+                            _list = syntax.dual_syntax(target)
+
+                        elif target[3] == 'CONSERVATORSHIP SWITCHES':
+                            yadd -= 10
+                            _list = syntax.conservator_syntax(target)
+
+                        elif target[3] == 'ALIEN APP/INT\\':
+                            yadd -= 10
+                            _list = syntax.alien_syntax(target)
+
+                        elif target[3] == 'FORMER STUDENT':
+                            yadd -= 10
+                            _list = syntax.former_syntax(target)
+
+                    for x in range(len(_list)):
+                        canvas.drawString(xstart, ystart+yadd, str(_list[x]))
+                        yadd -= 10
+
+                    _list = []
 
             conv = syntax.find_page_syntax(val)
      
@@ -298,7 +320,7 @@ class ReportGen(object):
         req_sep = 0
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((11*inch, 16*inch))
+        canvas.setPageSize((8.5*inch, 16*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -309,7 +331,7 @@ class ReportGen(object):
         
         req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
 
-        payment_list = []
+        _list = []
 
         for val in self.page_3:
             current_idx += 1
@@ -320,14 +342,36 @@ class ReportGen(object):
                 temp = str(_str).split("!")
                 if val == 'Long REQ' and len(temp) == 6:
                     if temp[3] == 'PAYMENT RECONCILIATION':
-                        payment_list = syntax.payment_syntax(temp)
+                        _list = syntax.payment_syntax(temp)
                         yadd -= 10
                         canvas.drawString(xstart, ystart+yadd, "Application Fee Information:")
                         yadd -= 10
 
-                    for x in range(len(payment_list)):
-                        canvas.drawString(xstart, ystart+yadd, str(payment_list[x]))
+                    elif temp[3] == 'RES: PREVIOUS ENROLLMENT':
+                        _list = syntax.prev_syntax(temp)
                         yadd -= 10
+
+                    elif temp[3] == 'RES: BASIS OF CLAIM':
+                        _list = syntax.basis_syntax(temp)
+                        yadd -= 10
+
+                elif val == 'Request and/or Answer' and len(temp) >= 3:
+                    if temp[3] == 'RES: COMMENTS\\':
+                        _list = syntax.comment_syntax()
+                        yadd -= 10
+
+                    elif temp[3] == 'RES: BASIS OF CLAIM':
+                        print('fix this')
+                        _list = syntax.basis_syntax(temp)
+                        yadd -= 10
+
+
+                for x in range(len(_list)):
+                    canvas.drawString(xstart, ystart+yadd, str(_list[x]))
+                    yadd -= 10
+
+                _list = []
+
 
                 yadd -= 10
 

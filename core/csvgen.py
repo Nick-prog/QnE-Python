@@ -9,7 +9,10 @@ class CSVGen(object):
         self.input = input
         self.csv_file = csv_file
 
-    def spe_to_csv(self):
+    def spe_to_csv(self) -> None:
+        """Generates a .csv file based on the .spe file given to it. Separates found students
+        into different rows based on specific markdown text. Located at given location.
+        """
         max_lines = 250  # Initialize max_lines to keep track of the maximum number of lines
         new_page = 0
 
@@ -34,7 +37,10 @@ class CSVGen(object):
             # Write the last row to CSV
             csv_writer.writerow(current_row)
 
-    def txt_folder_to_csv(self):
+    def txt_folder_to_csv(self) -> None:
+        """Generates a .csv file based on the .txt files given to it found in given folder.
+        Located at given location.
+        """
         max_lines = 250  # Initialize max_lines to keep track of the maximum number of lines
         # Check if the CSV file already exists
         if not os.path.exists(self.csv_file):
@@ -54,7 +60,9 @@ class CSVGen(object):
                         row = [filename] + [line.strip() for line in txt_reader]
                         csv_writer.writerow(row)
 
-    def list_to_csv(self):
+    def list_to_csv(self) -> None:
+        """Generates a .csv file based on the list given to it. Located at given location.
+        """
         with open(self.csv_file, 'w', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
             csv_writer.writerows(self.input)

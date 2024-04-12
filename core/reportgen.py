@@ -6,7 +6,9 @@ from reportlab.lib.colors import HexColor
 from pdfrw import PdfReader
 from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
-from reportlab.lib.units import mm, inch
+from reportlab.lib.units import inch
+
+from typing import List
 
 class ReportGen(object):
 
@@ -26,7 +28,13 @@ class ReportGen(object):
         self.page_2_idx = []
         self.page_3_idx = []
 
-    def capture_student_names(self, select_app):
+    def capture_student_names(self, select_app: int) -> None:
+        """Captures student names for file descriptions based on the given
+        student information.
+
+        :param select_app: target application index
+        :type select_app: int
+        """
 
         name = []
 
@@ -46,7 +54,12 @@ class ReportGen(object):
                 self.names = name
                 name = []
 
-    def create_pages_structure(self, select_app):
+    def create_pages_structure(self, select_app: int) -> None:
+        """Creates pages structure based on distinct separation markdown text.
+
+        :param select_app: target application index
+        :type select_app: int
+        """
 
         page_count = 0
         pend_sep = 0
@@ -72,11 +85,14 @@ class ReportGen(object):
             target_idx = page_idx[page_count]
             target_idx.append(col)
 
-    def create_canvas(self, out_folder, select_app):
-        '''
-        Create a canvas object to manipulate our PdfReader template and add given information.
-        Returns None.
-        '''
+    def create_canvas(self, out_folder: str, select_app: int) -> None:
+        """Creates a canvas object to manipulate our PdfReader template and add given information.
+
+        :param out_folder: string location to designated folder
+        :type out_folder: str
+        :param select_app: target application index
+        :type select_app: int
+        """
 
         if not os.path.exists(out_folder):
             os.mkdir(out_folder)
@@ -115,11 +131,16 @@ class ReportGen(object):
         # Save the modified canvas to the output PDF file
         canvas.save()
 
-    def handle_first_page(self, canvas, select_app):
-        '''
-        Handles all information for the first page of the pdf.
-        Returns None.
-        '''
+    def handle_first_page(self, canvas: object, select_app: int) -> int:
+        """Handles all information to be displayed for the first page of the pdf.
+
+        :param canvas: PDFReader object for pdf managment
+        :type canvas: object
+        :param select_app: target application index
+        :type select_app: int
+        :return: final index reached on student's list
+        :rtype: int
+        """
 
         # Starting points
         xstart = 50
@@ -203,11 +224,18 @@ class ReportGen(object):
 
         return current_idx
 
-    def handle_second_page(self, canvas, select_app, last_idx):
-        '''
-        Handles all information for the second page of the pdf.
-        Returns None.
-        '''
+    def handle_second_page(self, canvas: list, select_app: int, last_idx: int) -> int:
+        """Handles all information to be displayed for the second page of the pdf.
+
+        :param canvas: PDFReader object for pdf managment
+        :type canvas: list
+        :param select_app: target application index
+        :type select_app: int
+        :param last_idx: last reached index
+        :type last_idx: int
+        :return: final index reached on student's list
+        :rtype: int
+        """
 
         # Starting points
         xstart = 50
@@ -215,8 +243,6 @@ class ReportGen(object):
 
         #Increment
         yadd = 0
-
-        req_sep = 0
 
         current_idx = last_idx
 
@@ -303,11 +329,16 @@ class ReportGen(object):
 
         return current_idx
 
-    def handle_third_page(self, canvas, select_app, last_idx):
-        '''
-        Handles all information for the third page of the pdf.
-        Returns None.
-        '''
+    def handle_third_page(self, canvas: object, select_app: int, last_idx: int) -> None:
+        """Handles all information to be displayed for the second page of the pdf.
+
+        :param canvas: PDFReader object for pdf managment
+        :type canvas: list
+        :param select_app: target application index
+        :type select_app: int
+        :param last_idx: last reached index
+        :type last_idx: int
+        """
 
         # Starting points
         xstart = 50
@@ -317,7 +348,6 @@ class ReportGen(object):
         yadd = 0
 
         current_idx = last_idx
-        req_sep = 0
 
         canvas.setFont("Courier", 7)
         canvas.setPageSize((8.5*inch, 16*inch))

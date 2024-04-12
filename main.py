@@ -8,8 +8,17 @@ import tkinter as tk
 from pprint import pprint
 from tkinter.filedialog import askopenfilename
 from pathlib import Path
+from typing import Union
 
-def run_target(key, apps):
+def run_target(key: int, apps: int) -> None:
+    """Second run method for all types of .spe files. Targets a specific
+    type of application and student.
+
+    :param key: type of application
+    :type key: int
+    :param apps: student index
+    :type apps: int
+    """
 
     try:
         current_dir = os.getcwd()
@@ -50,7 +59,14 @@ def run_target(key, apps):
         ctypes.windll.user32.MessageBoxW(0, f"run_target() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
 
-def find_spe_file():
+def find_spe_file() -> Union[str, str]:
+    """Finder method for target .spe file.
+
+    :raises TypeError: Checks for .spe file
+    :return: both file path and file name
+    :rtype: Union[str, str]
+    """
+    
 
     try:
         tk.Tk().withdraw()
@@ -66,7 +82,14 @@ def find_spe_file():
     
     return file, fileName
 
-def run(file, fileName):
+def run(file: str, fileName: str) -> None:
+    """Main run method for all types of .spe files.
+
+    :param file: target file location
+    :type file: str
+    :param fileName: name of the .spe file
+    :type fileName: str
+    """
 
     try:
         current_dir = os.getcwd()

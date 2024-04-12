@@ -3,5 +3,6 @@
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingModuleSource": "none",
         "reportShadowedImports": "none"
-    }
+    },
+    "autoDocstring.docstringFormat": "sphinx"
 }

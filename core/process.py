@@ -3,6 +3,7 @@ import csv
 import os
 from pprint import pprint
 
+from typing import Union
 
 class Process(object):
 
@@ -10,52 +11,77 @@ class Process(object):
          self.csv_file = file
          self.data = []
 
-    def find_largest_row(self, data):
+    def find_largest_row(self, input: list) -> int:
+        """Finds the length of the largest row from a given nested list.
+
+        :param input: nested list of varying length
+        :type input: list
+        :return: length of largest row
+        :rtype: int
+        """
 
         largest = 0
 
-        for row in data:
+        for row in input:
             if largest < len(row):
                 largest = len(row)
 
         return largest
     
 
-    def find_largest_index(self, data):
+    def find_largest_index(self, input: list) -> int:
+        """Based on the largest row found, returns the index with the row
+        from a given nested list.
 
-        largest = self.find_largest_row(data)
+        :param input: nested list of varying length
+        :type input: list
+        :return: index of largest row
+        :rtype: int
+        """
 
-        for row in range(len(data)):
-            if largest == len(data[row]):
+        largest = self.find_largest_row(input)
+
+        for row in range(len(input)):
+            if largest == len(input[row]):
                 index = row
 
         return index
 
 
-    def read_csv_file(self):
-            '''
-            Opens and reads a .CSV file and stores in self.data, a list containing all of its information.
-            Returns List.
-            '''
+    def read_csv_file(self) -> list:
+        """Opens and reads a .csv file and stores in self.data.
 
-            if self.csv_file is None:
-                raise RuntimeError("Missing CSV file data.")
+        :raises RuntimeError: Checks CSV file input
+        :return: nested list of rows found
+        :rtype: list
+        """
+
+        if self.csv_file is None:
+            raise RuntimeError("Missing CSV file data.")
+        
+        # Open the CSV file
+        with open(self.csv_file, newline='') as csvfile:
+            # Create a CSV reader object
+            csv_reader = csv.reader(csvfile)
             
-            # Open the CSV file
-            with open(self.csv_file, newline='') as csvfile:
-                # Create a CSV reader object
-                csv_reader = csv.reader(csvfile)
-                
-                # Iterate over each row in the CSV file
-                for row in csv_reader:
-                    # Append each row to the data list
-                    self.data.append(row)
+            # Iterate over each row in the CSV file
+            for row in csv_reader:
+                # Append each row to the data list
+                self.data.append(row)
 
-            return self.data
+        return self.data
     
-    def create_data_list(self, data):
+    def create_data_list(self, input: list) -> Union[list, list]:
+        """Creation of two data list based on destinction found at index 5
+        for each row.
 
-        nested_list = data[2:]
+        :param input: nested list of rows found
+        :type input: list
+        :return: foreign and domestic list types
+        :rtype: Union[list, list]
+        """
+
+        nested_list = input[2:]
 
         foreign = []
         domestic = []
@@ -68,16 +94,24 @@ class Process(object):
 
         return foreign, domestic
     
-    def uniform_data_list(self, data):
+    def uniform_data_list(self, input: list) -> list:
+        """NOT USED, attempt at making all data list uniform for better
+        manipulations.
 
-        template_index = self.find_largest_index(data)
-        template_list = data[template_index]
+        :param input: nested list of rows found
+        :type input: list
+        :return: updated nested list of same length
+        :rtype: list
+        """
+
+        template_index = self.find_largest_index(input)
+        template_list = input[template_index]
         
         # Initialize an empty result list
         result_nested_list = []
 
         # Iterate through each sublist in the given list
-        for given_sublist in data:
+        for given_sublist in input:
             # Create a set to store the prefixes of matched items in the given sublist
             matched_prefixes = set()
             result_list = []
@@ -109,22 +143,38 @@ class Process(object):
 
         return result_nested_list
     
-    def discover_unique_markdown(self, data):
+    def discover_unique_markdown(self, input: list) -> set:
+        """Set of all unique markdown text found based on the first
+        separation.
+
+        :param input: nested list of rows found
+        :type input: list
+        :return: set of unique values
+        :rtype: set
+        """
 
         unique_values = set()
 
-        for sublist in data:
+        for sublist in input:
             for item in sublist:
                 value = item.split('!')[0]
                 unique_values.add(value)
 
         return unique_values
     
-    def discover_dual_unique_markdown(self, data):
+    def discover_dual_unique_markdown(self, input: list) -> set:
+        """Set of all unique markdown text found based on two
+        separations.
+
+        :param input: nested list of rows found
+        :type input: list
+        :return: set of unqiue values
+        :rtype: set
+        """
 
         unique_values = set()
         
-        for sublist in data:
+        for sublist in input:
             for item in sublist:
                 parts = item.split('!')
                 if len(parts) >= 3:  # Ensure at least two '!' separators exist
@@ -133,15 +183,23 @@ class Process(object):
 
         return unique_values
 
-    def uniform_data_list_2(self, data):
-        template_idx = self.find_largest_index(data)
-        template_list = data[template_idx]
+    def uniform_data_list_2(self, input: list) -> list:
+        """NOT USED, attempt at making all data list uniform for better
+        manipulations.
+
+        :param input: nested list of rows found
+        :type input: list
+        :return: updated nested list of same length
+        :rtype: list
+        """
+        template_idx = self.find_largest_index(input)
+        template_list = input[template_idx]
         template_markdown = []
         
         for idx in template_list:
             template_markdown.append(str(idx).split('!')[0])
 
-        data = data[0:5]
+        data = input[0:5]
 
         for sublist in range(len(data)):
             insert = 0

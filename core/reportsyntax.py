@@ -5,10 +5,16 @@ from datetime import datetime
 
 class ReportSyntax(object):
 
-    def __init__(self, _str):
-        self._str = _str
+    def __init__(self, input: str):
+        self._str = input
 
-    def page_structure(self):
+    def page_structure(self) -> str:
+        """Main page structure creater that displays where markdown text will show up
+        on a Canvas object with a short description.
+
+        :return: string description of given markdown text
+        :rtype: str
+        """
 
         found = 0
 
@@ -129,7 +135,14 @@ class ReportSyntax(object):
 
         return converted_mark
     
-    def long_med_req_value(self, _str):
+    def long_med_req_value(self, _str: str) -> str:
+        """Long and Med REQ value output replacers based on given text.
+
+        :param _str: full string of Long or Med REQ
+        :type _str: str
+        :return: updated string value for proper display
+        :rtype: str
+        """
 
         target = _str[3]
 
@@ -224,7 +237,15 @@ class ReportSyntax(object):
             
         return _str
     
-    def payment_syntax(self, _str):
+    def payment_syntax(self, _str: str) -> list:
+        """Text fully listing the question given for payment information from students
+        on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = _str[-1]
 
@@ -249,7 +270,15 @@ class ReportSyntax(object):
         
         return payment_list
     
-    def hs_ged_syntax(self, _str):
+    def hs_ged_syntax(self, _str: str) -> list:
+        """Text fully listing the question given for HS GED information from students 
+        on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[4]).translate(str.maketrans("", "", "\\0"))
 
@@ -262,7 +291,15 @@ class ReportSyntax(object):
         
         return hs_list
     
-    def prev_syntax(self, _str):
+    def prev_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from previous college information from
+        students on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -274,7 +311,15 @@ class ReportSyntax(object):
         
         return prev_list
     
-    def basis_syntax(self, _str):
+    def basis_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from basis of claim information from
+        students on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -287,14 +332,28 @@ class ReportSyntax(object):
         
         return basis_list
     
-    def comment_syntax(self):
+    def comment_syntax(self) -> list:
+        """Text fully listing the question given from resident comments information from
+        students on ApplyTexas.
+
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         com_list = ['Is there any additional information that you believe your college should know in', 
                     'evaluating your eligibility to be classified as a resident? If so, please provide.']
         
         return com_list
     
-    def dual_syntax(self, _str):
+    def dual_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from dual credit information from students
+        on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
         
@@ -306,7 +365,15 @@ class ReportSyntax(object):
         
         return dual_list
     
-    def conservator_syntax(self, _str):
+    def conservator_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from conservator information from students
+        on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -318,7 +385,15 @@ class ReportSyntax(object):
         
         return conserv_list
     
-    def alien_syntax(self, _str):
+    def alien_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from alien applicaiton information from
+        students on ApplyTexas.
+
+        :param _str: string from designated markdown text 
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
         
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -328,7 +403,15 @@ class ReportSyntax(object):
         
         return alien_list
     
-    def former_syntax(self, _str):
+    def former_syntax(self, _str: str) -> list:
+        """Text fully listing the question given from former student information from
+        students on ApplyTexas.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :return: list of strings to display proper output
+        :rtype: list
+        """
 
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -340,7 +423,17 @@ class ReportSyntax(object):
         
         return former_list
     
-    def req_and_or_answer_value(self, _str, val):
+    def req_and_or_answer_value(self, _str: str, val: str) -> str:
+        """Request and or Answer value markdown replacement text. Gives a clearer representation of
+        the original question asked.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :param val: preivous string for designated markdown text
+        :type val: str
+        :return: new or previous string based on dict
+        :rtype: str
+        """
 
         target = _str[3]
 
@@ -361,7 +454,17 @@ class ReportSyntax(object):
             
         return val
     
-    def additional_value(self, _str, val):
+    def additional_value(self, _str: str, val: str) -> str:
+        """Additional value markdown replacement text. Meant for markdown text that have more than one 
+        option to be or semester information.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :param val: previous string for designated markdown text
+        :type val: str
+        :return: new or previous string based on dicts
+        :rtype: str
+        """
 
         target = _str[-1]
 
@@ -391,7 +494,17 @@ class ReportSyntax(object):
 
         return val
     
-    def ethnicity_race_value(self, _str, val):
+    def ethnicity_race_value(self, _str: str, val: str) -> str:
+        """Ethnicity and Race value markdown replacement  text. Gives a clearer representation of the 
+        different options students can choose from.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :param val: previous string for designated markdown text
+        :type val: str
+        :return: new or previous string based on dicts
+        :rtype: str
+        """
 
         target = _str[-1]
 
@@ -438,7 +551,17 @@ class ReportSyntax(object):
 
         return val
     
-    def gender_value(self, _str, val):
+    def gender_value(self, _str: str, val: str) -> str:
+        """Gender value markdown replacement  text. Gives a clearer representation of the 
+        different options students can choose from.
+
+        :param _str: string from designated markdown text
+        :type _str: str
+        :param val: previous string for designated markdown text
+        :type val: str
+        :return: new or previous string based on dicts
+        :rtype: str
+        """
         
         target = "".join(_str[3]).translate(str.maketrans("", "", "\\0"))
 
@@ -454,7 +577,15 @@ class ReportSyntax(object):
         return val
         
 
-    def find_page_syntax(self, val):
+    def find_page_syntax(self, val: str) -> str:
+        """Structure syntax replacer method. Meant to find the final display text
+        for the Canvas object.
+
+        :param val: strucutre markdown text
+        :type val: str
+        :return: new plain text string
+        :rtype: str
+        """
 
         _str = str(self._str).split("!")
 

@@ -1,13 +1,11 @@
 # https://www.pythonguis.com/examples/python-pdf-report-generator/
 import csv
-import os
-from pprint import pprint
 
 from typing import Union
 
-class Process(object):
+class Process:
 
-    def __init__(self, file):
+    def __init__(self, file=None):
          self.csv_file = file
          self.data = []
 
@@ -215,3 +213,28 @@ class Process(object):
 
         
         return data
+    
+    def process_list(self, _list: list) -> list:
+        """Processing method for list that contain multiple blanks. Removes
+        all blanks and leaves only a list of text found separated by commas.
+
+        :param _list: list of text and blanks
+        :type _list: list
+        :return: list of remaining text
+        :rtype: list
+        """
+
+        result = []
+        current_item = ''
+
+        for item in _list:
+            if item:
+                current_item += ' ' + item if current_item else item
+            elif current_item:
+                result.append(current_item)
+                current_item = ''
+
+        if current_item:
+            result.append(current_item)
+
+        return result

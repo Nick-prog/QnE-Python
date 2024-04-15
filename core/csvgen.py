@@ -1,9 +1,7 @@
-import core
-
 import csv
 import os
 
-class CSVGen(object):
+class CSVGen:
 
     def __init__(self, input, csv_file):
         self.input = input

@@ -10,13 +10,16 @@ from reportlab.lib.units import inch
 
 from typing import List
 
-class ReportGen(object):
+class ReportGen:
 
     def __init__(self, in_file, nested_list, file_count, key):
         self.in_file = in_file
         self.nested_list = nested_list
         self.file_count = file_count
         self.key = key
+
+        self.ystart = 1250
+        self.xstart = 50
 
         self.names = []
 
@@ -41,7 +44,7 @@ class ReportGen(object):
         for col in range(len(self.nested_list[select_app])):
             _str = str(self.nested_list[select_app][col]).split("!")
 
-            syntax = core.ReportSyntax(_str)
+            syntax = core.ReportStructure(_str)
             conv = syntax.page_structure()
 
 
@@ -70,7 +73,7 @@ class ReportGen(object):
         for col in range(len(self.nested_list[select_app])):
             _str = str(self.nested_list[select_app][col]).split("!")
             
-            syntax = core.ReportSyntax(_str)
+            syntax = core.ReportStructure(_str)
             conv = syntax.page_structure()
 
             if conv == "Submit/Transmit": # first page cutoff
@@ -86,7 +89,7 @@ class ReportGen(object):
             target_idx.append(col)
 
     def create_canvas(self, out_folder: str, select_app: int) -> None:
-        """Creates a canvas object to manipulate our PdfReader template and add given information.
+        """Creates a canvas object to manipulate our PdfReader targetlate and add given information.
 
         :param out_folder: string location to designated folder
         :type out_folder: str
@@ -106,16 +109,16 @@ class ReportGen(object):
         out_file = os.path.join(out_folder, f"{name}.pdf")
 
         page_count = 0
-        template = PdfReader(self.in_file, decompress=False)
+        targetlate = PdfReader(self.in_file, decompress=False)
         canvas = Canvas(out_file)
 
-        for page in template.pages:
+        for page in targetlate.pages:
             page_count += 1
             # Extract the page and convert it into a PDF xobject
-            template_obj = pagexobj(page)
+            targetlate_obj = pagexobj(page)
             
-            # Place the template onto the canvas
-            xobj_name = makerl(canvas, template_obj)
+            # Place the targetlate onto the canvas
+            xobj_name = makerl(canvas, targetlate_obj)
             canvas.doForm(xobj_name)
 
             if page_count == 1:
@@ -143,8 +146,8 @@ class ReportGen(object):
         """
 
         # Starting points
-        xstart = 50
-        ystart = 1100
+        xstart = self.xstart
+        ystart = self.ystart
 
         #Increment
         yadd = 0
@@ -163,36 +166,37 @@ class ReportGen(object):
             }
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 16*inch))
+        canvas.setPageSize((8.5*inch, 18*inch))
         
         for val in self.page_1:
             current_idx += 1
 
             if val == "App ID":
-                xstart = 400
+                xstart = self.xstart+350
+                ystart = self.ystart
                 yadd = 0
             elif val == "Start Student Contact Info":
-                xstart = 50
-                ystart = 1020
+                xstart = self.xstart
+                ystart = self.ystart-100
                 yadd = 0
             elif val == "Start Extra Contact Info":
-                xstart = 400
-                ystart = 1020
+                xstart = self.xstart+350
+                ystart = self.ystart-100
                 yadd = 0
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
                 yadd -= 10
             elif val == "Extra Curricular Activities" and opt_sep[val] == 0:
                 canvas.setFont("Courier", 7)
                 opt_sep[val] = 1
-                xstart = 50
-                ystart = 750
+                xstart = self.xstart
+                ystart = self.ystart-350
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
                 canvas.setFont("Courier", 6)
             elif val in opt_list and opt_sep[val] == 0:
                 canvas.setFont("Courier", 7)
-                xstart = 50
+                xstart = self.xstart
                 ystart = ystart+yadd-10
                 opt_sep[val] = 1
 
@@ -201,7 +205,7 @@ class ReportGen(object):
                         found += 1
 
                 if found == 0:
-                    ystart = 750
+                    ystart = self.ystart-350
                 
                 found = 0
                 yadd = 0
@@ -210,17 +214,18 @@ class ReportGen(object):
                 canvas.setFont("Courier", 6)
             elif val == "Semester":
                 canvas.setFont("Courier", 7)
-                xstart = 50
-                ystart = 1070
+                xstart = self.xstart
+                ystart = self.ystart-50
                 yadd = 0
 
             _str = self.nested_list[select_app][current_idx]
-            syntax = core.ReportSyntax(_str)
-            conv = syntax.find_page_syntax(val)
+            struct = core.ReportStructure(_str)
+            conv = struct.transform_page(val)
 
-            canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            # canvas.drawString(xstart, ystart+yadd, val + _str)
-            yadd -= 10 # clear separation
+            if conv != "None":
+                canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
+                # canvas.drawString(xstart, ystart+yadd, val + _str)
+                yadd -= 10
 
         return current_idx
 
@@ -237,9 +242,11 @@ class ReportGen(object):
         :rtype: int
         """
 
+        s = core.Syntax()
+
         # Starting points
-        xstart = 50
-        ystart = 1100
+        xstart = self.xstart
+        ystart = self.ystart
 
         #Increment
         yadd = 0
@@ -247,7 +254,7 @@ class ReportGen(object):
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 16*inch))
+        canvas.setPageSize((8.5*inch, 18*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Alumni ?', 'Citzenship ?', 'Text Messaging Option',
@@ -263,7 +270,6 @@ class ReportGen(object):
             'IB DIPLOMA': "Student Information - continued:",
             'HS GED TYPE': "Student Information - continued:",
             'FERPA CERT SWITCH': "Certification of Information:",
-            'PARENT OR GUARDIAN INFO': "Parent or Guardian Info:",
             'PRE-PROFESSIONAL PGMC': "Educational Information:",
             'PRE-PROFESSIONAL PGMN': "Educational Information:",
             'PRE-PROFESSIONAL PGMZ': "Educational Information:",
@@ -272,10 +278,10 @@ class ReportGen(object):
             'PERM COUNTRY INFO': "Mailing/Permanent Address:",
             'CURR COUNTY INFO': "Physical Address:",
             'CURR COUNTRY INFO': "Physical Address:",
-            'ALIEN APP/INT\\': '',
+            'ALIEN APP/INT\\': "",
             'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):',
-            'CONSERVATORSHIP SWITCHES': '',
-            'FORMER STUDENT': ''
+            'CONSERVATORSHIP SWITCHES': "",
+            'FORMER STUDENT': ""
         }
         
         _list = []
@@ -283,7 +289,7 @@ class ReportGen(object):
         for val in self.page_2:
             current_idx += 1
             _str = self.nested_list[select_app][current_idx]
-            syntax = core.ReportSyntax(_str)
+            struct = core.ReportStructure(_str)
 
             if val in paragraph_start:
                 yadd -= 10
@@ -296,24 +302,24 @@ class ReportGen(object):
                         yadd -= 10
 
                         if target[3] == 'HS GED TYPE':
+                            _list = s.hs_ged_syntax(target)
                             yadd -= 10
-                            _list = syntax.hs_ged_syntax(target)
 
                         elif target[3] == 'DUAL CREDIT':
+                            _list = s.dual_syntax(target)
                             yadd -= 10
-                            _list = syntax.dual_syntax(target)
 
                         elif target[3] == 'CONSERVATORSHIP SWITCHES':
+                            _list = s.conservator_syntax(target)
                             yadd -= 10
-                            _list = syntax.conservator_syntax(target)
 
                         elif target[3] == 'ALIEN APP/INT\\':
+                            _list = s.alien_syntax(target)
                             yadd -= 10
-                            _list = syntax.alien_syntax(target)
 
                         elif target[3] == 'FORMER STUDENT':
+                            _list = s.former_syntax(target)
                             yadd -= 10
-                            _list = syntax.former_syntax(target)
 
                     for x in range(len(_list)):
                         canvas.drawString(xstart, ystart+yadd, str(_list[x]))
@@ -321,11 +327,12 @@ class ReportGen(object):
 
                     _list = []
 
-            conv = syntax.find_page_syntax(val)
+            conv = struct.transform_page(val)
      
-            canvas.drawString(xstart, ystart+yadd, str(conv))
-            # canvas.drawString(xstart, ystart+yadd, val + _str)
-            yadd -= 10
+            if conv != "None":
+                canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
+                # canvas.drawString(xstart, ystart+yadd, val + _str)
+                yadd -= 10
 
         return current_idx
 
@@ -340,9 +347,11 @@ class ReportGen(object):
         :type last_idx: int
         """
 
+        s = core.Syntax()
+
         # Starting points
-        xstart = 50
-        ystart = 1100
+        xstart = self.xstart
+        ystart = self.ystart
 
         #Increment
         yadd = 0
@@ -350,7 +359,7 @@ class ReportGen(object):
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 16*inch))
+        canvas.setPageSize((8.5*inch, 18*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -366,33 +375,36 @@ class ReportGen(object):
         for val in self.page_3:
             current_idx += 1
             _str = self.nested_list[select_app][current_idx]
-            syntax = core.ReportSyntax(_str)
+            struct = core.ReportStructure(_str)
 
             if val in paragraph_start or val in req_start:
-                temp = str(_str).split("!")
-                if val == 'Long REQ' and len(temp) == 6:
-                    if temp[3] == 'PAYMENT RECONCILIATION':
-                        _list = syntax.payment_syntax(temp)
+                target = str(_str).split("!")
+                if val == 'Long REQ' and len(target) == 6:
+                    if target[3] == 'PAYMENT RECONCILIATION':
+                        _list = s.payment_syntax(target)
                         yadd -= 10
                         canvas.drawString(xstart, ystart+yadd, "Application Fee Information:")
                         yadd -= 10
 
-                    elif temp[3] == 'RES: PREVIOUS ENROLLMENT':
-                        _list = syntax.prev_syntax(temp)
+                    elif target[3] == 'RES: PREVIOUS ENROLLMENT':
+                        _list = s.prev_syntax(target)
                         yadd -= 10
 
-                    elif temp[3] == 'RES: BASIS OF CLAIM':
-                        _list = syntax.basis_syntax(temp)
+                    elif target[3] == 'RES: BASIS OF CLAIM':
+                        _list = s.basis_syntax(target)
                         yadd -= 10
 
-                elif val == 'Request and/or Answer' and len(temp) >= 3:
-                    if temp[3] == 'RES: COMMENTS\\':
-                        _list = syntax.comment_syntax()
+                    elif target[3] == 'RES: HS DIPLOMA OR GED':
+                        _list = s.hs_diploma_syntax(target)
                         yadd -= 10
 
-                    elif temp[3] == 'RES: BASIS OF CLAIM':
-                        print('fix this')
-                        _list = syntax.basis_syntax(temp)
+                elif val == 'Request and/or Answer' and len(target) >= 3:
+                    if target[3] == 'RES: COMMENTS\\':
+                        _list = s.comment_syntax()
+                        yadd -= 10
+
+                    elif target[3] == 'RES: BASIS OF CLAIM\\':
+                        _list = s.basis_syntax(target)
                         yadd -= 10
 
 
@@ -402,11 +414,11 @@ class ReportGen(object):
 
                 _list = []
 
-
                 yadd -= 10
 
-            conv = syntax.find_page_syntax(val)
+            conv = struct.transform_page(val)
     
-            canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-            # canvas.drawString(xstart, ystart+yadd, val + _str)
-            yadd -= 10
+            if conv != "None":
+                canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
+                # canvas.drawString(xstart, ystart+yadd, val + _str)
+                yadd -= 10

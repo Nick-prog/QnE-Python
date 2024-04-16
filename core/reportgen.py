@@ -12,7 +12,20 @@ from typing import List
 
 class ReportGen:
 
-    def __init__(self, in_file, nested_list, file_count, key):
+    def __init__(self, in_file: str, nested_list: list, file_count: int, key: str):
+        """Class created to house methods for PDF creation. Generates each line of text and
+        dynamically inputs them at desired locations.
+
+        :param in_file: path to the template used for all PDFs
+        :type in_file: str
+        :param nested_list: list of all rows from the generated .csv file
+        :type nested_list: list
+        :param file_count: current index of student selected
+        :type file_count: int
+        :param key: application type (ex: Domestic or Foreign)
+        :type key: str
+        """
+
         self.in_file = in_file
         self.nested_list = nested_list
         self.file_count = file_count
@@ -189,7 +202,7 @@ class ReportGen:
                 canvas.setFont("Courier", 7)
                 opt_sep[val] = 1
                 xstart = self.xstart
-                ystart = self.ystart-350
+                ystart = self.ystart-400
                 yadd = 0
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
@@ -205,7 +218,7 @@ class ReportGen:
                         found += 1
 
                 if found == 0:
-                    ystart = self.ystart-350
+                    ystart = self.ystart-400
                 
                 found = 0
                 yadd = 0
@@ -266,7 +279,7 @@ class ReportGen:
         req_start = ['Request and/or Answer', 'Long REQ', 'Med REQ']
 
         req_dict = {
-            'DUAL CREDIT': "Biographical Information - continued:",
+            'DUAL CREDIT': "",
             'IB DIPLOMA': "Student Information - continued:",
             'HS GED TYPE': "Student Information - continued:",
             'FERPA CERT SWITCH': "Certification of Information:",
@@ -281,7 +294,8 @@ class ReportGen:
             'ALIEN APP/INT\\': "",
             'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):',
             'CONSERVATORSHIP SWITCHES': "",
-            'FORMER STUDENT': ""
+            'FORMER STUDENT': "",
+            'COUNSELOR OPT IN': "Counselor Question:"
         }
         
         _list = []
@@ -297,9 +311,12 @@ class ReportGen:
                 target = str(_str).split("!")
                 for key, value in req_dict.items():
                     if target[3] == key:
-                        yadd -= 10
-                        canvas.drawString(xstart, ystart+yadd, value)
-                        yadd -= 10
+                        if value != "":
+                            yadd -= 10
+                            canvas.drawString(xstart, ystart+yadd, value)
+                            yadd -= 10
+                        else:
+                            canvas.drawString(xstart, ystart+yadd, value)
 
                         if target[3] == 'HS GED TYPE':
                             _list = s.hs_ged_syntax(target)
@@ -396,6 +413,14 @@ class ReportGen:
 
                     elif target[3] == 'RES: HS DIPLOMA OR GED':
                         _list = s.hs_diploma_syntax(target)
+                        yadd -= 10
+
+                    elif target[3] == 'RES: SELF':
+                        _list = s.residency_self_syntax(target)
+                        yadd -= 10
+
+                    elif target[3] == 'RES: GUAR':
+                        _list = s.residency_guar_syntax(target)
                         yadd -= 10
 
                 elif val == 'Request and/or Answer' and len(target) >= 3:

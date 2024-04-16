@@ -82,8 +82,7 @@ class Syntax:
 
         return ['If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
-                 f'{target}','',
-                 'Parent Information:']
+                 f'{target}','',]
     
     def prev_syntax(self, _str: str) -> list:
         """Text fully listing the question given from previous college information from
@@ -205,3 +204,74 @@ class Syntax:
         return ['Are you a former student of this institution?',
                 'Have you previously applied?',
                 f'{target}']
+    
+    def residency_self_syntax(self, _str: str) -> list:
+
+        target = str(_str[-1]).split(" ")
+
+        p = core.Process()
+        output = p.process_list_2(target)
+
+        print(output)
+
+        if str(output[1]).startswith('0'):
+            return ['No self information reported...']
+        
+        # print(output)
+
+        return ['Residency Information:',
+                '5. Do you currently live in Texas?', f'{output[0][0]}',
+                '6. If you currently live in Texas:',
+                '(a) How long have you been living here?', f'{output[0][1:3]} Years, {output[0][3:5]} Months',
+                '(b) What is your main purpose for being in the state?', f'{output[0][-1]}',
+                '7. If you are a member of the U.S. military:',
+                '(a) Is Texas your Home of Record?', f'{output[1][0]}',
+                '(b) What state is listed as your military legal residence for tax purposes on your Leave', 
+                'and Earnings Statment', f'{output[1][1:7]}',
+                '8. Do any of the followign apply to you?', 
+                '(a) Do you hold the title (Warranty Deed, Deed of Trust, or other similar instrument that', 
+                'is effective to hold title) to residential real property in Texas?', f'{output[1][7]}',
+                '(b) Do you have ownership interest and customarily manage a business in Texas without the',
+                'intention of liquidation in the foreseeable future?', f'{output[1][8: 20]}',
+                '9. For the past 12 months', '(a) Have you been gainfully employed in Texas?', f'{output[1][20]}',
+                '(b) Have you recieved primary support from a social service agency?', f'{output[1][21]}',
+                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', f'{output[1][27]}',
+                '(a) If yes, indicate which question could be answered YES by your spouse:', f'{output[1][-1]}',
+                '(b) How long have you been married to the Texas Resident?', f'Years: {output[1][22:24]} Months: {output[1][24:26]}']
+    
+    def residency_guar_syntax(self, _str: str) -> list:
+
+        target = str(_str[-1]).split(" ")
+
+        p = core.Process()
+        output = p.process_list(target)
+
+        if str(output[1]).startswith('0'):
+            return ['No guardian information reported...']
+        
+        print(output)
+        
+        return ['Residency Information:',
+                '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',
+                'Citizen?', f'{output[0]}',
+                '5. Does this parent or legal guardian currently live in Texas?', f'{output[1][0]}',
+                '6. If your parent or legal guardian currently live in Texas:',
+                '(a) How long has he or she been living here?', f'{output[1][1:3]} years; {output[1][3:5]} months',
+                "(b) What is your parent's or legal guardian's main purpose for being in the state?", f'{output[1][5]}',
+                '8. Do any of the following apply ot your parent or legal guardian?',
+                '(a) Does your parent or legal guardian hold the title (Warranty Deed, Deed of Trust, or',
+                'other similar instrument that is effective to hold title) to residential real property in',
+                'Texas?', f'{output[2][0]} - {output[2][1:7]}',
+                '(b) Does your parent or legal guardian have ownership interest and customarily manage a',
+                'business in Texas without the intention of liquidation in the foreseeable future?', f'{output[2][7]}',
+                '9. For the past 12 months',
+                '(a) Has your parent or legal guardian been gainfully employed in Texas?', f'{output[2][8]}',
+                '(b) Has your parent or legal guardian received primary support from a social service',
+                'agency?', "",
+                '10. Is your parent or legal guardian married to a person who could claim "yes" to any part',
+                'of question (8) or (9)?', f'{output[2][22]}',
+                '(a) If yes, indicate which question could be answered "yes" by your parent or legal',
+                "guardian's spouse:", f'{output[2][23]}',
+                '(b) How long has your parent or legal guardian been married to the Texas Resident?', f'{output[2][24:26]} years; {output[2][26:28]} months',
+                ]
+

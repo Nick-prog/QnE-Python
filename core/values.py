@@ -13,6 +13,7 @@ class Values:
         :return: updated string value for proper display
         :rtype: str
         """
+
         target = _str[3]
 
         output = str(_str[-1]).replace('Y', 'Yes').replace('N', 'No')
@@ -23,13 +24,13 @@ class Values:
             'DUAL CREDIT': None,
             'IB DIPLOMA': f'IB Diploma: {output}',
             'RESUME SWITCH': f'Resume: {output}',
-            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program: {output}',
+            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}',
             'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {output}',
             'HOME SCHOOLED': f'Where you home schooled: {output}',
-            'COLLEGE WORK': f'Number of college credit hours by high school graduation date: {output}',
+            'COLLEGE WORK': f'Will you have college credit hours by high school graduation date, if so how many? {output}',
             'RES: DETERM': f'Applytexas Residency Determination: {output}',
             'REVERSE TRANSFER': f'Reverse transfer: {output}',
-            'APPLICATION SHARING': f'Application sharing on denied admission? {output}',
+            'APPLICATION SHARING': f'Application sharing on denied admission: {output}',
             'FORMER STUDENT': None,
             'VET STATUS': f'U.S. Military-Veteran Status? {output}',
             'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {output}',
@@ -41,7 +42,9 @@ class Values:
             'TEST2 SENT': None, 
             'CUR COLLEGE CRS': f"Present semester course to be completed: {output}",
             'CUR COLLEGE ATT': f"Current college attending code: {output}",
-            'COLLEGE WORK IN CLASSROOM': None
+            'COLLEGE WORK IN CLASSROOM': None,
+            'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {output}',
+            'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}'
         }
 
         long_value = {
@@ -62,19 +65,22 @@ class Values:
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
             'PARENT OR GUARDIAN INFO': f'Education Level: ',
             'CTRY SELF': f'Country: {output}',
-            'FAMILY': f'Family? {output}',
+            'FAMILY': None, # f'Family? {output}',
             'RES: PREVIOUS ENROLLMENT': None,
             'RES: RESIDENCY CLAIM': f'What state or country are you a resident of: {output}',
             'RES: HS DIPLOMA OR GED': None,
             'RES: BASIS OF CLAIM': None,
-            'RES: SELF': _str,
-            'RES: GUAR': _str,
+            'RES: SELF': None,
+            'RES: GUAR': None,
             'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {output}",
             'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {output}',
+            'PRE-PROFESSIONAL PGMF': f'Do you plan to pursue a preprofessional program? PHARMACY--{output}',
+            'PRE-PROFESSIONAL PGMB': f'Do you plan to pursue a preprofessional program? MEDICINE--{output}',
+            'PRE-PROFESSIONAL PGME': f'Do you plan to pursue a preprofessional program? PHYSICAL THERAPY--{output}',
             'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output}',
-            'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law? {output}',
+            'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law: {output}',
             'OTHER FIRST NAME1': f"Other first name: {output}",
             'OTHER MIDDLE NAME1': f"Other middle name: {output}",
             'OTHER LAST NAME1': f"Other last name: {output}",
@@ -97,7 +103,7 @@ class Values:
         return _str
     
     def parent_value(self, _str: str) -> str:
-        """Parent value markdown replacement text. Gives a clearer representation of
+        """REMOVED too inconsistent on recording. Parent value markdown replacement text. Gives a clearer representation of
         the original question asked.
 
         :param _str: string from designated markdown text
@@ -115,18 +121,19 @@ class Values:
             '26\\' : "Bachelor's/Four-year Degree",
             '34\\' : "Other Adult",
             '48\\' : "Stepmother",
-            'PG1YY\\': 'Some College/No High School',
+            'PG1YY\\': 'High School Diploma or GED',
             'PG1YN\\': 'No College',
             'PG1N\\': 'Parent/Guardian 1',
             'PG2N\\': 'Parent/Guardian 2',
-            'PG2YY\\': 'Some College',
-            'PG2YN\\': 'No College',
+            'PG2YY\\': 'No High School',
+            'PG2YN\\': 'Some College',
             'ZZ\\': "Unknown",
         }
 
         value = parent_[_str[-1]]
 
-        return f"{target}: {value}"
+        # return f"{target}: {value}"
+        return None
     
     def req_and_or_answer_value(self, _str: str) -> str:
         """Request and or Answer value markdown replacement text. Gives a clearer representation of
@@ -157,6 +164,7 @@ class Values:
             'OTHER MIDDLE NAME1\\': None,
             'OTHER LAST NAME1\\': None,
             'OTHER SUFFIX NAME1\\': None,
+            'GRADUATE AWARD\\': None
         }
 
         return req_[target]
@@ -184,6 +192,7 @@ class Values:
             'RELLIS Academic Alliance\\': "'RELLIS Academic Alliance ?'",
             '4.2\\': 'Degree: Masters (M.)',
             '4.4\\': 'Degree: Doctoral (PhD)',
+            ' \\': 'Degree: N/A'
         }
 
         semester_ = {
@@ -213,37 +222,37 @@ class Values:
         target = _str[-1]
 
         hispanic_ = {
-            "Ethnicity=R;Race=S\\": "Ethnicity=Hispanic or Latino. Race=White.",
-            "Ethnicity=R;Race=T\\": "Ethnicity=Hispanic or Latino. Race=American Indian or Alaska Native.",
-            "Ethnicity=R;Race=Q\\": "Hispanic or Latino ethnicity. Race=Black or African American.",
-            "Ethnicity=R;Race=U\\": "Hispanic or Latino ethnicity. Race=Asian.",
-            "Ethnicity=R;Race=V\\": "Hispanic or Latino ethnicity. Race=Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=R;Race=QS\\": "Hispanic or Latino ethnicity. Race=Black or African American or White.",
-            "Ethnicity=R;Race=US\\": "Hispanic or Latino ethnicity. Race=Asian or White.",
-            "Ethnicity=R;Race=UV\\": "Hispanic or Latino ethnicity. Race=Asian, Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=R;Race=TS\\": "Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
-            "Ethnicity=R;Race=ST\\": "Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
-            "Ethnicity=R;Race=UST\\": "Hispanic or Latino ethnicity. Race=Asian, White, American Indian or Alaska Native.",
+            "Ethnicity=R;Race=S\\": "Hispanic or Latino. White.",
+            "Ethnicity=R;Race=T\\": "Hispanic or Latino. American Indian or Alaska Native.",
+            "Ethnicity=R;Race=Q\\": "Hispanic or Latino. Black or African American.",
+            "Ethnicity=R;Race=U\\": "Hispanic or Latino. Asian.",
+            "Ethnicity=R;Race=V\\": "Hispanic or Latino. Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=QS\\": "Hispanic or Latino. Black or African American or White.",
+            "Ethnicity=R;Race=US\\": "Hispanic or Latino. Asian or White.",
+            "Ethnicity=R;Race=UV\\": "Hispanic or Latino. Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=TS\\": "Hispanic or Latino. American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=ST\\": "Hispanic or Latino. American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=UST\\": "Hispanic or Latino. Asian, White, American Indian or Alaska Native.",
         }
 
         not_hispanic_ = {
-            "Ethnicity=W\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=N/A.",
-            "Ethnicity=W;Race=S\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=White.",
-            "Ethnicity=W;Race=T\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian or Alaska Native.",
-            "Ethnicity=W;Race=Q\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Black or African American.",
-            "Ethnicity=W;Race=U\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian.",
-            "Ethnicity=W;Race=V\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=W;Race=QS\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Black, African American or White.",
-            "Ethnicity=W;Race=US\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian or White.",
-            "Ethnicity=W;Race=UV\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian, Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=W;Race=TS\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
-            "Ethnicity=W;Race=ST\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=American Indian, Alaska Native or White.",
-            "Ethnicity=W;Race=UST\\": "Ethnicity=Not Hispanic or Latino ethnicity. Race=Asian, White, American Indian or Alaska Native.",
+            "Ethnicity=W\\": "Not Hispanic or Latino. N/A.",
+            "Ethnicity=W;Race=S\\": "Not Hispanic or Latino. White.",
+            "Ethnicity=W;Race=T\\": "Not Hispanic or Latino. American Indian or Alaska Native.",
+            "Ethnicity=W;Race=Q\\": "Not Hispanic or Latino. Black or African American.",
+            "Ethnicity=W;Race=U\\": "Not Hispanic or Latino. Asian.",
+            "Ethnicity=W;Race=V\\": "Not Hispanic or Latino. Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=QS\\": "Not Hispanic or Latino. Black, African American or White.",
+            "Ethnicity=W;Race=US\\": "Not Hispanic or Latino. Asian or White.",
+            "Ethnicity=W;Race=UV\\": "Not Hispanic or Latino. Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=TS\\": "Not Hispanic or Latino. American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=ST\\": "Not Hispanic or Latino. American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=UST\\": "Not Hispanic or Latino. Asian, White, American Indian or Alaska Native.",
         }
 
         other_ = {
-            "Ethnicity=\\": "Ethnicity=N/A. Race=N/A.",
-            "Ethnicity=R\\": "Ethnicity=Hispanic or Latino. Race=N/A.",
+            "Ethnicity=\\": "N/A. N/A.",
+            "Ethnicity=R\\": "Hispanic or Latino. N/A.",
         }
 
         dictionaries = [hispanic_, not_hispanic_, other_]
@@ -271,7 +280,7 @@ class Values:
         gender_ = {
             'F': 'Gender=Female',
             'M': 'Gender=Male',
-            '': 'Gender=Not Given'
+            '': 'Gender=N/A'
         }
 
         for key, value in gender_.items():

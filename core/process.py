@@ -5,9 +5,16 @@ from typing import Union
 
 class Process:
 
-    def __init__(self, file=None):
-         self.csv_file = file
-         self.data = []
+    def __init__(self, file: str = None):
+        """Class created to house methods for any list processing. Mainly given
+        a .csv file for reading and creating the desired data lists.
+
+        :param file: string to .csv file path
+        :type file: str, default to None
+        """
+
+        self.csv_file = file
+        self.data = []
 
     def find_largest_row(self, input: list) -> int:
         """Finds the length of the largest row from a given nested list.
@@ -236,5 +243,23 @@ class Process:
 
         if current_item:
             result.append(current_item)
+
+        return result
+    
+    def process_list_2(self, _list: list) -> list:
+
+        result = []
+        current_chunk = ''
+
+        for item in _list:
+            if item:  # If item is not empty
+                current_chunk += item
+            else:  # If item is empty, append current_chunk if it's not empty
+                if current_chunk:
+                    result.append(current_chunk)
+                    current_chunk = ''
+        # Append the last chunk if it's not empty
+        if current_chunk:
+            result.append(current_chunk)
 
         return result

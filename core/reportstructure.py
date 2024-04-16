@@ -3,6 +3,13 @@ import core
 class ReportStructure:
 
     def __init__(self, input: str):
+        """Class created to house methods for PDF markdown text structure. Generates given
+        strings of text and dynamically changes them based on varying elements.
+
+        :param input: targeted string for explanation
+        :type input: str
+        """
+
         self._str = input
 
     def page_structure(self) -> str:
@@ -143,6 +150,13 @@ class ReportStructure:
 
         _str = str(self._str).split("!")
 
+        transform_dict = {
+            'Y': 'Yes',
+            'N': 'No'
+        }
+
+        output = transform_dict.get(_str[-1], _str[-1])
+
         four_mark_syntax = {
             "Start Parent 1 Contact Info": "First Guardian/Parent Information:",
             "Start Parent 2 Contact Info": "Second Guardian/Parent Information:",
@@ -216,7 +230,7 @@ class ReportStructure:
             "Question statement": _str[-2:-1],
             "Grade level": f"Date: {_str[1]}",
             "Admissions Test": _str,
-            "Post-Secondary Colleges/Universities": f"Name of Institution: {_str[-1]}",
+            "Post-Secondary Colleges/Universities": f"Institution: {_str[-1]}",
             "Hours Earned": f"Hours Earned: {_str[-1]}",
             "End of App": "End of App",
             "Degree Earned": f"Degree: {_str[-1]}",
@@ -225,7 +239,7 @@ class ReportStructure:
             "Language": _str,
             "Old Admission Test Score": _str,
             "Old Admission Test": _str,
-            "Short MSG": _str[-1]
+            "Short MSG": output
         }
         
         converted_mark = ""

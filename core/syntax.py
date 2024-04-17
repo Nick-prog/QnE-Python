@@ -94,13 +94,22 @@ class Syntax:
         :rtype: list
         """
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        p = core.Process()
+        output = p.process_str(_str[-1])
 
-        target = target.replace('N', "No").replace('Y', "Yes")
+        for idx in range(len(output)):
+            if str(output[idx]).startswith('2'):
+                end_point = idx
 
         return ['During the 12 months prior to you applying, did you register',
-                'for a public college or university in Texas?',
-                f'{target}']
+                'for a public college or university in Texas?', f'{output[0]}',
+                'What Texas public college or university did you last attend?',
+                f'{output[1:end_point]}',
+                'In which terms were you last enrolled?', f'{output[-1][:-2]}',
+                'During you last seemster at a Texa public institution, did you pay resident (in-state)',
+                'or nonresident (out-of-state) tution?', f'{output[-1][-2]}',
+                'If you paid in-state tution at your last institution, was it because you were classified',
+                'as a resdient or because you were non-resident who received a wavier?', f'{output[-1][-1]}']
     
     def basis_syntax(self, _str: str) -> list:
         """Text fully listing the question given from basis of claim information from
@@ -207,17 +216,11 @@ class Syntax:
     
     def residency_self_syntax(self, _str: str) -> list:
 
-        target = str(_str[-1]).split(" ")
-
         p = core.Process()
-        output = p.process_list_2(target)
-
+        output = p.process_str(_str[-1])
         print(output)
 
-        if str(output[1]).startswith('0'):
-            return ['No self information reported...']
-        
-        # print(output)
+        return ['No self information reported...']
 
         return ['Residency Information:',
                 '5. Do you currently live in Texas?', f'{output[0][0]}',
@@ -241,15 +244,11 @@ class Syntax:
     
     def residency_guar_syntax(self, _str: str) -> list:
 
-        target = str(_str[-1]).split(" ")
-
         p = core.Process()
-        output = p.process_list(target)
-
-        if str(output[1]).startswith('0'):
-            return ['No guardian information reported...']
-        
+        output = p.process_str(_str[-1])
         print(output)
+
+        return ['No guardian information reported...']
         
         return ['Residency Information:',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',

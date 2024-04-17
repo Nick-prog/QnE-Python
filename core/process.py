@@ -263,3 +263,18 @@ class Process:
             result.append(current_chunk)
 
         return result
+    
+    def process_str(self, _str: str) -> list:
+
+        result = []
+
+        last_idx = 1
+
+        for idx in range(len(_str)):
+            if idx == 0:
+                result.append(_str[idx])
+            elif _str[idx] == " " or _str[idx] == "\\":
+                result.append(_str[last_idx:idx])
+                last_idx = idx + 1 
+
+        return [x for x in result if x]

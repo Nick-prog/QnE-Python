@@ -127,6 +127,7 @@ class Values:
             'PG2N\\': 'Parent/Guardian 2',
             'PG2YY\\': 'No High School',
             'PG2YN\\': 'Some College',
+            'PG2NY\\': 'Some College',
             'ZZ\\': "Unknown",
         }
 
@@ -150,8 +151,8 @@ class Values:
         req_ = {
             'ALIEN APP/INT\\': None,
             'RES: COMMENTS\\': None,
-            'FAMILY OBLIGATION INCOME\\': f"Please indicate, for the most recent tax year, your family's gross income. Include both untaxed and taxed income: {_str[-1]}",
-            'FAMILY OBLIGATION CARE\\': f'How many people, including yourself, live in your household? (include brothers and sisiters attending college): {_str[-1]}',
+            'FAMILY OBLIGATION INCOME\\': None,
+            'FAMILY OBLIGATION CARE\\': None,
             'FAMILY OBLIGATION OTHER\\': f'{_str[-1]}',
             'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent: {_str[-1]}',
             'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?",

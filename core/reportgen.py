@@ -8,7 +8,7 @@ from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
 from reportlab.lib.units import inch
 
-from typing import List
+from typing import Union
 
 class ReportGen:
 
@@ -43,6 +43,9 @@ class ReportGen:
         self.page_1_idx = []
         self.page_2_idx = []
         self.page_3_idx = []
+
+    def generate_new_points(self, xstart: int, ystart: int, yadd: int) -> Union[int, int, int]:
+        return self.xstart+xstart, self.ystart+ystart, yadd
 
     def capture_student_names(self, select_app: int) -> None:
         """Captures student names for file descriptions based on the given
@@ -185,32 +188,26 @@ class ReportGen:
             current_idx += 1
 
             if val == "App ID":
-                xstart = self.xstart+350
-                ystart = self.ystart
-                yadd = 0
+                xstart, ystart, yadd = self.generate_new_points(350, 0, 0)
             elif val == "Start Student Contact Info":
-                xstart = self.xstart
-                ystart = self.ystart-100
-                yadd = 0
+                xstart, ystart, yadd = self.generate_new_points(0, -100, 0)
             elif val == "Start Extra Contact Info":
-                xstart = self.xstart+350
-                ystart = self.ystart-100
-                yadd = 0
+                xstart, ystart, yadd = self.generate_new_points(350, -100, 0)
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
                 yadd -= 10
             elif val == "Extra Curricular Activities" and opt_sep[val] == 0:
                 canvas.setFont("Courier", 7)
                 opt_sep[val] = 1
-                xstart = self.xstart
-                ystart = self.ystart-400
-                yadd = 0
+                xstart, ystart, yadd = self.generate_new_points(0, -400, 0)
                 canvas.drawString(xstart, ystart+yadd, "Extra Curricular Activite(s):")
                 yadd = -10
                 canvas.setFont("Courier", 6)
             elif val in opt_list and opt_sep[val] == 0:
                 canvas.setFont("Courier", 7)
+                # xstart, ystart, yadd = self.generate_new_points(0, yadd-10, 0)
                 xstart = self.xstart
                 ystart = ystart+yadd-10
+                yadd = 0
                 opt_sep[val] = 1
 
                 for key, value in opt_sep.items():
@@ -221,15 +218,12 @@ class ReportGen:
                     ystart = self.ystart-400
                 
                 found = 0
-                yadd = 0
                 canvas.drawString(xstart, ystart+yadd, f"{val}:")
                 yadd = -10
                 canvas.setFont("Courier", 6)
             elif val == "Semester":
                 canvas.setFont("Courier", 7)
-                xstart = self.xstart
-                ystart = self.ystart-50
-                yadd = 0
+                xstart, ystart, yadd = self.generate_new_points(0, -50, 0)
 
             _str = self.nested_list[select_app][current_idx]
             struct = core.ReportStructure(_str)
@@ -309,6 +303,15 @@ class ReportGen:
                 yadd -= 10
             elif val in req_start:
                 target = str(_str).split("!")
+
+                req_syntax = {
+                        'HS GED TYPE': s.hs_ged_syntax(target),
+                        'DUAL CREDIT': s.dual_syntax(target),
+                        'CONSERVATORSHIP SWITCHES': s.conservator_syntax(target),
+                        'ALIEN APP/INT\\': s.alien_syntax(target),
+                        'FORMER STUDENT': s.former_syntax(target),
+                        }
+
                 for key, value in req_dict.items():
                     if target[3] == key:
                         if value != "":
@@ -318,31 +321,17 @@ class ReportGen:
                         else:
                             canvas.drawString(xstart, ystart+yadd, value)
 
-                        if target[3] == 'HS GED TYPE':
-                            _list = s.hs_ged_syntax(target)
-                            yadd -= 10
+                for key, value in req_syntax.items():
+                    if target[3] == key:
+                        _list = value
+                        yadd -= 10
 
-                        elif target[3] == 'DUAL CREDIT':
-                            _list = s.dual_syntax(target)
-                            yadd -= 10
-
-                        elif target[3] == 'CONSERVATORSHIP SWITCHES':
-                            _list = s.conservator_syntax(target)
-                            yadd -= 10
-
-                        elif target[3] == 'ALIEN APP/INT\\':
-                            _list = s.alien_syntax(target)
-                            yadd -= 10
-
-                        elif target[3] == 'FORMER STUDENT':
-                            _list = s.former_syntax(target)
-                            yadd -= 10
-
+                if _list != None:
                     for x in range(len(_list)):
                         canvas.drawString(xstart, ystart+yadd, str(_list[x]))
                         yadd -= 10
 
-                    _list = []
+                _list = []
 
             conv = struct.transform_page(val)
      
@@ -397,52 +386,50 @@ class ReportGen:
             if val in paragraph_start or val in req_start:
                 target = str(_str).split("!")
                 if val == 'Long REQ' and len(target) == 6:
+
+                    long_syntax = {
+                        'PAYMENT RECONCILIATION': s.payment_syntax(target),
+                        'RES: PREVIOUS ENROLLMENT': s.prev_syntax(target),
+                        'RES: BASIS OF CLAIM': s.basis_syntax(target),
+                        'RES: HS DIPLOMA OR GED': s.hs_diploma_syntax(target),
+                        'RES: SELF': s.residency_self_syntax(target),
+                        'RES: GUAR': s.residency_guar_syntax(target)
+                        }
+                    
+                    for key, value in long_syntax.items():
+                        if target[3] == key:
+                            _list = value
+                            yadd -= 10
+                
                     if target[3] == 'PAYMENT RECONCILIATION':
-                        _list = s.payment_syntax(target)
-                        yadd -= 10
                         canvas.drawString(xstart, ystart+yadd, "Application Fee Information:")
                         yadd -= 10
 
-                    elif target[3] == 'RES: PREVIOUS ENROLLMENT':
-                        _list = s.prev_syntax(target)
-                        yadd -= 10
-
-                    elif target[3] == 'RES: BASIS OF CLAIM':
-                        _list = s.basis_syntax(target)
-                        yadd -= 10
-
-                    elif target[3] == 'RES: HS DIPLOMA OR GED':
-                        _list = s.hs_diploma_syntax(target)
-                        yadd -= 10
-
-                    elif target[3] == 'RES: SELF':
-                        _list = s.residency_self_syntax(target)
-                        yadd -= 10
-
-                    elif target[3] == 'RES: GUAR':
-                        _list = s.residency_guar_syntax(target)
-                        yadd -= 10
-
                 elif val == 'Request and/or Answer' and len(target) >= 3:
-                    if target[3] == 'RES: COMMENTS\\':
-                        _list = s.comment_syntax()
+
+                    req_syntax = {
+                        'RES: COMMENTS\\': s.comment_syntax(),
+                        'RES: BASIS OF CLAIM\\': s.basis_syntax(target),
+                        'FAMILY OBLIGATION INCOME\\': s.family_income_syntax(target),
+                        'FAMILY OBLIGATION CARE\\': s.family_care_syntax(target)
+                        }
+
+                    for key, value in req_syntax.items():
+                        if target[3] == key:
+                            _list = value
+                            yadd -= 10
+
+                if _list != None:
+                    for x in range(len(_list)):
+                        canvas.drawString(self.xstart, self.ystart+yadd, str(_list[x]))
                         yadd -= 10
-
-                    elif target[3] == 'RES: BASIS OF CLAIM\\':
-                        _list = s.basis_syntax(target)
-                        yadd -= 10
-
-
-                for x in range(len(_list)):
-                    canvas.drawString(xstart, ystart+yadd, str(_list[x]))
-                    yadd -= 10
 
                 _list = []
 
                 yadd -= 10
 
             conv = struct.transform_page(val)
-    
+
             if conv != "None":
                 canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
                 # canvas.drawString(xstart, ystart+yadd, val + _str)

@@ -1,9 +1,13 @@
 import core
 
 class Syntax:
-    """Class created to house methods for in-place replacement text of varying types of markdown text in the
-    form of a list.
-    """
+
+    def __init__(self):
+        """Class created to house methods for in-place replacement text of varying types of markdown text in the
+        form of a list.
+        """
+
+        self.p = core.Process()
 
     def payment_syntax(self, _str: str) -> list:
         """Text fully listing the question given for payment information from students
@@ -15,26 +19,19 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'PAYMENT RECONCILIATION':
+            return
+
         target = _str[-1]
 
-        transaction_time = target[0:8]
-        payment_status = target[15:19]
-        payment_amount = target[19:24]
-        transaction_trace = target[24:36]
-        customer_ref = target[36:48]
-        card_type = target[48]
-        last_4 = target[49:53]
-        card_exp = target[53:57]
-
-
-        return [f"Transcation Time: {transaction_time}",
-                f"Payment Status: {payment_status}",
-                f"Payment Amount: {payment_amount}",
-                f"Transcation Trace: {transaction_trace}",
-                f"Customer Reference: {customer_ref}",
-                f"Card Type: {card_type}",
-                f"Last 4 digit card number: {last_4}",
-                f"Card Expiration Date: {card_exp}"]
+        return [f"Transcation Time: {target[0:8]}",
+                f"Payment Status: {target[15:19]}",
+                f"Payment Amount: {target[19:24]}",
+                f"Transcation Trace: {target[24:36]}",
+                f"Customer Reference: {target[36:48]}",
+                f"Card Type: {target[48]}",
+                f"Last 4 digit card number: {target[49:53]}",
+                f"Card Expiration Date: {target[53:57]}"]
     
     def hs_diploma_syntax(self, _str: str) -> list:
         """Text fully listing the question given for HS Diploma information including
@@ -46,11 +43,13 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'RES: HS DIPLOMA OR GED':
+            return
+
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
         temp = str(target).split(" ")
         
-        p = core.Process()
-        output = p.process_list(temp)
+        output = self.p.process_list(temp)
 
         if len(output) > 2:
             dual = str(output[2]).replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
@@ -75,6 +74,9 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'HS GED TYPE':
+            return
+
         target = "".join(_str[4]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('N', "No").replace('Y', "Yes")
@@ -94,11 +96,14 @@ class Syntax:
         :rtype: list
         """
 
-        p = core.Process()
-        output = p.process_str(_str[-1])
+        if _str[3] != 'RES: PREVIOUS ENROLLMENT':
+            return
+
+        output = self.p.process_str(_str[-1])
+        # print(f'PREV: {output}')
 
         for idx in range(len(output)):
-            if str(output[idx]).startswith('2'):
+            if str(output[idx]).startswith('0') or str(output[idx]).startswith('2'):
                 end_point = idx
 
         return ['During the 12 months prior to you applying, did you register',
@@ -120,6 +125,10 @@ class Syntax:
         :return: list of strings to display the proper output
         :rtype: list
         """
+
+        if _str[3] != 'RES: BASIS OF CLAIM':
+            return
+
 
         if len(_str) > 4:
             target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
@@ -154,6 +163,9 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'DUAL CREDIT':
+            return
+
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
         
         target = target.replace('N', "No").replace('Y', "Yes")
@@ -172,6 +184,9 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'CONSERVATORSHIP SWITCHES':
+            return
+
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('N', "No").replace('Y', "Yes")
@@ -189,6 +204,9 @@ class Syntax:
         :return: list of strings to display the proper output
         :rtype: list
         """
+
+        if _str[3] != 'ALIEN APP/INT\\':
+            return
         
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -206,6 +224,9 @@ class Syntax:
         :rtype: list
         """
 
+        if _str[3] != 'FORMER STUDENT':
+            return
+
         target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
@@ -214,11 +235,29 @@ class Syntax:
                 'Have you previously applied?',
                 f'{target}']
     
+    def family_income_syntax(self, _str: str) -> list:
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        return ["Please indicate, for the most recent tax year, your family's gross income.", 
+                "Include both untaxed and taxed income:", 
+                f"{target}"]
+    
+    def family_care_syntax(self, _str: str) -> list:
+
+        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+
+        return ['How many people, including yourself, live in your household?',
+                '(include brothers and sisiters attending college):',
+                 f'{target}']
+    
     def residency_self_syntax(self, _str: str) -> list:
 
-        p = core.Process()
-        output = p.process_str(_str[-1])
-        print(output)
+        if _str[3] != 'RES: SELF':
+            return
+
+        output = self.p.process_str(_str[-1])
+        # print(f'SELF: {output}')
 
         return ['No self information reported...']
 
@@ -244,9 +283,11 @@ class Syntax:
     
     def residency_guar_syntax(self, _str: str) -> list:
 
-        p = core.Process()
-        output = p.process_str(_str[-1])
-        print(output)
+        if _str[3] != 'RES: GUAR':
+            return
+
+        output = self.p.process_str(_str[-1])
+        # print(f'GUAR: {output}')
 
         return ['No guardian information reported...']
         

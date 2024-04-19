@@ -106,15 +106,26 @@ class Syntax:
             if str(output[idx]).startswith('0') or str(output[idx]).startswith('2'):
                 end_point = idx
 
+        months_q = str(output[0]).replace('N', 'No').replace('Y', 'Yes') 
+        attend_q = " ".join(output[1:end_point])
+
+        sem_start = str(output[-1][4]).replace('2', 'Spring')
+        sem_end = str(output[-1][9]).replace('9', 'Fall')
+
+        enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end} {output[-1][5:9]}'
+
+        resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)')
+        resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)')
+
         return ['During the 12 months prior to you applying, did you register',
-                'for a public college or university in Texas?', f'{output[0]}',
+                'for a public college or university in Texas?', f'{months_q}', '',
                 'What Texas public college or university did you last attend?',
-                f'{output[1:end_point]}',
-                'In which terms were you last enrolled?', f'{output[-1][:-2]}',
+                f'{attend_q}', '',
+                'In which terms were you last enrolled?', f'{enrolled_q}', '',
                 'During you last seemster at a Texa public institution, did you pay resident (in-state)',
-                'or nonresident (out-of-state) tution?', f'{output[-1][-2]}',
+                'or nonresident (out-of-state) tution?', f'{resident_q_1}', '',
                 'If you paid in-state tution at your last institution, was it because you were classified',
-                'as a resdient or because you were non-resident who received a wavier?', f'{output[-1][-1]}']
+                'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
     
     def basis_syntax(self, _str: str) -> list:
         """Text fully listing the question given from basis of claim information from
@@ -264,24 +275,24 @@ class Syntax:
         print(f'SELF: {output}')
 
         return ['Residency Information:',
-                '5. Do you currently live in Texas?', '',
+                '5. Do you currently live in Texas?', '', '',
                 '6. If you currently live in Texas:',
-                '(a) How long have you been living here?', '',
-                '(b) What is your main purpose for being in the state?', '',
+                '(a) How long have you been living here?', '', '',
+                '(b) What is your main purpose for being in the state?', '', '',
                 '7. If you are a member of the U.S. military:',
-                '(a) Is Texas your Home of Record?', '',
+                '(a) Is Texas your Home of Record?', '', '',
                 '(b) What state is listed as your military legal residence for tax purposes on your Leave', 
-                'and Earnings Statment', '',
+                'and Earnings Statment', '', '',
                 '8. Do any of the followign apply to you?', 
                 '(a) Do you hold the title (Warranty Deed, Deed of Trust, or other similar instrument that', 
-                'is effective to hold title) to residential real property in Texas?', '',
+                'is effective to hold title) to residential real property in Texas?', '', '',
                 '(b) Do you have ownership interest and customarily manage a business in Texas without the',
-                'intention of liquidation in the foreseeable future?', '',
+                'intention of liquidation in the foreseeable future?', '', '',
                 '9. For the past 12 months', 
-                '(a) Have you been gainfully employed in Texas?', '',
-                '(b) Have you recieved primary support from a social service agency?', '',
-                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', '',
-                '(a) If yes, indicate which question could be answered YES by your spouse:', '',
+                '(a) Have you been gainfully employed in Texas?', '', '',
+                '(b) Have you recieved primary support from a social service agency?', '', '',
+                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', '', '',
+                '(a) If yes, indicate which question could be answered YES by your spouse:', '', '',
                 '(b) How long have you been married to the Texas Resident?', '']
     
     def residency_guar_syntax(self, _str: str) -> list:

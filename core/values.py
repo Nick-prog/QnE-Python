@@ -79,7 +79,7 @@ class Values:
             'PRE-PROFESSIONAL PGMF': f'Do you plan to pursue a preprofessional program? PHARMACY--{output}',
             'PRE-PROFESSIONAL PGMB': f'Do you plan to pursue a preprofessional program? MEDICINE--{output}',
             'PRE-PROFESSIONAL PGME': f'Do you plan to pursue a preprofessional program? PHYSICAL THERAPY--{output}',
-            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output}',
+            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output[10:14]}',
             'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law: {output}',
             'OTHER FIRST NAME1': f"Other first name: {output}",
             'OTHER MIDDLE NAME1': f"Other middle name: {output}",

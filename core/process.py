@@ -278,3 +278,32 @@ class Process:
                 last_idx = idx + 1 
 
         return [x for x in result if x]
+    
+    def process_guar(self, _list: list) -> list:
+
+        # example_list = ['N', 'Y', 'NONE OF THE ABOVE', 'Y2535H', 'N000000N000000', '000000NN', '0000N']
+
+        new_list = []
+        # modified = []
+        _str = ''
+        skip_idx = 0
+
+        for i, item in enumerate(_list):
+            if item == 'NONE':
+                _str += f'{_list[i]} {_list[i+1]} {_list[i+2]} {_list[i+3]}'
+                skip_idx = i+3
+                new_list.append(_str)
+            elif i > skip_idx or i == 0:
+                new_list.append(item)
+
+        # print(new_list)
+        # given_index = 0
+
+        # for item in example_list:
+        #     if given_index < len(new_list) and len(new_list[given_index]) == len(item) or len(new_list[given_index]) == len(item)-1:
+        #         modified.append(new_list[given_index])
+        #         given_index += 1
+        #     else:
+        #         modified.append('N/A')
+
+        return new_list

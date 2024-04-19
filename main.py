@@ -126,6 +126,7 @@ def run(file: str, fileName: str) -> None:
 
                 report = core.ReportGen(in_file, app_types[key], apps, key)
                 report.capture_student_names(apps)
+                print(report.names)
                 report.create_pages_structure(apps)
                 report.create_canvas(out_folder, apps)
 

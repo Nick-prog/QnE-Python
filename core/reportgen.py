@@ -357,7 +357,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart
+        ystart = self.ystart+150
 
         #Increment
         yadd = 0
@@ -365,7 +365,7 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 18*inch))
+        canvas.setPageSize((8.5*inch, 20*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -410,8 +410,8 @@ class ReportGen:
                     req_syntax = {
                         'RES: COMMENTS\\': s.comment_syntax(),
                         'RES: BASIS OF CLAIM\\': s.basis_syntax(target),
-                        'FAMILY OBLIGATION INCOME\\': s.family_income_syntax(target),
-                        'FAMILY OBLIGATION CARE\\': s.family_care_syntax(target)
+                        # 'FAMILY OBLIGATION INCOME\\': s.family_income_syntax(target),
+                        # 'FAMILY OBLIGATION CARE\\': s.family_care_syntax(target)
                         }
 
                     for key, value in req_syntax.items():
@@ -421,7 +421,7 @@ class ReportGen:
 
                 if _list != None:
                     for x in range(len(_list)):
-                        canvas.drawString(self.xstart, self.ystart+yadd, str(_list[x]))
+                        canvas.drawString(xstart, ystart+yadd, str(_list[x]))
                         yadd -= 10
 
                 _list = []

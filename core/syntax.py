@@ -8,6 +8,7 @@ class Syntax:
         """
 
         self.p = core.Process()
+        self.example_guar = ['Y', 'Y', 'N', 'NONE', 'OF', 'THE', 'ABOVE', 'Y2535H', 'N000000N000000', '000000NN', '0000N']
 
     def payment_syntax(self, _str: str) -> list:
         """Text fully listing the question given for payment information from students
@@ -100,7 +101,6 @@ class Syntax:
             return
 
         output = self.p.process_str(_str[-1])
-        # print(f'PREV: {output}')
 
         for idx in range(len(output)):
             if str(output[idx]).startswith('0') or str(output[idx]).startswith('2'):
@@ -257,61 +257,78 @@ class Syntax:
             return
 
         output = self.p.process_str(_str[-1])
-        # print(f'SELF: {output}')
 
-        return ['No self information reported...']
+        if output[-1] == '0000':
+            return ['No self information reported...']
+        
+        print(f'SELF: {output}')
 
         return ['Residency Information:',
-                '5. Do you currently live in Texas?', f'{output[0][0]}',
+                '5. Do you currently live in Texas?', '',
                 '6. If you currently live in Texas:',
-                '(a) How long have you been living here?', f'{output[0][1:3]} Years, {output[0][3:5]} Months',
-                '(b) What is your main purpose for being in the state?', f'{output[0][-1]}',
+                '(a) How long have you been living here?', '',
+                '(b) What is your main purpose for being in the state?', '',
                 '7. If you are a member of the U.S. military:',
-                '(a) Is Texas your Home of Record?', f'{output[1][0]}',
+                '(a) Is Texas your Home of Record?', '',
                 '(b) What state is listed as your military legal residence for tax purposes on your Leave', 
-                'and Earnings Statment', f'{output[1][1:7]}',
+                'and Earnings Statment', '',
                 '8. Do any of the followign apply to you?', 
                 '(a) Do you hold the title (Warranty Deed, Deed of Trust, or other similar instrument that', 
-                'is effective to hold title) to residential real property in Texas?', f'{output[1][7]}',
+                'is effective to hold title) to residential real property in Texas?', '',
                 '(b) Do you have ownership interest and customarily manage a business in Texas without the',
-                'intention of liquidation in the foreseeable future?', f'{output[1][8: 20]}',
-                '9. For the past 12 months', '(a) Have you been gainfully employed in Texas?', f'{output[1][20]}',
-                '(b) Have you recieved primary support from a social service agency?', f'{output[1][21]}',
-                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', f'{output[1][27]}',
-                '(a) If yes, indicate which question could be answered YES by your spouse:', f'{output[1][-1]}',
-                '(b) How long have you been married to the Texas Resident?', f'Years: {output[1][22:24]} Months: {output[1][24:26]}']
+                'intention of liquidation in the foreseeable future?', '',
+                '9. For the past 12 months', 
+                '(a) Have you been gainfully employed in Texas?', '',
+                '(b) Have you recieved primary support from a social service agency?', '',
+                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', '',
+                '(a) If yes, indicate which question could be answered YES by your spouse:', '',
+                '(b) How long have you been married to the Texas Resident?', '']
     
     def residency_guar_syntax(self, _str: str) -> list:
 
         if _str[3] != 'RES: GUAR':
             return
 
-        output = self.p.process_str(_str[-1])
-        # print(f'GUAR: {output}')
+        _list = self.p.process_str(_str[-1])
 
-        return ['No guardian information reported...']
+        if _list[-1] == '0000':
+            return ['No guardian information reported...']
+
+        output = self.p.process_guar(_list)
+        # print(f'GUAR: {output}', len(output))
         
         return ['Residency Information:',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',
-                'Citizen?', f'{output[0]}',
-                '5. Does this parent or legal guardian currently live in Texas?', f'{output[1][0]}',
-                '6. If your parent or legal guardian currently live in Texas:',
-                '(a) How long has he or she been living here?', f'{output[1][1:3]} years; {output[1][3:5]} months',
-                "(b) What is your parent's or legal guardian's main purpose for being in the state?", f'{output[1][5]}',
+                'Citizen?', '',
+                '2. If no, does the parent or legal guardian upopn whom you base your claim residency',
+                'hold Permanent Residence Status (valid I-551) for the U.S.?' '',
+                '3. Is this parent or legal guardian a foreign national whose application for Permanent',
+                'Resident Status has been preliminarily reviewed?', '',
+                '4. is this parent or legal guardian a foreign national here with a visa eligible to',
+                'domicile in the United States or are you a Refugee, Asylee, Parolee or here under',
+                'Temporary Protective Status? If so, indicate which:', '',
+                '5. Does this parent or legal guardian currently live in Texas?', '',
+                '6. If your parent or legal guardian currently live in Texas:', '',
+                '(a) How long has he or she been living here?', '',
+                "(b) What is your parent's or legal guardian's main purpose for being in the state?", '',
+                '7. If your parent or legal guardian is a member of the U.S. military:',
+                '(a) Is Texas his or her Home of Record?', '',
+                '(b) What state is listed as his or her military legal residence for tax purposes on his or',
+                'her Leave and Earnings Statement?', '',
                 '8. Do any of the following apply ot your parent or legal guardian?',
                 '(a) Does your parent or legal guardian hold the title (Warranty Deed, Deed of Trust, or',
                 'other similar instrument that is effective to hold title) to residential real property in',
-                'Texas?', f'{output[2][0]} - {output[2][1:7]}',
+                'Texas?', '',
                 '(b) Does your parent or legal guardian have ownership interest and customarily manage a',
-                'business in Texas without the intention of liquidation in the foreseeable future?', f'{output[2][7]}',
+                'business in Texas without the intention of liquidation in the foreseeable future?', '',
                 '9. For the past 12 months',
-                '(a) Has your parent or legal guardian been gainfully employed in Texas?', f'{output[2][8]}',
+                '(a) Has your parent or legal guardian been gainfully employed in Texas?', '',
                 '(b) Has your parent or legal guardian received primary support from a social service',
                 'agency?', "",
                 '10. Is your parent or legal guardian married to a person who could claim "yes" to any part',
-                'of question (8) or (9)?', f'{output[2][22]}',
+                'of question (8) or (9)?', '',
                 '(a) If yes, indicate which question could be answered "yes" by your parent or legal',
-                "guardian's spouse:", f'{output[2][23]}',
-                '(b) How long has your parent or legal guardian been married to the Texas Resident?', f'{output[2][24:26]} years; {output[2][26:28]} months',
+                "guardian's spouse:", '',
+                '(b) How long has your parent or legal guardian been married to the Texas Resident?', '',
                 ]
 

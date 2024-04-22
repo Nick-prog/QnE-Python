@@ -170,6 +170,7 @@ class ReportGen:
 
         current_idx = -1 # Allows us to target the str itself
         found = 0
+        extra_found = 0
 
 
         opt_list = ["Community or Volunteer Service", "Award/Acheivement", "Employment/Internships/Summer Activities"]
@@ -192,7 +193,11 @@ class ReportGen:
             elif val == "Start Student Contact Info":
                 xstart, ystart, yadd = self.generate_new_points(0, -100, 0)
             elif val == "Start Extra Contact Info":
-                xstart, ystart, yadd = self.generate_new_points(350, -100, 0)
+                if extra_found == 0:
+                    extra_found = 1
+                    xstart, ystart, yadd = self.generate_new_points(350, -100, 0)
+                else:
+                    yadd -= 10
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
                 yadd -= 10
             elif val == "Extra Curricular Activities" and opt_sep[val] == 0:
@@ -204,7 +209,6 @@ class ReportGen:
                 canvas.setFont("Courier", 6)
             elif val in opt_list and opt_sep[val] == 0:
                 canvas.setFont("Courier", 7)
-                # xstart, ystart, yadd = self.generate_new_points(0, yadd-10, 0)
                 xstart = self.xstart
                 ystart = ystart+yadd-10
                 yadd = 0
@@ -309,7 +313,7 @@ class ReportGen:
                         'DUAL CREDIT': s.dual_syntax(target),
                         'CONSERVATORSHIP SWITCHES': s.conservator_syntax(target),
                         'ALIEN APP/INT\\': s.alien_syntax(target),
-                        'FORMER STUDENT': s.former_syntax(target),
+                        'FORMER STUDENT': s.former_syntax(target)
                         }
 
                 for key, value in req_dict.items():
@@ -357,7 +361,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart+150
+        ystart = self.ystart+300
 
         #Increment
         yadd = 0
@@ -365,7 +369,7 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 20*inch))
+        canvas.setPageSize((8.5*inch, 22*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -393,7 +397,9 @@ class ReportGen:
                         'RES: BASIS OF CLAIM': s.basis_syntax(target),
                         'RES: HS DIPLOMA OR GED': s.hs_diploma_syntax(target),
                         'RES: SELF': s.residency_self_syntax(target),
-                        'RES: GUAR': s.residency_guar_syntax(target)
+                        'RES: GUAR': s.residency_guar_syntax(target),
+                        'SPOKEN LANGUAGES': s.spoken_syntax(target),
+                        'CTRY SELF': s.country_syntax(target)
                         }
                     
                     for key, value in long_syntax.items():
@@ -410,8 +416,6 @@ class ReportGen:
                     req_syntax = {
                         'RES: COMMENTS\\': s.comment_syntax(),
                         'RES: BASIS OF CLAIM\\': s.basis_syntax(target),
-                        # 'FAMILY OBLIGATION INCOME\\': s.family_income_syntax(target),
-                        # 'FAMILY OBLIGATION CARE\\': s.family_care_syntax(target)
                         }
 
                     for key, value in req_syntax.items():

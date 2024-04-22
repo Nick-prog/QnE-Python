@@ -10,20 +10,20 @@ class Syntax:
         self.p = core.Process()
         self.example_guar = ['Y', 'Y', 'N', 'NONE', 'OF', 'THE', 'ABOVE', 'Y2535H', 'N000000N000000', '000000NN', '0000N']
 
-    def payment_syntax(self, _str: str) -> list:
+    def payment_syntax(self, _list: list) -> list:
         """Text fully listing the question given for payment information from students
         on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'PAYMENT RECONCILIATION':
+        if _list[3] != 'PAYMENT RECONCILIATION':
             return
 
-        target = _str[-1]
+        target = _list[-1]
 
         return [f"Transcation Time: {target[0:8]}",
                 f"Payment Status: {target[15:19]}",
@@ -34,20 +34,20 @@ class Syntax:
                 f"Last 4 digit card number: {target[49:53]}",
                 f"Card Expiration Date: {target[53:57]}"]
     
-    def hs_diploma_syntax(self, _str: str) -> list:
+    def hs_diploma_syntax(self, _list: list) -> list:
         """Text fully listing the question given for HS Diploma information including
         some Residency information from students on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'RES: HS DIPLOMA OR GED':
+        if _list[3] != 'RES: HS DIPLOMA OR GED':
             return
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
         temp = str(target).split(" ")
         
         output = self.p.process_list(temp)
@@ -65,20 +65,20 @@ class Syntax:
                 'in Texas for the previous 12 months?',
                 f'{dual}']
     
-    def hs_ged_syntax(self, _str: str) -> list:
+    def hs_ged_syntax(self, _list: list) -> list:
         """Text fully listing the question given for HS GED information from students 
         on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'HS GED TYPE':
+        if _list[3] != 'HS GED TYPE':
             return
 
-        target = "".join(_str[4]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[4]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('N', "No").replace('Y', "Yes")
 
@@ -87,20 +87,20 @@ class Syntax:
                 'another high school equivalency program?',
                  f'{target}','',]
     
-    def prev_syntax(self, _str: str) -> list:
+    def prev_syntax(self, _list: list) -> list:
         """Text fully listing the question given from previous college information from
         students on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'RES: PREVIOUS ENROLLMENT':
+        if _list[3] != 'RES: PREVIOUS ENROLLMENT':
             return
 
-        output = self.p.process_str(_str[-1])
+        output = self.p.process_str(_list[-1])
 
         for idx in range(len(output)):
             if str(output[idx]).startswith('0') or str(output[idx]).startswith('2'):
@@ -109,13 +109,13 @@ class Syntax:
         months_q = str(output[0]).replace('N', 'No').replace('Y', 'Yes') 
         attend_q = " ".join(output[1:end_point])
 
-        sem_start = str(output[-1][4]).replace('2', 'Spring')
-        sem_end = str(output[-1][9]).replace('9', 'Fall')
+        sem_start = str(output[-1][4]).replace('2', 'Spring').replace('9', 'Fall')
+        sem_end = str(output[-1][9]).replace('2', 'Spring').replace('9', 'Fall')
 
         enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end} {output[-1][5:9]}'
 
-        resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)')
-        resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)')
+        resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
+        resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
 
         return ['During the 12 months prior to you applying, did you register',
                 'for a public college or university in Texas?', f'{months_q}', '',
@@ -127,22 +127,22 @@ class Syntax:
                 'If you paid in-state tution at your last institution, was it because you were classified',
                 'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
     
-    def basis_syntax(self, _str: str) -> list:
+    def basis_syntax(self, _list: list) -> list:
         """Text fully listing the question given from basis of claim information from
         students on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'RES: BASIS OF CLAIM':
+        if _list[3] != 'RES: BASIS OF CLAIM':
             return
 
 
-        if len(_str) > 4:
-            target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        if len(_list) > 4:
+            target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
         else:
             target = "N\A"
 
@@ -164,20 +164,20 @@ class Syntax:
         return ['Is there any additional information that you believe your college should know in', 
                 'evaluating your eligibility to be classified as a resident? If so, please provide.']
     
-    def dual_syntax(self, _str: str) -> list:
+    def dual_syntax(self, _list: list) -> list:
         """Text fully listing the question given from dual credit information from students
         on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'DUAL CREDIT':
+        if _list[3] != 'DUAL CREDIT':
             return
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
         
         target = target.replace('N', "No").replace('Y', "Yes")
 
@@ -185,20 +185,20 @@ class Syntax:
                 'a high school student (Dual Credit or Concurrent Enrollment)?',
                 f'{target}']
     
-    def conservator_syntax(self, _str: str) -> list:
+    def conservator_syntax(self, _list: list) -> list:
         """Text fully listing the question given from conservator information from students
         on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'CONSERVATORSHIP SWITCHES':
+        if _list[3] != 'CONSERVATORSHIP SWITCHES':
             return
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('N', "No").replace('Y', "Yes")
 
@@ -206,39 +206,80 @@ class Syntax:
                 'If admitted, would your like to receive student foster care info and benefits?',
                 f'{target}']
     
-    def alien_syntax(self, _str: str) -> list:
+    def alien_syntax(self, _list: list) -> list:
         """Text fully listing the question given from alien applicaiton information from
         students on ApplyTexas.
 
-        :param _str: string from designated markdown text 
-        :type _str: str
+        :param _list: list of designated markdown text 
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'ALIEN APP/INT\\':
+        if _list[3] != 'ALIEN APP/INT\\':
             return
         
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
         return ['Is this parent or legal guardian a foreign national whose application',
                 'for Permanent Resident Status has been preliminarily reviewed?',
                 f'{target}']
     
-    def former_syntax(self, _str: str) -> list:
-        """Text fully listing the question given from former student information from
+    def spoken_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from spoken languages information from
         students on ApplyTexas.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: list of designated markdown text
+        :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
 
-        if _str[3] != 'FORMER STUDENT':
+        if _list[3] != 'SPOKEN LANGUAGES':
+            return
+        
+        _new = []
+
+        output = self.p.process_str(_list[-1])
+
+        _new.append(output[0] + output[1])
+        
+        for idx in range(len(output)-2):
+            _new.append(output[idx+2])
+
+        final = ["In addition to English, what languages do you speak fluently?"]
+
+        if len(_new) > 2:
+            for idx in range(len(_new)-2):
+                final.append(f"{_new[idx*2+1]}--Years Spoken: {_new[idx*2][:-2]}")
+        else:
+            final.append(f"{_new[1]}--Years Spoken: {_new[0][:-2]}")
+
+        return final
+    
+    def country_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'CTRY SELF':
             return
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        return ['Of what country are you a citizen?               Country of legal Permanent Residence:']
+
+
+    
+    def former_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from former student information from
+        students on ApplyTexas.
+
+        :param _list: list of designated markdown text
+        :type _list: list
+        :return: list of strings to display the proper output
+        :rtype: list
+        """
+
+        if _list[3] != 'FORMER STUDENT':
+            return
+
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
         target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
 
@@ -246,28 +287,28 @@ class Syntax:
                 'Have you previously applied?',
                 f'{target}']
     
-    def family_income_syntax(self, _str: str) -> list:
+    def family_income_syntax(self, _list: list) -> list:
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
         return ["Please indicate, for the most recent tax year, your family's gross income.", 
                 "Include both untaxed and taxed income:", 
                 f"{target}"]
     
-    def family_care_syntax(self, _str: str) -> list:
+    def family_care_syntax(self, _list: list) -> list:
 
-        target = "".join(_str[-1]).translate(str.maketrans("", "", "\\0"))
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
         return ['How many people, including yourself, live in your household?',
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
-    def residency_self_syntax(self, _str: str) -> list:
+    def residency_self_syntax(self, _list: list) -> list:
 
-        if _str[3] != 'RES: SELF':
+        if _list[3] != 'RES: SELF':
             return
 
-        output = self.p.process_str(_str[-1])
+        output = self.p.process_str(_list[-1])
 
         if output[-1] == '0000':
             return ['No self information reported...']
@@ -295,12 +336,12 @@ class Syntax:
                 '(a) If yes, indicate which question could be answered YES by your spouse:', '', '',
                 '(b) How long have you been married to the Texas Resident?', '']
     
-    def residency_guar_syntax(self, _str: str) -> list:
+    def residency_guar_syntax(self, _list: list) -> list:
 
-        if _str[3] != 'RES: GUAR':
+        if _list[3] != 'RES: GUAR':
             return
 
-        _list = self.p.process_str(_str[-1])
+        _list = self.p.process_str(_list[-1])
 
         if _list[-1] == '0000':
             return ['No guardian information reported...']

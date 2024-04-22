@@ -44,7 +44,8 @@ class Values:
             'CUR COLLEGE ATT': f"Current college attending code: {output}",
             'COLLEGE WORK IN CLASSROOM': None,
             'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {output}',
-            'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}'
+            'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}',
+            'NATIVE LANGUAGE': f'What languages do you speak fluently? {output}',
         }
 
         long_value = {
@@ -59,7 +60,7 @@ class Values:
             'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {output}',
             'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {output}',
             'CONSERVATORSHIP SWITCHES' : None,
-            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? {output}',
+            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? Yes--{output}',
             'HS GED TYPE': None,
             'PARENT 1 ED LEVEL RELATIONSHIP': None,
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
@@ -72,13 +73,14 @@ class Values:
             'RES: BASIS OF CLAIM': None,
             'RES: SELF': None,
             'RES: GUAR': None,
-            'SPOKEN LANGUAGES': f"In addition to English, what languages do you speak fluently? {output}",
+            'SPOKEN LANGUAGES': None,
             'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMF': f'Do you plan to pursue a preprofessional program? PHARMACY--{output}',
             'PRE-PROFESSIONAL PGMB': f'Do you plan to pursue a preprofessional program? MEDICINE--{output}',
             'PRE-PROFESSIONAL PGME': f'Do you plan to pursue a preprofessional program? PHYSICAL THERAPY--{output}',
+            'PRE-PROFESSIONAL PGMA': f'Do you plan to pursue a preprofessional program? PRELAW--{output}',
             'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output[10:14]}',
             'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law: {output}',
             'OTHER FIRST NAME1': f"Other first name: {output}",

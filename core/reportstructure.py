@@ -115,6 +115,8 @@ class ReportStructure:
             'SHORTM': "Short MSG"
         }
 
+        converted_mark = ""
+
         dictionaries = [four_mark_structure, three_mark_structure, two_mark_structure, one_mark_structure]
 
         for idx in range(len(dictionaries)):
@@ -152,7 +154,9 @@ class ReportStructure:
 
         transform_dict = {
             'Y': 'Yes',
-            'N': 'No'
+            'N': 'No',
+            'Y\\': 'Yes',
+            'N\\': 'No'
         }
 
         output = transform_dict.get(_str[-1], _str[-1])

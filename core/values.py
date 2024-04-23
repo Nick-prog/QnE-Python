@@ -87,56 +87,20 @@ class Values:
             'OTHER MIDDLE NAME1': f"Other middle name: {output}",
             'OTHER LAST NAME1': f"Other last name: {output}",
             'OTHER SUFFIX NAME1': f"Other suffix: {output}",
+            'FAMILY OBLIGATION INCOME': None,
         }
 
         dictionaries = [med_value, long_value]
-        parent_check = ['PARENT 1 ED LEVEL RELATIONSHIP', 'PARENT 2 ED LEVEL RELATIONSHIP', 'PARENT OR GUARDIAN INFO']
         
         for dicts in dictionaries:
             for key, value in dicts.items():
                 if key == target:
-                    if key in parent_check:
-                        return self.parent_value(_str)
-                    elif target == 'ULTIMATE DEGREE SOUGHT':
+                    if target == 'ULTIMATE DEGREE SOUGHT':
                         return value + self.additional_value(_str)
                     
                     return value
                 
         return _str
-    
-    def parent_value(self, _str: str) -> str:
-        """REMOVED too inconsistent on recording. Parent value markdown replacement text. Gives a clearer representation of
-        the original question asked.
-
-        :param _str: string from designated markdown text
-        :type _str: str
-        :return: new string based on dict value
-        :rtype: str
-        """
-        
-        target = _str[3]
-
-        parent_ = {
-            '32\\' : 'Mother',
-            '33\\' : 'Father',
-            '49\\' : "High School Diploma or GED",
-            '26\\' : "Bachelor's/Four-year Degree",
-            '34\\' : "Other Adult",
-            '48\\' : "Stepmother",
-            'PG1YY\\': 'High School Diploma or GED',
-            'PG1YN\\': 'No College',
-            'PG1N\\': 'Parent/Guardian 1',
-            'PG2N\\': 'Parent/Guardian 2',
-            'PG2YY\\': 'No High School',
-            'PG2YN\\': 'Some College',
-            'PG2NY\\': 'Some College',
-            'ZZ\\': "Unknown",
-        }
-
-        value = parent_[_str[-1]]
-
-        # return f"{target}: {value}"
-        return None
     
     def req_and_or_answer_value(self, _str: str) -> str:
         """Request and or Answer value markdown replacement text. Gives a clearer representation of
@@ -164,9 +128,13 @@ class Values:
             'APPLICATION SHARING\\': None,
             'FAMILY OBLIGATIONS\\': None, # f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
             'OTHER FIRST NAME1\\': None,
+            'OTHER FIRST NAME2\\': None,
             'OTHER MIDDLE NAME1\\': None,
+            'OTHER MIDDLE NAME2\\': None,
             'OTHER LAST NAME1\\': None,
+            'OTHER LAST NAME2\\': None,
             'OTHER SUFFIX NAME1\\': None,
+            'OTHER SUFFIX NAME2\\': None,
             'GRADUATE AWARD\\': None
         }
 
@@ -193,6 +161,8 @@ class Values:
             'Area of Emphasis/Concentration\\': "Area of Emphasis/Concentartion",
             'Pre-Veterinary Medicine\\': "Pre-Veterinary Medicine",
             'RELLIS Academic Alliance\\': "'RELLIS Academic Alliance ?'",
+            '2.2\\': 'Certificate',
+            '3.1\\': 'Professional',
             '4.2\\': 'Degree: Masters (M.)',
             '4.4\\': 'Degree: Doctoral (PhD)',
             ' \\': 'Degree: N/A'

@@ -5,12 +5,54 @@ import sys
 import pymsgbox
 import os
 import tkinter as tk
-from pprint import pprint
 from tkinter.filedialog import askopenfilename
-from pathlib import Path
+from tkinter.filedialog import askdirectory
 from typing import Union
 
-def run_target(key: int, apps: int) -> None:
+def find_spe_file() -> Union[str, str]:
+    """Finder method for target .spe file.
+
+    :raises TypeError: Checks for .spe file
+    :return: both file path and file name
+    :rtype: Union[str, str]
+    """
+    
+
+    try:
+        tk.Tk().withdraw()
+        file = askopenfilename()
+        fileBase, fileName = os.path.split(file)
+
+        if not fileName.endswith('.spe'):
+            raise TypeError(f"Can't process {fileName[-3:]} files.")
+        
+    except BaseException as b:
+        ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
+
+    
+    return file, fileName
+
+def find_spe_folder_files() -> Union[list, list]:
+
+    filePath_list = []
+    fileName_list = []
+
+    try:
+        tk.Tk().withdraw()
+        folder = askdirectory()
+        
+        for file in os.listdir(folder):
+            if file.endswith(".spe"):
+                filePath = os.path.join(folder, file)
+                filePath_list.append(os.path.abspath(filePath))
+                fileName_list.append(file)
+
+    except BaseException as b:
+        ctypes.windll.user32.MessageBoxW(0, f"find_spe_folder_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
+
+    return filePath_list, fileName_list
+
+def run_target(file: str, fileName: str, key: int, apps: int) -> None:
     """Second run method for all types of .spe files. Targets a specific
     type of application and student.
 
@@ -21,6 +63,7 @@ def run_target(key: int, apps: int) -> None:
     """
 
     try:
+        print('\n' + file)
         current_dir = os.getcwd()
         csv_folder= os.path.abspath(f'{current_dir}/core/csv')
 
@@ -51,36 +94,13 @@ def run_target(key: int, apps: int) -> None:
 
         report = core.ReportGen(in_file, app_types[key], apps, key)
         report.capture_student_names(apps)
+        # print(report.names)
         report.create_pages_structure(apps)
         report.create_canvas(out_folder, apps)
     
     except BaseException as b:
         print(report.names)
         ctypes.windll.user32.MessageBoxW(0, f"run_target() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
-
-
-def find_spe_file() -> Union[str, str]:
-    """Finder method for target .spe file.
-
-    :raises TypeError: Checks for .spe file
-    :return: both file path and file name
-    :rtype: Union[str, str]
-    """
-    
-
-    try:
-        tk.Tk().withdraw()
-        file = askopenfilename()
-        fileBase, fileName = os.path.split(file)
-
-        if not fileName.endswith('.spe'):
-            raise TypeError(f"Can't process {fileName[-3:]} files.")
-        
-    except BaseException as b:
-        ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
-
-    
-    return file, fileName
 
 def run(file: str, fileName: str) -> None:
     """Main run method for all types of .spe files.
@@ -92,6 +112,7 @@ def run(file: str, fileName: str) -> None:
     """
 
     try:
+        print('\n' + file)
         current_dir = os.getcwd()
         csv_folder= os.path.abspath(f'{current_dir}/core/csv')
 
@@ -126,7 +147,7 @@ def run(file: str, fileName: str) -> None:
 
                 report = core.ReportGen(in_file, app_types[key], apps, key)
                 report.capture_student_names(apps)
-                print(report.names)
+                # print(report.names)
                 report.create_pages_structure(apps)
                 report.create_canvas(out_folder, apps)
 
@@ -136,6 +157,12 @@ def run(file: str, fileName: str) -> None:
 
 
 if __name__ == "__main__":
+    # file, fileName = find_spe_file()
+    # run(file, fileName)
+
     file, fileName = find_spe_file()
-    run(file, fileName)
-    # run_target('domestic', 22)
+    run_target(file, fileName, 'domestic', 8) #0306240a
+
+    # filePath_list, fileName_list = find_spe_folder_files()
+    # for idx in range(len(filePath_list)):
+    #     run(filePath_list[idx], fileName_list[idx])

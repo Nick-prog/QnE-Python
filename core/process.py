@@ -307,3 +307,62 @@ class Process:
         #         modified.append('N/A')
 
         return new_list
+    
+    def process_self(self, _list: list) -> list:
+
+        print(_list)
+
+        new_list = []
+
+        if len(_list) == 4:
+            new_list.append(str(_list[0]).replace(' ', 'Not provided'))
+            if len(_list[1]) == 5:
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
+                new_list.append('Not provided')
+            elif len(_list[1]) == 6:
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
+                new_list.append(str(_list[1][5]).replace('H', 'Establish/Maintain a home'))
+            elif len(_list[1]) == 23:
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[2][3:5]} Months")
+                new_list.append(str(_list[1][5]).replace('C', 'Go to College'))
+                new_list.append(str(_list[1][6]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[1][7:9]))
+                new_list.append(str(_list[1][9]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[1][16]).replace('Y', 'Yes').replace('N', 'No'))
+
+            
+            if len(len(_list[2])) == 8:
+                new_list.append(str(_list[2][-2]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[2][-1]).replace('Y', 'Yes').replace('N', 'No'))
+            elif len(_list[2]) == 14:
+                new_list.append(str(_list[2][1:7]).replace('000000', 'No'))
+                new_list.append(str(_list[2][8:14]).replace('000000', 'No'))
+                new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[2][7]).replace('Y', 'Yes').replace('N', 'No'))
+            elif len(_list[2]) == 16:
+                new_list.append('Not provided')
+                new_list.append(_list[2][0:2])
+                new_list.append(f"{_list[2][2]}--acquired: {_list[2][3:7]},{_list[2][7:9]}")
+                new_list.append(str(_list[2][9]).replace('Y', 'Yes').replace('N', 'No'))
+            elif len(_list[2]) == 17:
+                new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[2][1:3]))
+                new_list.append(str(_list[2][3]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[2][10]).replace('Y', 'Yes').replace('N', 'No'))
+
+
+            if len(_list[3]) == 5:
+                new_list.append(str(_list[3][-1]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append("Not provided")
+                new_list.append(f"{_list[3][0:2]} Years {_list[3][2:4]} Months")
+            elif len(_list[3]) == 14:
+                new_list.append(str(_list[3][6]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[3][-1]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[3][7]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[3][8]).replace('E', 'Gainfully employed'))
+                new_list.append(f"{_list[3][9:11]} Years {_list[3][11:13]} Months")
+
+        return new_list

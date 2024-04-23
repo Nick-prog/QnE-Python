@@ -56,6 +56,7 @@ class ReportGen:
         """
 
         name = []
+        break_found = 0
 
         for col in range(len(self.nested_list[select_app])):
             _str = str(self.nested_list[select_app][col]).split("!")
@@ -63,15 +64,18 @@ class ReportGen:
             syntax = core.ReportStructure(_str)
             conv = syntax.page_structure()
 
+            if conv in ['Start Student Contact Info', 'Start Extra Contact Info','Start Parent 1 Contact Info', 'Start Parent 2 Contact Info']:
+                break_found += 1
 
-            if conv == "First Name" or conv == "Last Name" or conv == "Middle Name" or conv == "Middle Initial" or conv == "Suffix":
+            if break_found == 1 and conv in ["First Name", "Last Name", "Middle Name", "Middle Initial", "Suffix"]:
                 current = "".join(_str[-1]).replace("\\", "")
                 name.append(current)
 
-            if conv == "Place of Birth":
+            if break_found > 1:
                 name.append(str(self.file_count))
                 self.names = name
                 name = []
+                break
 
     def create_pages_structure(self, select_app: int) -> None:
         """Creates pages structure based on distinct separation markdown text.
@@ -361,7 +365,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart+300
+        ystart = self.ystart+450
 
         #Increment
         yadd = 0
@@ -369,7 +373,7 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 22*inch))
+        canvas.setPageSize((8.5*inch, 24*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -396,10 +400,10 @@ class ReportGen:
                         'RES: PREVIOUS ENROLLMENT': s.prev_syntax(target),
                         'RES: BASIS OF CLAIM': s.basis_syntax(target),
                         'RES: HS DIPLOMA OR GED': s.hs_diploma_syntax(target),
-                        'RES: SELF': s.residency_self_syntax(target),
-                        'RES: GUAR': s.residency_guar_syntax(target),
-                        'SPOKEN LANGUAGES': s.spoken_syntax(target),
-                        'CTRY SELF': s.country_syntax(target)
+                        'RES: SELF': s.residency_self_syntax(target, self.names),
+                        'RES: GUAR': s.residency_guar_syntax(target, self.names),
+                        'CTRY SELF': s.country_syntax(target),
+                        'FAMILY OBLIGATION INCOME': s.family_obj_income_syntax(target)
                         }
                     
                     for key, value in long_syntax.items():

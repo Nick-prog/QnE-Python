@@ -53,12 +53,17 @@ class Syntax:
         output = self.p.process_list(temp)
 
         if len(output) > 2:
+            location = output[1]
             dual = str(output[2]).replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
+        elif len(output) == 1:
+            location = "N\A"
+            dual = "N\A"
         else:
+            location = output[1]
             dual = "N\A"
 
         return [f'Previous High School Name: {output[0]}',
-                f'Location: {output[1]}','',
+                f'Location: {location}','',
                 'Did you live or will you have lived in Texas the 36 months leading up',
                 'to high school graduation or completion of the GED?',
                 'Also, when you begin the semester for which you are applying, will you have lived',
@@ -99,25 +104,41 @@ class Syntax:
 
         if _list[3] != 'RES: PREVIOUS ENROLLMENT':
             return
+        
+        end = 0
 
         output = self.p.process_str(_list[-1])
 
-        for idx in range(len(output)):
-            if str(output[idx]).startswith('0') or str(output[idx]).startswith('2'):
-                end_point = idx
+        if output[0] != 'N':
 
-        months_q = str(output[0]).replace('N', 'No').replace('Y', 'Yes') 
-        attend_q = " ".join(output[1:end_point])
+            if not str(output[-1][0]).isdigit():
+                output[-1] = output[-1][1:]
 
-        sem_start = str(output[-1][4]).replace('2', 'Spring').replace('9', 'Fall')
-        sem_end = str(output[-1][9]).replace('2', 'Spring').replace('9', 'Fall')
+            for idx in range(len(output)):
+                for char in output[idx]:
+                    if str(char).isdigit():
+                        end_point = idx
 
-        enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end} {output[-1][5:9]}'
+            months_q = str(output[0]).replace('Y', 'Yes') 
+            attend_q = " ".join(output[1:end_point])
 
-        resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
-        resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
+            for i, char in enumerate(output[-1]):
+                if '0' <= char <= '9':
+                    end = i
 
-        return ['During the 12 months prior to you applying, did you register',
+            if end > 5:
+                sem_start = str(output[-1][4]).replace('2', 'Spring').replace('9', 'Fall')
+                sem_end = str(output[-1][9]).replace('2', 'Spring').replace('9', 'Fall')
+                enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end} {output[-1][5:9]}'
+            else:
+                sem_start = str(output[-1][4]).replace('2', 'Spring').replace('9', 'Fall')
+                sem_end = ''
+                enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end}'
+
+            resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
+            resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
+
+            return ['During the 12 months prior to you applying, did you register',
                 'for a public college or university in Texas?', f'{months_q}', '',
                 'What Texas public college or university did you last attend?',
                 f'{attend_q}', '',
@@ -126,6 +147,9 @@ class Syntax:
                 'or nonresident (out-of-state) tution?', f'{resident_q_1}', '',
                 'If you paid in-state tution at your last institution, was it because you were classified',
                 'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
+
+        return ['During the 12 months prior to you applying, did you register',
+                'for a public college or university in Texas?', 'No']
     
     def basis_syntax(self, _list: list) -> list:
         """Text fully listing the question given from basis of claim information from
@@ -225,47 +249,21 @@ class Syntax:
                 'for Permanent Resident Status has been preliminarily reviewed?',
                 f'{target}']
     
-    def spoken_syntax(self, _list: list) -> list:
-        """Text fully listing the question given from spoken languages information from
+    def country_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from country application information from
         students on ApplyTexas.
 
-        :param _list: list of designated markdown text
+        :param _list: lsit of designated markdown text
         :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
         """
-
-        if _list[3] != 'SPOKEN LANGUAGES':
-            return
-        
-        _new = []
-
-        output = self.p.process_str(_list[-1])
-
-        _new.append(output[0] + output[1])
-        
-        for idx in range(len(output)-2):
-            _new.append(output[idx+2])
-
-        final = ["In addition to English, what languages do you speak fluently?"]
-
-        if len(_new) > 2:
-            for idx in range(len(_new)-2):
-                final.append(f"{_new[idx*2+1]}--Years Spoken: {_new[idx*2][:-2]}")
-        else:
-            final.append(f"{_new[1]}--Years Spoken: {_new[0][:-2]}")
-
-        return final
-    
-    def country_syntax(self, _list: list) -> list:
 
         if _list[3] != 'CTRY SELF':
             return
 
         return ['Of what country are you a citizen?               Country of legal Permanent Residence:']
 
-
-    
     def former_syntax(self, _list: list) -> list:
         """Text fully listing the question given from former student information from
         students on ApplyTexas.
@@ -287,7 +285,31 @@ class Syntax:
                 'Have you previously applied?',
                 f'{target}']
     
+    def family_obj_income_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from family obligation income information from
+        students on ApplyTexas.
+
+        :param _list: list of designated markdown text
+        :type _list: list
+        :return: list of strings to display the proper output
+        :rtype: list
+        """
+
+        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
+
+        return ["(a) I have to work to supplment family income", "Please Explain:",
+                f'{target}']
+        
+    
     def family_income_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from family income information from
+        students on ApplyTexas.
+
+        :param _list: list of designated markdown text
+        :type _list: list
+        :return: list of strings to display the proper output
+        :rtype: list
+        """
 
         target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -296,6 +318,14 @@ class Syntax:
                 f"{target}"]
     
     def family_care_syntax(self, _list: list) -> list:
+        """Text fully listing the question given from family care information from
+        students on ApplyTexas.
+
+        :param _list: list of designated markdown text
+        :type _list: list
+        :return: list of strings to display the proper output
+        :rtype: list
+        """
 
         target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
@@ -303,7 +333,7 @@ class Syntax:
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
-    def residency_self_syntax(self, _list: list) -> list:
+    def residency_self_syntax(self, _list: list, name: str) -> list:
 
         if _list[3] != 'RES: SELF':
             return
@@ -311,43 +341,48 @@ class Syntax:
         output = self.p.process_str(_list[-1])
 
         if output[-1] == '0000':
-            return ['No self information reported...']
+            return
         
-        print(f'SELF: {output}')
+        print(f'SELF: {output}', len(output), name)
+        ans = self.p.process_self(output)
+        print(ans)
 
         return ['Residency Information:',
-                '5. Do you currently live in Texas?', '', '',
+                '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are youa foreign national',
+                'here with a visa eligible to domicile in the United States or are you a Refugee, Asylee,',
+                'Parolee or here under Temporary Protective Status? If so, indicate which:', f'{ans[0]}', '',
+                '5. Do you currently live in Texas?', f'{ans[1]}', '',
                 '6. If you currently live in Texas:',
-                '(a) How long have you been living here?', '', '',
-                '(b) What is your main purpose for being in the state?', '', '',
+                '(a) How long have you been living here?', f'{ans[2]}', '',
+                '(b) What is your main purpose for being in the state?', f'{ans[3]}', '',
                 '7. If you are a member of the U.S. military:',
-                '(a) Is Texas your Home of Record?', '', '',
+                '(a) Is Texas your Home of Record?', f'{ans[4]}', '',
                 '(b) What state is listed as your military legal residence for tax purposes on your Leave', 
-                'and Earnings Statment', '', '',
+                'and Earnings Statment', f'{ans[5]}', '',
                 '8. Do any of the followign apply to you?', 
                 '(a) Do you hold the title (Warranty Deed, Deed of Trust, or other similar instrument that', 
-                'is effective to hold title) to residential real property in Texas?', '', '',
+                'is effective to hold title) to residential real property in Texas?', f'{ans[6]}', '',
                 '(b) Do you have ownership interest and customarily manage a business in Texas without the',
-                'intention of liquidation in the foreseeable future?', '', '',
+                'intention of liquidation in the foreseeable future?', f'{ans[7]}', '',
                 '9. For the past 12 months', 
-                '(a) Have you been gainfully employed in Texas?', '', '',
-                '(b) Have you recieved primary support from a social service agency?', '', '',
-                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', '', '',
-                '(a) If yes, indicate which question could be answered YES by your spouse:', '', '',
-                '(b) How long have you been married to the Texas Resident?', '']
+                '(a) Have you been gainfully employed in Texas?', f'{ans[8]}', '',
+                '(b) Have you recieved primary support from a social service agency?', f'{ans[9]}', '',
+                '10. Are you married to a person who could claim YES to any part of question 8 or 9?', f'{ans[10]}', '',
+                '(a) If yes, indicate which question could be answered YES by your spouse:', f'{ans[11]}', '',
+                '(b) How long have you been married to the Texas Resident?', f'{ans[12]}']
     
-    def residency_guar_syntax(self, _list: list) -> list:
+    def residency_guar_syntax(self, _list: list, name: str) -> list:
 
         if _list[3] != 'RES: GUAR':
             return
 
-        _list = self.p.process_str(_list[-1])
+        output = self.p.process_str(_list[-1])
 
-        if _list[-1] == '0000':
-            return ['No guardian information reported...']
+        if output[-1] == '0000':
+            return
 
-        output = self.p.process_guar(_list)
-        # print(f'GUAR: {output}', len(output))
+        # output = self.p.process_guar(_list)
+        print(f'GUAR: {output}', len(output), name)
         
         return ['Residency Information:',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',

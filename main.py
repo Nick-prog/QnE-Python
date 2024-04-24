@@ -161,7 +161,13 @@ if __name__ == "__main__":
     # run(file, fileName)
 
     file, fileName = find_spe_file()
-    run_target(file, fileName, 'domestic', 8) #0306240a
+    run_target(file, fileName, 'domestic', 24) #0102240a, size 11
+
+    # file, fileName = find_spe_file()
+    # run_target(file, fileName, 'domestic', 6) #0102240a, size 5
+
+    # file, fileName = find_spe_file()
+    # run_target(file, fileName, 'domestic', 29) #0102240a, size 4
 
     # filePath_list, fileName_list = find_spe_folder_files()
     # for idx in range(len(filePath_list)):

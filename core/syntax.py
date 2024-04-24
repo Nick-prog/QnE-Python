@@ -343,9 +343,9 @@ class Syntax:
         if output[-1] == '0000':
             return
         
-        print(f'SELF: {output}', len(output), name)
+        # print(f'SELF: {output}', len(output), name)
         ans = self.p.process_self(output)
-        print(ans)
+        # print(ans)
 
         return ['Residency Information:',
                 '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are youa foreign national',
@@ -381,41 +381,42 @@ class Syntax:
         if output[-1] == '0000':
             return
 
-        # output = self.p.process_guar(_list)
         print(f'GUAR: {output}', len(output), name)
+        ans = self.p.process_guar(output)
+        print(ans)
         
         return ['Residency Information:',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',
-                'Citizen?', '',
+                'Citizen?', f'{ans[0]}', '',
                 '2. If no, does the parent or legal guardian upopn whom you base your claim residency',
-                'hold Permanent Residence Status (valid I-551) for the U.S.?' '',
+                'hold Permanent Residence Status (valid I-551) for the U.S.?' f'{ans[1]}', '',
                 '3. Is this parent or legal guardian a foreign national whose application for Permanent',
-                'Resident Status has been preliminarily reviewed?', '',
+                'Resident Status has been preliminarily reviewed?', f'{ans[2]}', '',
                 '4. is this parent or legal guardian a foreign national here with a visa eligible to',
                 'domicile in the United States or are you a Refugee, Asylee, Parolee or here under',
-                'Temporary Protective Status? If so, indicate which:', '',
-                '5. Does this parent or legal guardian currently live in Texas?', '',
+                'Temporary Protective Status? If so, indicate which:', f'{ans[3]}', '',
+                '5. Does this parent or legal guardian currently live in Texas?', f'{ans[4]}', '',
                 '6. If your parent or legal guardian currently live in Texas:', '',
-                '(a) How long has he or she been living here?', '',
-                "(b) What is your parent's or legal guardian's main purpose for being in the state?", '',
-                '7. If your parent or legal guardian is a member of the U.S. military:',
-                '(a) Is Texas his or her Home of Record?', '',
+                '(a) How long has he or she been living here?', f'{ans[5]}', '',
+                "(b) What is your parent's or legal guardian's main purpose for being in the state?", f'{ans[6]}', '',
+                '7. If your parent or legal guardian is a member of the U.S. military:', '',
+                '(a) Is Texas his or her Home of Record?', f'{ans[7]}', '',
                 '(b) What state is listed as his or her military legal residence for tax purposes on his or',
-                'her Leave and Earnings Statement?', '',
-                '8. Do any of the following apply ot your parent or legal guardian?',
+                'her Leave and Earnings Statement?', f'{ans[8]}', '',
+                '8. Do any of the following apply ot your parent or legal guardian?', '',
                 '(a) Does your parent or legal guardian hold the title (Warranty Deed, Deed of Trust, or',
                 'other similar instrument that is effective to hold title) to residential real property in',
-                'Texas?', '',
+                'Texas?', f'{ans[9]}', '',
                 '(b) Does your parent or legal guardian have ownership interest and customarily manage a',
-                'business in Texas without the intention of liquidation in the foreseeable future?', '',
-                '9. For the past 12 months',
-                '(a) Has your parent or legal guardian been gainfully employed in Texas?', '',
+                'business in Texas without the intention of liquidation in the foreseeable future?', f'{ans[10]}', '',
+                '9. For the past 12 months', '',
+                '(a) Has your parent or legal guardian been gainfully employed in Texas?', f'{ans[11]}', '',
                 '(b) Has your parent or legal guardian received primary support from a social service',
-                'agency?', "",
+                'agency?', f'{ans[12]}', '',
                 '10. Is your parent or legal guardian married to a person who could claim "yes" to any part',
-                'of question (8) or (9)?', '',
+                'of question (8) or (9)?', f'{ans[13]}', '',
                 '(a) If yes, indicate which question could be answered "yes" by your parent or legal',
-                "guardian's spouse:", '',
-                '(b) How long has your parent or legal guardian been married to the Texas Resident?', '',
+                "guardian's spouse:", f'{ans[14]}', '',
+                '(b) How long has your parent or legal guardian been married to the Texas Resident?', f'{ans[15]}',
                 ]
 

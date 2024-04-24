@@ -34,13 +34,13 @@ class Process:
         return largest
     
 
-    def find_largest_index(self, input: list) -> int:
-        """Based on the largest row found, returns the index with the row
+    def find_largest_char(self, input: list) -> int:
+        """Based on the largest row found, returns the char with the row
         from a given nested list.
 
         :param input: nested list of varying length
         :type input: list
-        :return: index of largest row
+        :return: char of largest row
         :rtype: int
         """
 
@@ -48,9 +48,9 @@ class Process:
 
         for row in range(len(input)):
             if largest == len(input[row]):
-                index = row
+                char = row
 
-        return index
+        return char
 
 
     def read_csv_file(self) -> list:
@@ -77,7 +77,7 @@ class Process:
         return self.data
     
     def create_data_list(self, input: list) -> Union[list, list]:
-        """Creation of two data list based on destinction found at index 5
+        """Creation of two data list based on destinction found at char 5
         for each row.
 
         :param input: nested list of rows found
@@ -109,8 +109,8 @@ class Process:
         :rtype: list
         """
 
-        template_index = self.find_largest_index(input)
-        template_list = input[template_index]
+        template_char = self.find_largest_char(input)
+        template_list = input[template_char]
         
         # Initialize an empty result list
         result_nested_list = []
@@ -197,7 +197,7 @@ class Process:
         :return: updated nested list of same length
         :rtype: list
         """
-        template_idx = self.find_largest_index(input)
+        template_idx = self.find_largest_char(input)
         template_list = input[template_idx]
         template_markdown = []
         
@@ -281,78 +281,141 @@ class Process:
     
     def process_guar(self, _list: list) -> list:
 
-        # example_list = ['N', 'Y', 'NONE OF THE ABOVE', 'Y2535H', 'N000000N000000', '000000NN', '0000N']
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes',
+            'K': 'Not provided',
+            'H': 'Establish/Maintain a home',
+            '000000': 'Not provided'
+        }
+        
+        if len(_list) == 11:
+            _list.insert(2, ' '.join(_list[2:7]))
+            del(_list[3:8])
+        elif len(_list) == 5:
+            _list.insert(1, 'Not provided')
+            _list.insert(2, 'Not provided')
+        elif len(_list) == 4:
+            _list.insert(1, 'Not provided')
+            _list.insert(2, 'Not provided')
+            if len(_list[-1]) > 13:
+                val = _list[-1]
+                _list.insert(-1, val[:8])
+                _list[-1] = val[8:]
 
-        new_list = []
-        # modified = []
-        _str = ''
-        skip_idx = 0
+        if len(_list[3]) == 5:
+            _list[3] += 'K'
+        elif len(_list[3]) == 19:
+            _list[3] += 'K'
+            val = _list[3]
+            del(_list[3])
+            _list.insert(3, val[:6])
+            _list.insert(4, val[6:])
+        elif len(_list[3]) == 20:
+            val = _list[3]
+            del(_list[3])
+            _list.insert(3, val[:6])
+            _list.insert(4, val[6:])
 
-        for i, item in enumerate(_list):
-            if item == 'NONE':
-                _str += f'{_list[i]} {_list[i+1]} {_list[i+2]} {_list[i+3]}'
-                skip_idx = i+3
-                new_list.append(_str)
-            elif i > skip_idx or i == 0:
-                new_list.append(item)
+        val = _list[3]
+        del(_list[3])
+        _list.insert(3, val[0])
+        _list.insert(4, f'{val[3:5]} months; {val[1:3]} years')
+        _list.insert(5, val[5])
+        _list.insert(6, 'K')
+        _list.insert(7, 'K')
+        
+        val = _list[8]
+        del(_list[8])
+        _list.insert(8, f'{val[0]} -- {val[1:3]}/{val[3:7]}')
+        _list.insert(9, val[7])
 
-        # print(new_list)
-        # given_index = 0
+        val = _list[10]
+        final = _list[11]
+        del(_list[10])
+        del(_list[10])
+        _list.insert(10, val[-1])
+        _list.insert(11, final[-1])
+        _list.insert(12, val[-2])
+        _list.insert(13, val[:-2])
+        _list.insert(14, f'{final[2:4]} months; {final[:2]} years')
 
-        # for item in example_list:
-        #     if given_index < len(new_list) and len(new_list[given_index]) == len(item) or len(new_list[given_index]) == len(item)-1:
-        #         modified.append(new_list[given_index])
-        #         given_index += 1
-        #     else:
-        #         modified.append('N/A')
+        _list.insert(2, 'K')
 
-        return new_list
+
+
+
+
+
+        for idx in range(len(_list)):
+            for key, value in syntax.items():
+                if key == _list[idx]:
+                    _list[idx] = value
+                    break
+
+        return _list
     
     def process_self(self, _list: list) -> list:
 
-        print(_list)
-
         new_list = []
 
-        if len(_list) == 4:
+        if len(_list) == 8 or len(_list) == 9:
+            new_list.append(' '.join(_list[1:5]))
+            del(_list[1:5])
+        elif len(_list[1]) == 23:
+                _list.insert(2, _list[1][6:])
+                _list[1] = _list[1][:6]
+                new_list.append(str(_list[0]).replace(' ', 'Not provided'))
+        else:
             new_list.append(str(_list[0]).replace(' ', 'Not provided'))
+
+        if len(_list) == 4:
             if len(_list[1]) == 5:
                 new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
                 new_list.append('Not provided')
             elif len(_list[1]) == 6:
-                new_list.append(str(_list[1][0]).replace('Y', 'Yes'))
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
-                new_list.append(str(_list[1][5]).replace('H', 'Establish/Maintain a home'))
+                new_list.append(str(_list[1][5]).replace('C', 'Go to College').replace('H', 'Establish/Maintain a home').replace('W', 'Work Assignment'))
             elif len(_list[1]) == 23:
                 new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
-                new_list.append(f"{_list[1][1:3]} Years {_list[2][3:5]} Months")
-                new_list.append(str(_list[1][5]).replace('C', 'Go to College'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
+                new_list.append(str(_list[1][5]).replace('C', 'Go to College').replace('H', 'Establish/Maintain a home').replace('W', 'Work Assignment'))
                 new_list.append(str(_list[1][6]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(str(_list[1][7:9]))
-                new_list.append(str(_list[1][9]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f'{_list[1][9]}--acquired: {_list[1][14:16]}, {_list[1][10:14]}')
                 new_list.append(str(_list[1][16]).replace('Y', 'Yes').replace('N', 'No'))
-
             
-            if len(len(_list[2])) == 8:
+            if len(_list[2]) == 8:
                 new_list.append(str(_list[2][-2]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(str(_list[2][-1]).replace('Y', 'Yes').replace('N', 'No'))
             elif len(_list[2]) == 14:
-                new_list.append(str(_list[2][1:7]).replace('000000', 'No'))
-                new_list.append(str(_list[2][8:14]).replace('000000', 'No'))
-                new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
-                new_list.append(str(_list[2][7]).replace('Y', 'Yes').replace('N', 'No'))
+                if _list[2][1:7] == '000000':
+                    new_list.append('Not provided')
+                    new_list.append('Not provided')
+                    new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
+                    new_list.append(f'{_list[2][7]}--acquired: {_list[2][12:]}, {_list[2][8:12]}')
+                elif _list[2][8:] == '000000':
+                    new_list.append('Not provided')
+                    new_list.append('Not provided')
+                    new_list.append(f'{_list[2][0]}--acquired: {_list[2][5:7]}, {_list[2][1:5]}')
+                    new_list.append(str(_list[2][7]).replace('Y', 'Yes').replace('N', 'No'))
+                else:
+                    new_list.append('Not provided')
+                    new_list.append('Not provided')
+                    new_list.append(f'{_list[2][0]}--acquired: {_list[2][5:7]}, {_list[2][1:5]}')
+                    new_list.append(f'{_list[2][7]}--acquired: {_list[2][12:]}, {_list[2][8:12]}')
             elif len(_list[2]) == 16:
                 new_list.append('Not provided')
                 new_list.append(_list[2][0:2])
-                new_list.append(f"{_list[2][2]}--acquired: {_list[2][3:7]},{_list[2][7:9]}")
+                new_list.append(f"{_list[2][2]}--acquired: {_list[2][3:7]}, {_list[2][7:9]}")
                 new_list.append(str(_list[2][9]).replace('Y', 'Yes').replace('N', 'No'))
             elif len(_list[2]) == 17:
                 new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(str(_list[2][1:3]))
-                new_list.append(str(_list[2][3]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f'{_list[2][3]}--acquired: {_list[2][8:10]}, {_list[2][4:8]}')
                 new_list.append(str(_list[2][10]).replace('Y', 'Yes').replace('N', 'No'))
-
 
             if len(_list[3]) == 5:
                 new_list.append(str(_list[3][-1]).replace('Y', 'Yes').replace('N', 'No'))
@@ -362,7 +425,43 @@ class Process:
                 new_list.append(str(_list[3][6]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(str(_list[3][-1]).replace('Y', 'Yes').replace('N', 'No'))
                 new_list.append(str(_list[3][7]).replace('Y', 'Yes').replace('N', 'No'))
-                new_list.append(str(_list[3][8]).replace('E', 'Gainfully employed'))
+                new_list.append(str(_list[3][8]).replace('E', 'Gainfully employed').replace('P', 'Owns Property'))
                 new_list.append(f"{_list[3][9:11]} Years {_list[3][11:13]} Months")
+
+        elif len(_list) == 5:
+
+            if len(_list[1]) == 5:
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
+                new_list.append('Not provided')
+            elif len(_list[1]) == 6:
+                new_list.append(str(_list[1][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(f"{_list[1][1:3]} Years {_list[1][3:5]} Months")
+                new_list.append(str(_list[1][5]).replace('C', 'Go to College').replace('H', 'Establish/Maintain a home').replace('W', 'Work Assignment'))
+
+            if len(_list[2]) == 14:
+                new_list.append(str(_list[2][-3:]).replace('000', 'Not provided'))
+                new_list.append(str(_list[2][-6:-3]).replace('000', 'Not provided'))
+                new_list.append(f'{_list[2][0]}--acquired: {_list[2][5:7]}, {_list[2][1:5]}')
+                new_list.append(str(_list[2][7]).replace('Y', 'Yes').replace('N', 'No'))
+            elif len(_list[2]) == 16:
+                new_list.append('Not provided')
+                new_list.append(str(_list[2][0:2]))
+                new_list.append(f'{_list[2][2]}--acquired: {_list[2][7:9]}, {_list[2][3:7]}')
+                new_list.append(str(_list[2][9]).replace('Y', 'Yes').replace('N', 'No'))
+            elif len(_list[2]) == 17:
+                new_list.append(str(_list[2][0]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[2][1:3]))
+                new_list.append(f'{_list[2][3]}--acquired: {_list[2][8:10]}, {_list[2][4:8]}')
+                new_list.append(str(_list[2][10]).replace('Y', 'Yes').replace('N', 'No'))
+
+            if len(_list[3]) == 8:
+                new_list.append(str(_list[3][-2]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[4][-1]).replace('Y', 'Yes').replace('N', 'No'))
+                new_list.append(str(_list[3][:6]).replace('000000', 'No'))
+
+            if len(_list[4]) == 5:
+                new_list.append(str(_list[3][-1]).replace('N', 'Not provided'))
+                new_list.append(f"{_list[4][:2]} Years {_list[4][2:4]} Months")
 
         return new_list

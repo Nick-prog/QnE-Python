@@ -16,7 +16,14 @@ class Values:
 
         target = _str[3]
 
-        output = str(_str[-1]).replace('Y', 'Yes').replace('N', 'No')
+        transform_dict = {
+            'Y': 'Yes',
+            'N': 'No',
+            'Y\\': 'Yes',
+            'N\\': 'No',
+        }
+
+        output = transform_dict.get(_str[-1], _str[-1])
 
         output = output.strip()
 
@@ -32,7 +39,6 @@ class Values:
             'REVERSE TRANSFER': f'Reverse transfer: {output}',
             'APPLICATION SHARING': f'Application sharing on denied admission: {output}',
             'FORMER STUDENT': None,
-            'VET STATUS': f'U.S. Military-Veteran Status? {output}',
             'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {output}',
             'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {output}',
             'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution? ',
@@ -64,11 +70,11 @@ class Values:
             'HS GED TYPE': None,
             'PARENT 1 ED LEVEL RELATIONSHIP': None,
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
-            'PARENT OR GUARDIAN INFO': f'Education Level: ',
+            'PARENT OR GUARDIAN INFO': None,
             'CTRY SELF': f'Country: {output}',
-            'FAMILY': None, # f'Family? {output}',
+            'FAMILY': None,
             'RES: PREVIOUS ENROLLMENT': None,
-            'RES: RESIDENCY CLAIM': f'What state or country are you a resident of: {output}',
+            'RES: RESIDENCY CLAIM': f'Of what state or country are you a resident? ',
             'RES: HS DIPLOMA OR GED': None,
             'RES: BASIS OF CLAIM': None,
             'RES: SELF': None,
@@ -88,6 +94,8 @@ class Values:
             'OTHER LAST NAME1': f"Other last name: {output}",
             'OTHER SUFFIX NAME1': f"Other suffix: {output}",
             'FAMILY OBLIGATION INCOME': None,
+            'ALIEN APP/INT': None,
+            'VET STATUS': None,
         }
 
         dictionaries = [med_value, long_value]
@@ -95,7 +103,9 @@ class Values:
         for dicts in dictionaries:
             for key, value in dicts.items():
                 if key == target:
-                    if target == 'ULTIMATE DEGREE SOUGHT':
+                    if target == 'RES: RESIDENCY CLAIM':
+                        return value + self.claim_value(_str)
+                    elif target == 'ULTIMATE DEGREE SOUGHT':
                         return value + self.additional_value(_str)
                     
                     return value
@@ -259,3 +269,10 @@ class Values:
         for key, value in gender_.items():
            if key == target:
                return value
+            
+    def claim_value(self, _str: str) -> str:
+
+        target = str(_str[-1]).replace("\\", "")
+        target = target.strip()
+
+        return f'{target[:3]}--{target[3:]}'

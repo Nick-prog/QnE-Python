@@ -16,7 +16,6 @@ def find_spe_file() -> Union[str, str]:
     :return: both file path and file name
     :rtype: Union[str, str]
     """
-    
 
     try:
         tk.Tk().withdraw()
@@ -94,7 +93,7 @@ def run_target(file: str, fileName: str, key: int, apps: int) -> None:
 
         report = core.ReportGen(in_file, app_types[key], apps, key)
         report.capture_student_names(apps)
-        # print(report.names)
+        print(report.names)
         report.create_pages_structure(apps)
         report.create_canvas(out_folder, apps)
     
@@ -147,7 +146,7 @@ def run(file: str, fileName: str) -> None:
 
                 report = core.ReportGen(in_file, app_types[key], apps, key)
                 report.capture_student_names(apps)
-                # print(report.names)
+                print(report.names)
                 report.create_pages_structure(apps)
                 report.create_canvas(out_folder, apps)
 
@@ -161,13 +160,7 @@ if __name__ == "__main__":
     # run(file, fileName)
 
     file, fileName = find_spe_file()
-    run_target(file, fileName, 'domestic', 24) #0102240a, size 11
-
-    # file, fileName = find_spe_file()
-    # run_target(file, fileName, 'domestic', 6) #0102240a, size 5
-
-    # file, fileName = find_spe_file()
-    # run_target(file, fileName, 'domestic', 29) #0102240a, size 4
+    run_target(file, fileName, 'domestic', 59)
 
     # filePath_list, fileName_list = find_spe_folder_files()
     # for idx in range(len(filePath_list)):

@@ -156,7 +156,8 @@ class ReportStructure:
             'Y': 'Yes',
             'N': 'No',
             'Y\\': 'Yes',
-            'N\\': 'No'
+            'N\\': 'No',
+            'NO RESIDENCY COMMENTS INCLUDED\\': None
         }
 
         output = transform_dict.get(_str[-1], _str[-1])

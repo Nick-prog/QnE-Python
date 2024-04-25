@@ -293,7 +293,6 @@ class ReportGen:
             'PERM COUNTRY INFO': "Mailing/Permanent Address:",
             'CURR COUNTY INFO': "Physical Address:",
             'CURR COUNTRY INFO': "Physical Address:",
-            'ALIEN APP/INT\\': "",
             'CUR COLLEGE ATT': 'Educational Information (Colleges Attended):',
             'CONSERVATORSHIP SWITCHES': "",
             'FORMER STUDENT': "",
@@ -316,7 +315,6 @@ class ReportGen:
                         'HS GED TYPE': s.hs_ged_syntax(target),
                         'DUAL CREDIT': s.dual_syntax(target),
                         'CONSERVATORSHIP SWITCHES': s.conservator_syntax(target),
-                        'ALIEN APP/INT\\': s.alien_syntax(target),
                         'FORMER STUDENT': s.former_syntax(target)
                         }
 
@@ -365,7 +363,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart+450
+        ystart = self.ystart+500
 
         #Increment
         yadd = 0
@@ -373,7 +371,7 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 24*inch))
+        canvas.setPageSize((8.5*inch, 25*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
@@ -400,10 +398,11 @@ class ReportGen:
                         'RES: PREVIOUS ENROLLMENT': s.prev_syntax(target),
                         'RES: BASIS OF CLAIM': s.basis_syntax(target),
                         'RES: HS DIPLOMA OR GED': s.hs_diploma_syntax(target),
-                        'RES: SELF': s.residency_self_syntax(target, self.names),
-                        'RES: GUAR': s.residency_guar_syntax(target, self.names),
+                        'RES: SELF': s.residency_self_syntax(target),
+                        'RES: GUAR': s.residency_guar_syntax(target),
                         'CTRY SELF': s.country_syntax(target),
-                        'FAMILY OBLIGATION INCOME': s.family_obj_income_syntax(target)
+                        'FAMILY OBLIGATION INCOME': s.family_obj_income_syntax(target),
+                        'VET STATUS': s.vet_syntax(target)
                         }
                     
                     for key, value in long_syntax.items():

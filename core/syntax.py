@@ -1,4 +1,5 @@
 import core
+import re
 
 class Syntax:
 
@@ -8,7 +9,6 @@ class Syntax:
         """
 
         self.p = core.Process()
-        self.example_guar = ['Y', 'Y', 'N', 'NONE', 'OF', 'THE', 'ABOVE', 'Y2535H', 'N000000N000000', '000000NN', '0000N']
 
     def payment_syntax(self, _list: list) -> list:
         """Text fully listing the question given for payment information from students
@@ -46,29 +46,31 @@ class Syntax:
 
         if _list[3] != 'RES: HS DIPLOMA OR GED':
             return
+        
+        diploma = {
+            'N': 'No',
+            'Y': 'Yes',
+        }
 
         target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
-        temp = str(target).split(" ")
+        target = str(target).split(" ")
         
-        output = self.p.process_list(temp)
+        output = self.p.process_list(target)
 
-        if len(output) > 2:
-            location = output[1]
-            dual = str(output[2]).replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
-        elif len(output) == 1:
-            location = "N\A"
-            dual = "N\A"
-        else:
-            location = output[1]
-            dual = "N\A"
+        while len(output) < 4:
+            output.append('Not provided')
+
+        for idx in range(len(output)):
+            for key, value in diploma.items():
+                if key == output[idx]:
+                    output[idx] = value
 
         return [f'Previous High School Name: {output[0]}',
-                f'Location: {location}','',
+                f'Location: {output[1]}','',
                 'Did you live or will you have lived in Texas the 36 months leading up',
-                'to high school graduation or completion of the GED?',
+                'to high school graduation or completion of the GED?', f'{output[2]}', '',
                 'Also, when you begin the semester for which you are applying, will you have lived',
-                'in Texas for the previous 12 months?',
-                f'{dual}']
+                'in Texas for the previous 12 months?', f'{output[3]}']
     
     def hs_ged_syntax(self, _list: list) -> list:
         """Text fully listing the question given for HS GED information from students 
@@ -170,12 +172,29 @@ class Syntax:
         else:
             target = "N\A"
 
-        target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes',
+            'P': 'Parent or Legal Guardian',
+            'O': 'Other',
+        }
 
-        return ['Do you file your own federal income tax as an independent tax payer?',
+        target = re.findall('[A-Z][^A-Z]*', target)
+        
+        for idx in range(len(target)):
+            for key, value in syntax.items():
+                if key == target[idx]:
+                    target[idx] = value
+        
+        while len(target) < 3:
+            target.append('N\A')
+
+        target[2] = ", ".join(target[2:])
+
+        return ['Do you file your own federal income tax as an independent tax payer?', f'{target[0]}', '',
                 'Are you claimed as a dependent or are you eligible to be claimed as a dependent',
-                'by a parent or court-appointed legal guardian?',
-                f'{target}']
+                'by a parent or court-appointed legal guardian?', f'{target[1]}', '',
+                'Who provides the majority of your suppport?', f'{target[2]}']
     
     def comment_syntax(self) -> list:
         """Text fully listing the question given from resident comments information from
@@ -228,25 +247,6 @@ class Syntax:
 
         return ['At anytime in your life were you placed in foster care or adopted from foster care in Texas?',
                 'If admitted, would your like to receive student foster care info and benefits?',
-                f'{target}']
-    
-    def alien_syntax(self, _list: list) -> list:
-        """Text fully listing the question given from alien applicaiton information from
-        students on ApplyTexas.
-
-        :param _list: list of designated markdown text 
-        :type _list: list
-        :return: list of strings to display the proper output
-        :rtype: list
-        """
-
-        if _list[3] != 'ALIEN APP/INT\\':
-            return
-        
-        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
-
-        return ['Is this parent or legal guardian a foreign national whose application',
-                'for Permanent Resident Status has been preliminarily reviewed?',
                 f'{target}']
     
     def country_syntax(self, _list: list) -> list:
@@ -333,7 +333,40 @@ class Syntax:
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
-    def residency_self_syntax(self, _list: list, name: str) -> list:
+    def vet_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'VET STATUS':
+            return
+
+        syntax = {
+            '1': 'Veteran',
+            '2': 'Current US Miliary Service Member',
+            '3': 'Spouse or Dependen of Veteran or Current Service Member',
+            '4': 'Spouce or dependent of, or a veteran or current U.S. military servicemember with injury or illness resulting from military service (service-connected injury/illness)',
+            '5': 'Spouse or dependent of deceased US servicemember'
+        }
+        print(_list, '\n')
+
+        target = str(_list[-1]).replace("\\", "")
+
+        output = [str(d) for d in target]
+        print(output)
+
+        
+        for idx in range(len(output)):
+            for key, value in syntax.items():
+                if key == output[idx]:
+                    output[idx] = value
+
+        
+        if len(output) == 1:
+            return ['U.S. Military-Veteran Status?', 
+                    f'{output}']
+        elif len(output) == 2:
+            return ['U.S. Military-Veteran Status?', 
+                    f'{output[0]}', f'{output[1]}']
+    
+    def residency_self_syntax(self, _list: list) -> list:
 
         if _list[3] != 'RES: SELF':
             return
@@ -343,9 +376,7 @@ class Syntax:
         if output[-1] == '0000':
             return
         
-        # print(f'SELF: {output}', len(output), name)
         ans = self.p.process_self(output)
-        # print(ans)
 
         return ['Residency Information:',
                 '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are youa foreign national',
@@ -371,7 +402,7 @@ class Syntax:
                 '(a) If yes, indicate which question could be answered YES by your spouse:', f'{ans[11]}', '',
                 '(b) How long have you been married to the Texas Resident?', f'{ans[12]}']
     
-    def residency_guar_syntax(self, _list: list, name: str) -> list:
+    def residency_guar_syntax(self, _list: list) -> list:
 
         if _list[3] != 'RES: GUAR':
             return
@@ -381,15 +412,13 @@ class Syntax:
         if output[-1] == '0000':
             return
 
-        print(f'GUAR: {output}', len(output), name)
         ans = self.p.process_guar(output)
-        print(ans)
         
         return ['Residency Information:',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',
                 'Citizen?', f'{ans[0]}', '',
                 '2. If no, does the parent or legal guardian upopn whom you base your claim residency',
-                'hold Permanent Residence Status (valid I-551) for the U.S.?' f'{ans[1]}', '',
+                'hold Permanent Residence Status (valid I-551) for the U.S.?', f'{ans[1]}', '',
                 '3. Is this parent or legal guardian a foreign national whose application for Permanent',
                 'Resident Status has been preliminarily reviewed?', f'{ans[2]}', '',
                 '4. is this parent or legal guardian a foreign national here with a visa eligible to',

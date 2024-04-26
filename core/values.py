@@ -32,12 +32,12 @@ class Values:
             'IB DIPLOMA': f'IB Diploma: {output}',
             'RESUME SWITCH': f'Resume: {output}',
             'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}',
-            'CURRENT ACADEMIC SUSP': f'Are you currently on academic suspension from the last college or univeristy attended? {output}',
-            'HOME SCHOOLED': f'Where you home schooled: {output}',
-            'COLLEGE WORK': f'Will you have college credit hours by high school graduation date, if so how many? {output}',
-            'RES: DETERM': f'Applytexas Residency Determination: {output}',
-            'REVERSE TRANSFER': f'Reverse transfer: {output}',
-            'APPLICATION SHARING': f'Application sharing on denied admission: {output}',
+            'CURRENT ACADEMIC SUSP': None,
+            'HOME SCHOOLED': None,
+            'COLLEGE WORK': None,
+            'RES: DETERM': None,
+            'REVERSE TRANSFER': None,
+            'APPLICATION SHARING': None,
             'FORMER STUDENT': None,
             'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {output}',
             'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {output}',
@@ -49,7 +49,7 @@ class Values:
             'CUR COLLEGE CRS': f"Present semester course to be completed: {output}",
             'CUR COLLEGE ATT': f"Current college attending code: {output}",
             'COLLEGE WORK IN CLASSROOM': None,
-            'FAMILY OBLIGATIONS': f'Do you have family obligations that keep you from participating in extracurricular activities? {output}',
+            'FAMILY OBLIGATIONS': None,
             'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}',
             'NATIVE LANGUAGE': f'What languages do you speak fluently? {output}',
         }
@@ -74,7 +74,7 @@ class Values:
             'CTRY SELF': f'Country: {output}',
             'FAMILY': None,
             'RES: PREVIOUS ENROLLMENT': None,
-            'RES: RESIDENCY CLAIM': f'Of what state or country are you a resident? ',
+            'RES: RESIDENCY CLAIM': None,
             'RES: HS DIPLOMA OR GED': None,
             'RES: BASIS OF CLAIM': None,
             'RES: SELF': None,
@@ -103,9 +103,7 @@ class Values:
         for dicts in dictionaries:
             for key, value in dicts.items():
                 if key == target:
-                    if target == 'RES: RESIDENCY CLAIM':
-                        return value + self.claim_value(_str)
-                    elif target == 'ULTIMATE DEGREE SOUGHT':
+                    if target == 'ULTIMATE DEGREE SOUGHT':
                         return value + self.additional_value(_str)
                     
                     return value
@@ -130,7 +128,7 @@ class Values:
             'FAMILY OBLIGATION INCOME\\': None,
             'FAMILY OBLIGATION CARE\\': None,
             'FAMILY OBLIGATION OTHER\\': None, # f'{_str[-1]}',
-            'TREX TRANSCRIPT REQUESTED\\': f'Transcript sharing consent: {_str[-1]}',
+            'TREX TRANSCRIPT REQUESTED\\': None, # f'Transcript sharing consent: {_str[-1]}',
             'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?",
             'CONTACT AT WORK\\': None,
             'RES: BASIS OF CLAIM\\': None,
@@ -269,10 +267,3 @@ class Values:
         for key, value in gender_.items():
            if key == target:
                return value
-            
-    def claim_value(self, _str: str) -> str:
-
-        target = str(_str[-1]).replace("\\", "")
-        target = target.strip()
-
-        return f'{target[:3]}--{target[3:]}'

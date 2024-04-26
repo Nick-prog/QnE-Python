@@ -378,9 +378,9 @@ class ReportGen:
                            'Name Verification Notice', 'Conduct Question: Conviction',
                            'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?',
                            'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
-                           'End of App', 'Long REQ']
+                           'End of App']
         
-        req_start = ['Request and/or Answer', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
+        req_start = ['Request and/or Answer', 'Long REQ', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
 
         _list = []
 
@@ -389,11 +389,12 @@ class ReportGen:
             _str = self.nested_list[select_app][current_idx]
             struct = core.ReportStructure(_str)
 
-            if val in paragraph_start or val in req_start:
+            if val in paragraph_start:
+                yadd -= 10
+            elif val in req_start:
                 target = str(_str).split("!")
-                if val == 'Long REQ' and len(target) == 6:
 
-                    long_syntax = {
+                req_syntax = {
                         'PAYMENT RECONCILIATION': s.payment_syntax(target),
                         'RES: PREVIOUS ENROLLMENT': s.prev_syntax(target),
                         'RES: BASIS OF CLAIM': s.basis_syntax(target),
@@ -402,29 +403,22 @@ class ReportGen:
                         'RES: GUAR': s.residency_guar_syntax(target),
                         'CTRY SELF': s.country_syntax(target),
                         'FAMILY OBLIGATION INCOME': s.family_obj_income_syntax(target),
-                        'VET STATUS': s.vet_syntax(target)
-                        }
-                    
-                    for key, value in long_syntax.items():
-                        if target[3] == key:
-                            _list = value
-                            yadd -= 10
-                
-                    if target[3] == 'PAYMENT RECONCILIATION':
-                        canvas.drawString(xstart, ystart+yadd, "Application Fee Information:")
-                        yadd -= 10
-
-                elif val == 'Request and/or Answer' and len(target) >= 3:
-
-                    req_syntax = {
+                        'VET STATUS': s.vet_syntax(target),
+                        'HOME SCHOOLED': s.home_syntax(target),
                         'RES: COMMENTS\\': s.comment_syntax(),
                         'RES: BASIS OF CLAIM\\': s.basis_syntax(target),
+                        'CURRENT ACADEMIC SUSP': s.suspension_syntax(target),
+                        'COLLEGE WORK': s.college_work_syntax(target),
+                        'RES: RESIDENCY CLAIM': s.residency_claim_syntax(target),
+                        'RES: DETERM': s.residency_determ_syntax(target),
+                        'FAMILY OBLIGATIONS': s.family_obj_syntax(target),
+                        'APPLICATION SHARING': s.app_share_syntax(target)
                         }
 
-                    for key, value in req_syntax.items():
-                        if target[3] == key:
-                            _list = value
-                            yadd -= 10
+                for key, value in req_syntax.items():
+                    if target[3] == key:
+                        _list = value
+                        yadd -= 10
 
                 if _list != None:
                     for x in range(len(_list)):
@@ -432,11 +426,12 @@ class ReportGen:
                         yadd -= 10
 
                 _list = []
-
-                yadd -= 10
+                # yadd -= 10
 
             conv = struct.transform_page(val)
-
+            # if val == 'Med REQ':
+            #     yadd -= 10
+     
             if conv != "None":
                 canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
                 # canvas.drawString(xstart, ystart+yadd, val + _str)

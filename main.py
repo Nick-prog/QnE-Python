@@ -159,9 +159,9 @@ if __name__ == "__main__":
     # file, fileName = find_spe_file()
     # run(file, fileName)
 
-    file, fileName = find_spe_file()
-    run_target(file, fileName, 'domestic', 59)
+    # file, fileName = find_spe_file()
+    # run_target(file, fileName, 'domestic', 10)
 
-    # filePath_list, fileName_list = find_spe_folder_files()
-    # for idx in range(len(filePath_list)):
-    #     run(filePath_list[idx], fileName_list[idx])
+    filePath_list, fileName_list = find_spe_folder_files()
+    for idx in range(len(filePath_list)):
+        run(filePath_list[idx], fileName_list[idx])

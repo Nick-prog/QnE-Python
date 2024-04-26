@@ -50,6 +50,7 @@ class Syntax:
         diploma = {
             'N': 'No',
             'Y': 'Yes',
+            'K': 'Not provided'
         }
 
         target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
@@ -57,8 +58,16 @@ class Syntax:
         
         output = self.p.process_list(target)
 
-        while len(output) < 4:
-            output.append('Not provided')
+        if len(output) == 2:
+            output.append('KK')
+
+        while len(output[-1]) != 2:
+            output[-1] += 'K'
+
+        val = output[-1]
+        del(output[-1])
+        output.append(val[0])
+        output.append(val[1])
 
         for idx in range(len(output)):
             for key, value in diploma.items():
@@ -69,7 +78,7 @@ class Syntax:
                 f'Location: {output[1]}','',
                 'Did you live or will you have lived in Texas the 36 months leading up',
                 'to high school graduation or completion of the GED?', f'{output[2]}', '',
-                'Also, when you begin the semester for which you are applying, will you have lived',
+                'When you begin the semester for which you are applying, will you have lived',
                 'in Texas for the previous 12 months?', f'{output[3]}']
     
     def hs_ged_syntax(self, _list: list) -> list:
@@ -90,7 +99,7 @@ class Syntax:
         target = target.replace('N', "No").replace('Y', "Yes")
 
 
-        return ['If you did not graduate from high school, do you have a DEG or have you completed',
+        return ['3. If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
                  f'{target}','',]
     
@@ -140,17 +149,19 @@ class Syntax:
             resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
             resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
 
-            return ['During the 12 months prior to you applying, did you register',
-                'for a public college or university in Texas?', f'{months_q}', '',
-                'What Texas public college or university did you last attend?',
-                f'{attend_q}', '',
-                'In which terms were you last enrolled?', f'{enrolled_q}', '',
-                'During you last seemster at a Texa public institution, did you pay resident (in-state)',
-                'or nonresident (out-of-state) tution?', f'{resident_q_1}', '',
-                'If you paid in-state tution at your last institution, was it because you were classified',
-                'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
+            return ['Residency Information', '', '1. Residency Information', '',
+                    'During the 12 months prior to you applying, did you register',
+                    'for a public college or university in Texas?', f'{months_q}', '',
+                    'What Texas public college or university did you last attend?',
+                    f'{attend_q}', '',
+                    'In which terms were you last enrolled?', f'{enrolled_q}', '',
+                    'During you last seemster at a Texa public institution, did you pay resident (in-state)',
+                    'or nonresident (out-of-state) tution?', f'{resident_q_1}', '',
+                    'If you paid in-state tution at your last institution, was it because you were classified',
+                    'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
 
-        return ['During the 12 months prior to you applying, did you register',
+        return ['Residency Information', '', '1. Residency Information', '',
+                'During the 12 months prior to you applying, did you register',
                 'for a public college or university in Texas?', 'No']
     
     def basis_syntax(self, _list: list) -> list:
@@ -204,7 +215,8 @@ class Syntax:
         :rtype: list
         """
 
-        return ['Is there any additional information that you believe your college should know in', 
+        return ['General Comments:',
+                'Is there any additional information that you believe your college should know in', 
                 'evaluating your eligibility to be classified as a resident? If so, please provide.']
     
     def dual_syntax(self, _list: list) -> list:
@@ -241,13 +253,27 @@ class Syntax:
         if _list[3] != 'CONSERVATORSHIP SWITCHES':
             return
 
-        target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
+        target = self.p.process_str(_list[-1])
 
-        target = target.replace('N', "No").replace('Y', "Yes")
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes',
+            'K': 'N\A'
+        }
 
-        return ['At anytime in your life were you placed in foster care or adopted from foster care in Texas?',
+        if len(target) != 2:
+            target.append('K')
+
+        for idx in range(len(target)):
+            for key, value in syntax.items():
+                if key == target[idx]:
+                    target[idx] = value
+
+        return ['17. Texas Conservatorship:',
+                'At anytime in your life were you placed in foster care or adopted from foster care in Texas?', 
+                f'{target[0]}', '',
                 'If admitted, would your like to receive student foster care info and benefits?',
-                f'{target}']
+                f'{target[1]}']
     
     def country_syntax(self, _list: list) -> list:
         """Text fully listing the question given from country application information from
@@ -339,32 +365,163 @@ class Syntax:
             return
 
         syntax = {
-            '1': 'Veteran',
-            '2': 'Current US Miliary Service Member',
-            '3': 'Spouse or Dependen of Veteran or Current Service Member',
-            '4': 'Spouce or dependent of, or a veteran or current U.S. military servicemember with injury or illness resulting from military service (service-connected injury/illness)',
-            '5': 'Spouse or dependent of deceased US servicemember'
+            '1': '\nVeteran',
+            '2': '\nCurrent US Miliary Service Member',
+            '3': '\nSpouse or Dependen of Veteran or Current Service Member',
+            '4': '\nSpouce or dependent of, or a veteran or current U.S. military servicemember with injury or illness',
+            '4+': 'resulting from military service (service-connected injury/illness)',
+            '5': '\nSpouse or dependent of deceased US servicemember'
         }
-        print(_list, '\n')
 
         target = str(_list[-1]).replace("\\", "")
 
-        output = [str(d) for d in target]
-        print(output)
+        output = [str(val) for val in target]
 
-        
+        for idx in range(len(output)):
+            if output[idx] == '4':
+                output.insert(idx+1, '4+')
+
+
         for idx in range(len(output)):
             for key, value in syntax.items():
                 if key == output[idx]:
                     output[idx] = value
-
-        
+ 
         if len(output) == 1:
             return ['U.S. Military-Veteran Status?', 
                     f'{output}']
         elif len(output) == 2:
             return ['U.S. Military-Veteran Status?', 
                     f'{output[0]}', f'{output[1]}']
+        elif len(output) == 3:
+            return ['U.S. Military-Veteran Status?', 
+                    f'{output[0]}', f'{output[1]}', f'{output[2]}']
+        
+    def home_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'HOME SCHOOLED':
+            return
+        
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        target = str(_list[-1]).replace("\\", "")
+
+        for key, value in syntax.items():
+            if key == target:
+                target = value
+
+        return ['Home Schooled?',
+                f'{target}']
+    
+    def suspension_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'CURRENT ACADEMIC SUSP':
+            return
+        
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        target = str(_list[-1]).replace("\\", "")
+
+        for key, value in syntax.items():
+            if key == target:
+                target = value
+        
+        return ['5. Are you currently on academic suspension from the last college or univeristy attended?',
+                f'{target}']
+    
+    def college_work_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'COLLEGE WORK':
+            return
+        
+        target = str(_list[-1]).replace("\\", "")
+
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        for key, value in syntax.items():
+            if key == target:
+                target = value
+        
+        return ['Will you have college credit hours by high school graduation date, if so how many?',
+                f'{target}']
+    
+    def family_obj_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'FAMILY OBLIGATIONS':
+            return
+        
+        target = str(_list[-1]).replace("\\", "")
+        
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        for key, value in syntax.items():
+            if key == target:
+                target = value
+
+        return ['Do you have family obligations that keep you from participating in extracurricular activities?',
+                f'{target}']
+    
+    def app_share_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'APPLICATION SHARING':
+            return
+        
+        target = str(_list[-1]).replace("\\", "")
+        
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        for key, value in syntax.items():
+            if key == target:
+                target = value
+        
+        return ['Application sharing on denied admission?',
+                f'{target}']
+    
+    def residency_determ_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'RES: DETERM':
+            return
+        
+        target = str(_list[-1]).replace("\\", "")
+
+
+        return ['To assist colleges or universities in residency determinations, the ApplyTexas System asks',
+                'applicants a series of core questions. Based on answers to these questions, the System estimates',
+                'the residency of each applicant. College or university administrators should make final residency',
+                'determinations based on rules set out in the Texas Administrative Code Title 19, Part 1, Chapter 21,',
+                'Subchapter B. The residency determinations are Texas resident (T), Non-Texas resident (N), or Unable',
+                'to Determine (U).', '',
+                'Exception codes are provided for applicants with Unable to Determine status, and may be',
+                'provided for applicants with Texas resident status, if the applicant needs to provide more',
+                'information or verification of status. It is recommended that institutions verify this information.', '',
+                'Note: The residency determination is not visible to the applicant.', '',
+                f'Applytexas Residency Determination: {target}']
+    
+    def residency_claim_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'RES: RESIDENCY CLAIM':
+            return
+        
+        target = str(_list[-1]).replace("\\", "")
+        target = target.strip()
+
+        return ['Of what state or country are you a resident?',
+                f'{target[:3]}--{target[3:]}']
     
     def residency_self_syntax(self, _list: list) -> list:
 
@@ -378,7 +535,7 @@ class Syntax:
         
         ans = self.p.process_self(output)
 
-        return ['Residency Information:',
+        return ['Residency Information - continued:', '',
                 '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are youa foreign national',
                 'here with a visa eligible to domicile in the United States or are you a Refugee, Asylee,',
                 'Parolee or here under Temporary Protective Status? If so, indicate which:', f'{ans[0]}', '',
@@ -414,7 +571,7 @@ class Syntax:
 
         ans = self.p.process_guar(output)
         
-        return ['Residency Information:',
+        return ['Residency Information - continued:', '',
                 '1. Is the parent or legal guardian upon whom you base your claim of residency a U.S.',
                 'Citizen?', f'{ans[0]}', '',
                 '2. If no, does the parent or legal guardian upopn whom you base your claim residency',

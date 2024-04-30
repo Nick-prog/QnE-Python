@@ -302,14 +302,29 @@ class Syntax:
 
         if _list[3] != 'FORMER STUDENT':
             return
+        
+        syntax = {
+            'Y': 'Yes',
+            'N': 'No',
+            'K': 'Not provided'
+        }
 
         target = "".join(_list[-1]).translate(str.maketrans("", "", "\\0"))
 
-        target = target.replace('NN', "No, No").replace('YY', "Yes, Yes").replace('YN', 'Yes, No').replace('NY', 'No, Yes')
+        if len(target) != 2:
+            target.append('K')
 
-        return ['Are you a former student of this institution?',
+        output = []
+
+        for idx in range(len(target)):
+            val = syntax.get(target[idx], target[idx])
+            output.append(val)
+
+
+        return ['Are you a former student of this institution?', 
+                f'{output[0]}', '',
                 'Have you previously applied?',
-                f'{target}']
+                f'{output[1]}']
     
     def family_obj_income_syntax(self, _list: list) -> list:
         """Text fully listing the question given from family obligation income information from

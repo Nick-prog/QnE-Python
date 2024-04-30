@@ -181,7 +181,7 @@ class ReportStructure:
         }
 
         three_mark_syntax  = {
-            "Start Extra Contact Info": "Emergency Contact Information:",
+            "Start Extra Contact Info": None,
             "Start Student Contact Info": "Student Information:",
             "Extra Curricular Activities": f"{_str[-5:-4]}",
             "Community or Volunteer Service": f"{_str[-4:-2]}",
@@ -221,7 +221,7 @@ class ReportStructure:
             "Graduation Date": f"Expected Graduation Date: {_str[-1]}",
             "High School Info": f"School Code: {_str[-1]}",
             "Current enrolled course": _str,
-            "Previous Applicant": f"Previous Applicant: {_str[-1]}",
+            "Previous Applicant": f"Previous Applicant: Yes",
             "VISA Info": f"Visa: {_str[-1]}",
             "VISA end date": f"End date: {_str[-1]}"
         }
@@ -266,6 +266,8 @@ class ReportStructure:
                         value = v.ethnicity_race_value(_str)
                     elif key == 'Student Gender':
                         value = v.gender_value(_str)
+                    elif key == 'Start Extra Contact Info':
+                        value = v.extra_value(_str)
 
                     converted_mark = str(value).replace("\\", "")
                     break

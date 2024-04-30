@@ -426,13 +426,16 @@ class ReportGen:
                         yadd -= 10
 
                 _list = []
-                # yadd -= 10
 
             conv = struct.transform_page(val)
-            # if val == 'Med REQ':
-            #     yadd -= 10
-     
+
             if conv != "None":
-                canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-                # canvas.drawString(xstart, ystart+yadd, val + _str)
-                yadd -= 10
+                print(type(conv))
+                if type(conv) == list:
+                    for x in range(len(conv)):
+                        canvas.drawString(xstart, ystart+yadd, str(conv[x]))
+                        yadd -= 10
+                else:
+                    canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
+                    # canvas.drawString(xstart, ystart+yadd, val + _str)
+                    yadd -= 10

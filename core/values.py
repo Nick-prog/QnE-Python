@@ -46,7 +46,7 @@ class Values:
             'GRADUATE AWARD': None, 
             'TEST1 SENT': None, 
             'TEST2 SENT': None, 
-            'CUR COLLEGE CRS': f"Present semester course to be completed: {output}",
+            'CUR COLLEGE CRS': f"Current college course: {output}",
             'CUR COLLEGE ATT': f"Current college attending code: {output}",
             'COLLEGE WORK IN CLASSROOM': None,
             'FAMILY OBLIGATIONS': None,
@@ -127,14 +127,14 @@ class Values:
             'RES: COMMENTS\\': None,
             'FAMILY OBLIGATION INCOME\\': None,
             'FAMILY OBLIGATION CARE\\': None,
-            'FAMILY OBLIGATION OTHER\\': None, # f'{_str[-1]}',
-            'TREX TRANSCRIPT REQUESTED\\': None, # f'Transcript sharing consent: {_str[-1]}',
+            'FAMILY OBLIGATION OTHER\\': None,
+            'TREX TRANSCRIPT REQUESTED\\': None,
             'FUNDS SUPPORT\\': "Do you have a source of financial suppport if your are, or will be, in F-1 or J-1 status?",
             'CONTACT AT WORK\\': None,
             'RES: BASIS OF CLAIM\\': None,
             'REVERSE TRANSFER\\': None,
             'APPLICATION SHARING\\': None,
-            'FAMILY OBLIGATIONS\\': None, # f'Do you have family obligations that keep you from participating in extracurricular activities? {_str[-1]}',
+            'FAMILY OBLIGATIONS\\': None,
             'OTHER FIRST NAME1\\': None,
             'OTHER FIRST NAME2\\': None,
             'OTHER MIDDLE NAME1\\': None,
@@ -217,7 +217,7 @@ class Values:
         }
 
         not_hispanic_ = {
-            "Ethnicity=W\\": "Not Hispanic or Latino. N/A.",
+            "Ethnicity=W\\": "Not Hispanic or Latino. Ethnicity=N/A.",
             "Ethnicity=W;Race=S\\": "Not Hispanic or Latino. White.",
             "Ethnicity=W;Race=T\\": "Not Hispanic or Latino. American Indian or Alaska Native.",
             "Ethnicity=W;Race=Q\\": "Not Hispanic or Latino. Black or African American.",
@@ -232,8 +232,8 @@ class Values:
         }
 
         other_ = {
-            "Ethnicity=\\": "N/A. N/A.",
-            "Ethnicity=R\\": "Hispanic or Latino. N/A.",
+            "Ethnicity=\\": "Gender=N/A. Ethnicity=N/A.",
+            "Ethnicity=R\\": "Hispanic or Latino. Ethnicity=N/A.",
         }
 
         dictionaries = [hispanic_, not_hispanic_, other_]
@@ -267,3 +267,15 @@ class Values:
         for key, value in gender_.items():
            if key == target:
                return value
+           
+    def extra_value(self, _str: str) -> str:
+
+        target = str(_str[-1]).replace('\\', '')
+
+        extra_ = {
+            '01': 'Spouse Contact Information:',
+            '02': 'Child Information:',
+            '51': 'Emergency Contact Information:'
+        }
+
+        return extra_[target]

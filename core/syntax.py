@@ -380,37 +380,28 @@ class Syntax:
             return
 
         syntax = {
-            '1': '\nVeteran',
-            '2': '\nCurrent US Miliary Service Member',
-            '3': '\nSpouse or Dependen of Veteran or Current Service Member',
-            '4': '\nSpouce or dependent of, or a veteran or current U.S. military servicemember with injury or illness',
+            '1': 'Veteran',
+            '2': 'Current US Miliary Service Member',
+            '3': 'Spouse or Dependen of Veteran or Current Service Member',
+            '4': 'Spouce or dependent of, or a veteran or current U.S. military servicemember with injury or illness',
             '4+': 'resulting from military service (service-connected injury/illness)',
-            '5': '\nSpouse or dependent of deceased US servicemember'
+            '5': 'Spouse or dependent of deceased US servicemember'
         }
 
-        target = str(_list[-1]).replace("\\", "")
-
-        output = [str(val) for val in target]
+        output = [str(val) for val in str(_list[-1]).replace("\\", "")]
+        output.insert(0, 'U.S. Military-Veteran Status?')
+        output.append(" ")
 
         for idx in range(len(output)):
             if output[idx] == '4':
                 output.insert(idx+1, '4+')
-
 
         for idx in range(len(output)):
             for key, value in syntax.items():
                 if key == output[idx]:
                     output[idx] = value
  
-        if len(output) == 1:
-            return ['U.S. Military-Veteran Status?', 
-                    f'{output}']
-        elif len(output) == 2:
-            return ['U.S. Military-Veteran Status?', 
-                    f'{output[0]}', f'{output[1]}']
-        elif len(output) == 3:
-            return ['U.S. Military-Veteran Status?', 
-                    f'{output[0]}', f'{output[1]}', f'{output[2]}']
+        return output
         
     def home_syntax(self, _list: list) -> list:
 
@@ -505,7 +496,22 @@ class Syntax:
                 target = value
         
         return ['Application sharing on denied admission?',
-                f'{target}']
+                f'{target}', '']
+    
+    def phi_theta_kappa_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'PHI THETA KAPPA':
+            return
+        
+        syntax = {
+            'N\\': 'No',
+            'Y\\': 'Yes'
+        }
+
+        output = syntax.get(_list[-1], _list[-1])
+
+        return ['Are you a Phi Theta Kappa?', 
+                f'{output}', '']
     
     def residency_determ_syntax(self, _list: list) -> list:
 

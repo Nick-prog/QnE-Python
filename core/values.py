@@ -39,7 +39,7 @@ class Values:
             'REVERSE TRANSFER': None,
             'APPLICATION SHARING': None,
             'FORMER STUDENT': None,
-            'PHI THETA KAPPA': f'Are you a Phi Theta Kappa? {output}',
+            'PHI THETA KAPPA': None, # f'Are you a Phi Theta Kappa? {output}',
             'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {output}',
             'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution? ',
             'PAYMENT RECONCILIATION': "Billing Information:", 
@@ -105,9 +105,9 @@ class Values:
                 if key == target:
                     if target == 'ULTIMATE DEGREE SOUGHT':
                         return value + self.additional_value(_str)
-                    
+            
                     return value
-                
+
         return _str
     
     def req_and_or_answer_value(self, _str: str) -> str:

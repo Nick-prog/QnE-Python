@@ -412,7 +412,8 @@ class ReportGen:
                         'RES: RESIDENCY CLAIM': s.residency_claim_syntax(target),
                         'RES: DETERM': s.residency_determ_syntax(target),
                         'FAMILY OBLIGATIONS': s.family_obj_syntax(target),
-                        'APPLICATION SHARING': s.app_share_syntax(target)
+                        'APPLICATION SHARING': s.app_share_syntax(target),
+                        'PHI THETA KAPPA': s.phi_theta_kappa_syntax(target)
                         }
 
                 for key, value in req_syntax.items():
@@ -430,12 +431,6 @@ class ReportGen:
             conv = struct.transform_page(val)
 
             if conv != "None":
-                print(type(conv))
-                if type(conv) == list:
-                    for x in range(len(conv)):
-                        canvas.drawString(xstart, ystart+yadd, str(conv[x]))
-                        yadd -= 10
-                else:
-                    canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
-                    # canvas.drawString(xstart, ystart+yadd, val + _str)
-                    yadd -= 10
+                canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values
+                # canvas.drawString(xstart, ystart+yadd, val + _str)
+                yadd -= 10

@@ -32,7 +32,7 @@ class Syntax:
                 f"Customer Reference: {target[36:48]}",
                 f"Card Type: {target[48]}",
                 f"Last 4 digit card number: {target[49:53]}",
-                f"Card Expiration Date: {target[53:57]}"]
+                f"Card Expiration Date: {target[53:57]}", '']
     
     def hs_diploma_syntax(self, _list: list) -> list:
         """Text fully listing the question given for HS Diploma information including
@@ -101,7 +101,7 @@ class Syntax:
 
         return ['3. If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
-                 f'{target}','',]
+                 f'{target}', '']
     
     def prev_syntax(self, _list: list) -> list:
         """Text fully listing the question given from previous college information from
@@ -374,6 +374,23 @@ class Syntax:
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
+    def currently_reside_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'INT CURR RESIDE IN US':
+            return
+
+        target = str(_list[-1]).replace('\\', '')
+
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+        
+        target = syntax.get(target, target)
+
+        return ['Are you currently residing in the U.S.?',
+                f'{target}', '']
+    
     def vet_syntax(self, _list: list) -> list:
 
         if _list[3] != 'VET STATUS':
@@ -477,7 +494,7 @@ class Syntax:
                 target = value
 
         return ['Do you have family obligations that keep you from participating in extracurricular activities?',
-                f'{target}']
+                f'{target}', '']
     
     def app_share_syntax(self, _list: list) -> list:
 
@@ -513,12 +530,34 @@ class Syntax:
         return ['Are you a Phi Theta Kappa?', 
                 f'{output}', '']
     
+    def exit_us_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'INTL EXIT US':
+            return
+        
+        syntax = {
+            'N\\': 'No',
+            'Y\\': 'Yes'
+        }
+        
+        target = syntax.get(_list[-1], _list[-1])
+        
+        return ['If you are already in the U.S., do you plan to leave the U.S. before enrolling at the',
+                'university to which you are applying?',
+                f'{target}', '']
+    
     def residency_determ_syntax(self, _list: list) -> list:
 
         if _list[3] != 'RES: DETERM':
             return
         
         target = str(_list[-1]).replace("\\", "")
+
+        syntax = {
+            'Y' : 'Y - Texas Resident'
+        }
+
+        target = syntax.get(target, target)
 
 
         return ['To assist colleges or universities in residency determinations, the ApplyTexas System asks',

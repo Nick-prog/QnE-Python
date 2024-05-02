@@ -100,7 +100,7 @@ class Process:
         return foreign, domestic
     
     def uniform_data_list(self, input: list) -> list:
-        """NOT USED, attempt at making all data list uniform for better
+        """NOT USED, atcurrent_strt at making all data list uniform for better
         manipulations.
 
         :param input: nested list of rows found
@@ -109,8 +109,8 @@ class Process:
         :rtype: list
         """
 
-        template_char = self.find_largest_char(input)
-        template_list = input[template_char]
+        current_strlate_char = self.find_largest_char(input)
+        current_strlate_list = input[current_strlate_char]
         
         # Initialize an empty result list
         result_nested_list = []
@@ -120,22 +120,22 @@ class Process:
             # Create a set to store the prefixes of matched items in the given sublist
             matched_prefixes = set()
             result_list = []
-            # Iterate through the template list for each sublist
-            for template_item in template_list:
-                # Extract the prefix from the template item
-                template_prefix = template_item.split('!')[0]
+            # Iterate through the current_strlate list for each sublist
+            for current_strlate_item in current_strlate_list:
+                # Extract the prefix from the current_strlate item
+                current_strlate_prefix = current_strlate_item.split('!')[0]
 
-                # Check if the template prefix has already been matched
-                if template_prefix in matched_prefixes:
+                # Check if the current_strlate prefix has already been matched
+                if current_strlate_prefix in matched_prefixes:
                     result_list.append("")  # Append a blank string if the prefix has been matched before
                 else:
                     # Iterate through the given sublist to find a match
                     found = False
                     for given_item in given_sublist:
                         given_prefix = given_item.split('!')[0]
-                        if given_prefix == template_prefix:
+                        if given_prefix == current_strlate_prefix:
                             result_list.append(given_item)
-                            matched_prefixes.add(template_prefix)  # Add the matched prefix to the set
+                            matched_prefixes.add(current_strlate_prefix)  # Add the matched prefix to the set
                             found = True
                             break
                     
@@ -189,7 +189,7 @@ class Process:
         return unique_values
 
     def uniform_data_list_2(self, input: list) -> list:
-        """NOT USED, attempt at making all data list uniform for better
+        """NOT USED, atcurrent_strt at making all data list uniform for better
         manipulations.
 
         :param input: nested list of rows found
@@ -197,26 +197,26 @@ class Process:
         :return: updated nested list of same length
         :rtype: list
         """
-        template_idx = self.find_largest_char(input)
-        template_list = input[template_idx]
-        template_markdown = []
+        current_strlate_idx = self.find_largest_char(input)
+        current_strlate_list = input[current_strlate_idx]
+        current_strlate_markdown = []
         
-        for idx in template_list:
-            template_markdown.append(str(idx).split('!')[0])
+        for idx in current_strlate_list:
+            current_strlate_markdown.append(str(idx).split('!')[0])
 
         data = input[0:5]
 
         for sublist in range(len(data)):
             insert = 0
-            for idx in range(len(template_markdown)):
+            for idx in range(len(current_strlate_markdown)):
                 val = str(data[sublist][idx+insert]).split('!')[0]
     
-                if val != template_markdown[idx]:
-                    print("No MATCH", val, template_markdown[idx])
+                if val != current_strlate_markdown[idx]:
+                    print("No MATCH", val, current_strlate_markdown[idx])
                     data[sublist].insert(idx, "")
                     insert += 1
                 else:
-                    print("\nMATCH!", val, template_markdown[idx])
+                    print("\nMATCH!", val, current_strlate_markdown[idx])
 
         
         return data
@@ -279,6 +279,34 @@ class Process:
 
         return [x for x in result if x]
     
+    def process_str_2(self, _str: str) -> list:
+
+        result = []
+        formatted_list = []
+        current_str = ''
+
+        for idx in range(len(_str)):
+
+            current_str += _str[idx]
+            
+            if _str[idx] == " ":
+                result.append(current_str)
+                current_str = ''
+
+        for item in result:
+            item = item.strip()
+            if item:
+                current_str += item + ' '
+            else:
+                if current_str:
+                    formatted_list.append(current_str.strip())
+                    current_str = ''
+
+        if current_str:
+            formatted_list.append(current_str.strip())
+
+        return "-".join(formatted_list)
+    
     def process_guar(self, _list: list) -> list:
 
         syntax = {
@@ -301,7 +329,7 @@ class Process:
             _list.insert(2, ' '.join(_list[2:6]))
             del(_list[3:7])
         elif len(_list) == 9:
-            if _list[2] == 'TEMPORARY':
+            if _list[2] == 'current_strORARY':
                 _list.insert(2, ' '.join(_list[2:5]))
                 del(_list[3:6])
             else:

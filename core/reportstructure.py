@@ -150,17 +150,7 @@ class ReportStructure:
         :rtype: str
         """
 
-        _str = str(self._str).split("!")
-
-        transform_dict = {
-            'Y': 'Yes',
-            'N': 'No',
-            'Y\\': 'Yes',
-            'N\\': 'No',
-            'NO RESIDENCY COMMENTS INCLUDED\\': None
-        }
-
-        output = transform_dict.get(_str[-1], _str[-1])
+        _list = str(self._str).split("!")
 
         four_mark_syntax = {
             "Start Parent 1 Contact Info": "First Guardian/Parent Information:",
@@ -177,74 +167,74 @@ class ReportStructure:
             'Conduct Question: Expulsion':'Conduct Question: Expulsion',
             'Conduct: Pending Action': 'Conduct: Pending Action',
             'Consultant/Agency': 'Consultant/Agency',
-            'Submit/Transmit': {_str[-1]}
+            'Submit/Transmit': {_list[-1]}
         }
 
         three_mark_syntax  = {
             "Start Extra Contact Info": None,
             "Start Student Contact Info": "Student Information:",
-            "Extra Curricular Activities": f"{_str[-5:-4]}",
-            "Community or Volunteer Service": f"{_str[-4:-2]}",
-            "Award/Acheivement": f"{_str[-5:-4]}",
-            "Employment/Internships/Summer Activities":f"{_str[-4:-3]}",
-            'Major': f"Major: {_str[-1]}",
-            "Area of Interest": f"Area of Interest: {_str[-1]}",
-            'Request and/or Answer': _str[-1],
-            'Long REQ': _str,
-            'Short REQ': _str[-1],
-            'Med REQ': _str,
-            "Senior Year Course(s)": _str,
-            "Issued Date": f"Issued: {_str[-1]}"
+            "Extra Curricular Activities": f"{_list[-5:-4]}",
+            "Community or Volunteer Service": f"{_list[-4:-2]}",
+            "Award/Acheivement": f"{_list[-5:-4]}",
+            "Employment/Internships/Summer Activities":f"{_list[-4:-3]}",
+            'Major': f"Major: {_list[-1]}",
+            "Area of Interest": f"Area of Interest: {_list[-1]}",
+            'Request and/or Answer': _list[-1],
+            'Long REQ': _list,
+            'Short REQ': _list[-1],
+            'Med REQ': _list,
+            "Senior Year Course(s)": _list,
+            "Issued Date": f"Issued: {_list[-1]}"
         }
 
         two_mark_syntax  = {
             "Start App": "Start of App",
             "TXAPP": "ApplyTexas Application",
             "AT": None,
-            "App ID": _str[-1],
-            "Date Start": f"Date Start: {_str[-1]}",
-            "Data End": f"Date End: {_str[-1]}",
-            "SSN": _str[-2:],
-            "Premanent Residence status": _str[-1],
-            "Sir Name": _str[-1],
-            "Last Name": f"Last: {_str[-1]}",
-            "First Name": f"First: {_str[-1]}",
-            "Middle Name": f"Middle: {_str[-1]}",
-            "Middle Initial": f"MIddle Initial: {_str[-1]}",
-            "Suffix": f"Suffix: {_str[-1]}",
-            "Representative Name": f"Rep Name: {_str[-1]}",
-            "Preferred Name": f"Preferred: {_str[-1]}",
+            "App ID": None,
+            "Date Start": f"Date Start: {_list[-1]}",
+            "Data End": f"Date End: {_list[-1]}",
+            "SSN": None,
+            "Premanent Residence status": _list[-1],
+            "Sir Name": _list[-1],
+            "Last Name": f"Last: {_list[-1]}",
+            "First Name": f"First: {_list[-1]}",
+            "Middle Name": f"Middle: {_list[-1]}",
+            "Middle Initial": f"MIddle Initial: {_list[-1]}",
+            "Suffix": f"Suffix: {_list[-1]}",
+            "Representative Name": f"Rep Name: {_list[-1]}",
+            "Preferred Name": f"Preferred: {_list[-1]}",
             "Student Gender": None,
-            "Phone": f"Phone: {_str[-1]}",
-            "Email": f"Email: {_str[-1]}",
-            "Question Answer": _str[-2:-1],
-            "Graduation Date": f"Expected Graduation Date: {_str[-1]}",
-            "High School Info": f"School Code: {_str[-1]}",
-            "Current enrolled course": _str,
+            "Phone": f"Phone: {_list[-1]}",
+            "Email": f"Email: {_list[-1]}",
+            "Question Answer": _list[-2:-1],
+            "Graduation Date": f"Expected Graduation Date: {_list[-1][:-3]}-{_list[-1][-3:]}",
+            "High School Info": f"School Code: {_list[-1]}",
+            "Current enrolled course": _list,
             "Previous Applicant": f"Previous Applicant: Yes",
-            "VISA Info": f"Visa: {_str[-1]}",
-            "VISA end date": f"End date: {_str[-1]}"
+            "VISA Info": f"Visa: {_list[-1]}",
+            "VISA end date": f"End date: {_list[-1]}"
         }
 
         one_mark_syntax  = {
-            "Place of Birth": f"Place of Birth: {_str[-3:]}",
-            "Ethnicity/Race": _str[-1],
-            "Address One": f"Address: {_str[-1]}",
-            "Address Two": f"{_str[1:]}",
-            "Semester": f"Semester: {_str[-1]}",
-            "Question statement": _str[-2:-1],
-            "Grade level": f"Date: {_str[1]}",
-            "Admissions Test": _str,
-            "Post-Secondary Colleges/Universities": f"Institution: {_str[-1]}",
-            "Hours Earned": f"Hours Earned: {_str[-1]}",
+            "Place of Birth": f"Place of Birth: {_list[-3:]}",
+            "Ethnicity/Race": _list[-1],
+            "Address One": f"Address: {_list[-1]}",
+            "Address Two": None,
+            "Semester": f"Semester: {_list[-1]}",
+            "Question statement": _list[-2:-1],
+            "Grade level": None, # f"Date: {_list[1]}",
+            "Admissions Test": _list,
+            "Post-Secondary Colleges/Universities": f"Institution: {_list[-1]}",
+            "Hours Earned": f"Hours Earned: {_list[-1]}",
             "End of App": "End of App",
-            "Degree Earned": f"Degree: {_str[-1]}",
+            "Degree Earned": f"Degree: {_list[-1]}",
             "Skip": None,
-            'Transfer Information': _str,
-            "Language": _str,
-            "Old Admission Test Score": _str,
-            "Old Admission Test": _str,
-            "Short MSG": output
+            'Transfer Information': _list,
+            "Language": _list,
+            "Old Admission Test Score": _list,
+            "Old Admission Test": _list,
+            "Short MSG": None
         }
         
         converted_mark = ""
@@ -257,17 +247,27 @@ class ReportStructure:
             for key, value in dictionaries[idx].items():
                 if key == val:
                     if key == "Med REQ" or key == "Long REQ":
-                        value = v.long_med_req_value(_str)
+                        value = v.long_med_req_value(_list)
                     elif key == "Request and/or Answer":
-                        value = v.req_and_or_answer_value(_str)
+                        value = v.req_and_or_answer_value(_list)
                     elif key == 'Multi type question' or key == "Degree Earned" or key == 'Semester':
-                        value = v.additional_value(_str)
+                        value = v.additional_value(_list)
                     elif key == 'Ethnicity/Race':
-                        value = v.ethnicity_race_value(_str)
+                        value = v.ethnicity_race_value(_list)
+                    elif key == 'Address Two':
+                        value = v.address_value(_list)
                     elif key == 'Student Gender':
-                        value = v.gender_value(_str)
+                        value = v.gender_value(_list)
                     elif key == 'Start Extra Contact Info':
-                        value = v.extra_value(_str)
+                        value = v.extra_value(_list)
+                    elif key == 'App ID':
+                        value = v.app_value(_list)
+                    elif key == 'SSN':
+                        value = v.ssn_value(_list)
+                    elif key == 'Short MSG':
+                        value = v.short_msg_value(_list)
+                    elif key == 'Grade level':
+                        value = v.grade_level_value(_list)
 
                     converted_mark = str(value).replace("\\", "")
                     break

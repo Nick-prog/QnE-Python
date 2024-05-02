@@ -5,16 +5,35 @@ class Values:
     form of a string.
     """
 
-    def long_med_req_value(self, _str: str) -> str:
+    def short_msg_value(self, _list: list) -> str:
+
+        transform_dict = {
+            'Y': 'Yes',
+            'N': 'No',
+            'Y\\': 'Yes',
+            'N\\': 'No',
+            'NO RESIDENCY COMMENTS INCLUDED\\': None
+        }
+
+        output = transform_dict.get(_list[-1], "Other")
+
+        if output == 'Other':
+
+            p = core.Process()
+            output = p.process_str_2(_list[-1])
+
+        return output
+
+    def long_med_req_value(self, _list: list) -> str:
         """Long and Med REQ value output replacers based on given text.
 
-        :param _str: full string of Long or Med REQ
-        :type _str: str
+        :param _list: full string of Long or Med REQ
+        :type _list: list
         :return: updated string value for proper display
         :rtype: str
         """
 
-        target = _str[3]
+        target = _list[3]
 
         transform_dict = {
             'Y': 'Yes',
@@ -23,7 +42,7 @@ class Values:
             'N\\': 'No',
         }
 
-        output = transform_dict.get(_str[-1], _str[-1])
+        output = transform_dict.get(_list[-1], _list[-1])
 
         output = output.strip()
 
@@ -31,7 +50,6 @@ class Values:
             'DUAL CREDIT': None,
             'IB DIPLOMA': f'IB Diploma: {output}',
             'RESUME SWITCH': f'Resume: {output}',
-            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}',
             'CURRENT ACADEMIC SUSP': None,
             'HOME SCHOOLED': None,
             'COLLEGE WORK': None,
@@ -39,8 +57,8 @@ class Values:
             'REVERSE TRANSFER': None,
             'APPLICATION SHARING': None,
             'FORMER STUDENT': None,
-            'PHI THETA KAPPA': None, # f'Are you a Phi Theta Kappa? {output}',
-            'INT CURR RESIDE IN US': f'Are you currently residing in the U.S.? {output}',
+            'PHI THETA KAPPA': None,
+            'INT CURR RESIDE IN US': None,
             'ULTIMATE DEGREE SOUGHT': f'Ultimate degree you wish to seek in this major from this institution? ',
             'PAYMENT RECONCILIATION': "Billing Information:", 
             'GRADUATE AWARD': None, 
@@ -52,6 +70,7 @@ class Values:
             'FAMILY OBLIGATIONS': None,
             'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}',
             'NATIVE LANGUAGE': f'What languages do you speak fluently? {output}',
+            'INTL EXIT US': None
         }
 
         long_value = {
@@ -72,6 +91,7 @@ class Values:
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
             'PARENT OR GUARDIAN INFO': None,
             'CTRY SELF': f'Country: {output}',
+            'CTRY SPOUSE': f'Country Spouse: {output}',
             'FAMILY': None,
             'RES: PREVIOUS ENROLLMENT': None,
             'RES: RESIDENCY CLAIM': None,
@@ -80,6 +100,7 @@ class Values:
             'RES: SELF': None,
             'RES: GUAR': None,
             'SPOKEN LANGUAGES': None,
+            'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}--Others',
             'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {output}',
@@ -104,23 +125,23 @@ class Values:
             for key, value in dicts.items():
                 if key == target:
                     if target == 'ULTIMATE DEGREE SOUGHT':
-                        return value + self.additional_value(_str)
+                        return value + self.additional_value(_list)
             
                     return value
 
-        return _str
+        return _list
     
-    def req_and_or_answer_value(self, _str: str) -> str:
+    def req_and_or_answer_value(self, _list: list) -> str:
         """Request and or Answer value markdown replacement text. Gives a clearer representation of
         the original question asked.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: string from designated markdown text
+        :type _list: list
         :return: new string based on dict value
         :rtype: str
         """
 
-        target = _str[3]
+        target = _list[3]
 
         req_ = {
             'ALIEN APP/INT\\': None,
@@ -148,17 +169,17 @@ class Values:
 
         return req_[target]
     
-    def additional_value(self, _str: str) -> str:
+    def additional_value(self, _list: list) -> str:
         """Additional value markdown replacement text. Meant for markdown text that have more than one 
         option to be or semester information.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: string from designated markdown text
+        :type _list: list
         :return: new string based on dict values
         :rtype: str
         """
 
-        target = _str[-1]
+        target = _list[-1]
 
         semester = target[-5:]
         
@@ -190,17 +211,17 @@ class Values:
                 output = f"{value} {target[:-5]}"
                 return output
     
-    def ethnicity_race_value(self, _str: str) -> str:
+    def ethnicity_race_value(self, _list: list) -> str:
         """Ethnicity and Race value markdown replacement  text. Gives a clearer representation of the 
         different options students can choose from.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: string from designated markdown text
+        :type _list: list
         :return: new string based on dict values
         :rtype: str
         """
 
-        target = _str[-1]
+        target = _list[-1]
 
         hispanic_ = {
             "Ethnicity=R;Race=S\\": "Hispanic or Latino. White.",
@@ -242,19 +263,29 @@ class Values:
             for key, value in dicts.items():
                 if key == target:
                     return value
+                
+    def address_value(self, _list: list) -> str:
+        
+        target = []
+
+        for item in _list[1:]:
+            if item != '':
+                target.append(item)
+       
+        return target
     
-    def gender_value(self, _str: str) -> str:
+    def gender_value(self, _list: list) -> str:
         """Gender value markdown replacement  text. Gives a clearer representation of the 
         different options students can choose from.
 
-        :param _str: string from designated markdown text
-        :type _str: str
+        :param _list: string from designated markdown text
+        :type _list: list
         :return: new string based on dict values
         :rtype: str
         """
         
-        if len(_str) >= 4:
-            target = "".join(_str[3]).translate(str.maketrans("", "", "\\0"))
+        if len(_list) >= 4:
+            target = "".join(_list[3]).translate(str.maketrans("", "", "\\0"))
         else:
             target = ""
 
@@ -268,9 +299,9 @@ class Values:
            if key == target:
                return value
            
-    def extra_value(self, _str: str) -> str:
+    def extra_value(self, _list: list) -> str:
 
-        target = str(_str[-1]).replace('\\', '')
+        target = str(_list[-1]).replace('\\', '')
 
         extra_ = {
             '01': 'Spouse Contact Information:',
@@ -279,3 +310,47 @@ class Values:
         }
 
         return extra_[target]
+    
+    def app_value(self, _list: list) -> str:
+
+        target = str(_list[-1]).replace('\\', '')
+
+        app_ = {
+            'FFRESHMAN APPLICATION ID': 'U.S. Freshman Admission',
+            'IFOREIGN GRAD APPLICATION ID': 'Interanational Graduate Admission',
+            'CREENTRY UNDERGRAD APPLICATION ID': 'U.S. Re-Entry Admission',
+            'GUS GRAD APPLICATION ID': 'U.S. Graduate Admission',
+            'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission'
+        }
+
+        return f'App ID: {_list[-2]}|{app_[target]}'
+    
+    def ssn_value(self, _list: list) -> str:
+        
+
+        target = str(_list[-2:]).replace('\\', '')
+        
+        if len(target) == 47:
+            return 'STUDENT DECLINED TO PROVIDE SSN OR ITIN'
+
+        return target
+    
+    def grade_level_value(self, _list: list) -> str:
+
+        target = []
+
+        for item in _list[1:]:
+            if item != '':
+                target.append(item)
+
+        if len(target[0]) >= 8:
+            target[0] = f'Date: {target[0][:4]}-{target[0][4:6]}-{target[0][6:]}'
+            target[1] = f'Degree Sought: {target[1]}'
+        else:
+            if len(target) == 2:
+                target[0] = f'Date: {target[0][:4]}-{target[0][4:]}'
+                target[1] = f'Degree Earned: {target[1]}'
+            else:
+                target[0] = f'Date: {target[0][:4]}-{target[0][4:]}'
+
+        return target

@@ -193,13 +193,13 @@ class ReportGen:
             current_idx += 1
 
             if val == "App ID":
-                xstart, ystart, yadd = self.generate_new_points(350, 0, 0)
+                xstart, ystart, yadd = self.generate_new_points(320, 0, 0)
             elif val == "Start Student Contact Info":
                 xstart, ystart, yadd = self.generate_new_points(0, -100, 0)
             elif val == "Start Extra Contact Info":
                 if extra_found == 0:
                     extra_found = 1
-                    xstart, ystart, yadd = self.generate_new_points(350, -100, 0)
+                    xstart, ystart, yadd = self.generate_new_points(320, -100, 0)
                 else:
                     yadd -= 10
             elif val == "Start Parent 1 Contact Info" or val == "Start Parent 2 Contact Info" :
@@ -315,7 +315,8 @@ class ReportGen:
                         'HS GED TYPE': s.hs_ged_syntax(target),
                         'DUAL CREDIT': s.dual_syntax(target),
                         'CONSERVATORSHIP SWITCHES': s.conservator_syntax(target),
-                        'FORMER STUDENT': s.former_syntax(target)
+                        'FORMER STUDENT': s.former_syntax(target),
+                        'INTL EXIT US': s.exit_us_syntax(target)
                         }
 
                 for key, value in req_dict.items():
@@ -363,7 +364,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart+500
+        ystart = self.ystart+720 # Increase by 80 every 1 inch height
 
         #Increment
         yadd = 0
@@ -371,12 +372,12 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 25*inch))
+        canvas.setPageSize((8.5*inch, 28*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
-        paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 
+        paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 'Text Messaging Option',
                            'Name Verification Notice', 'Conduct Question: Conviction',
-                           'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?',
+                           'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?', "Post-Secondary Colleges/Universities",
                            'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
                            'End of App']
         
@@ -413,7 +414,8 @@ class ReportGen:
                         'RES: DETERM': s.residency_determ_syntax(target),
                         'FAMILY OBLIGATIONS': s.family_obj_syntax(target),
                         'APPLICATION SHARING': s.app_share_syntax(target),
-                        'PHI THETA KAPPA': s.phi_theta_kappa_syntax(target)
+                        'PHI THETA KAPPA': s.phi_theta_kappa_syntax(target),
+                        'INT CURR RESIDE IN US': s.currently_reside_syntax(target),
                         }
 
                 for key, value in req_syntax.items():

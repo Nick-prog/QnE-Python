@@ -40,6 +40,8 @@ class Values:
             'N': 'No',
             'Y\\': 'Yes',
             'N\\': 'No',
+            'S\\': 'Applicant indicates address is correct as entered',
+            'I\\': 'International address (not standardized)'
         }
 
         output = transform_dict.get(_list[-1], _list[-1])
@@ -75,15 +77,15 @@ class Values:
 
         long_value = {
             'COUNSELOR OPT IN': f'Opt-In for Counselor? {output}',
-            'PERM COUNTY INFO' : f'Permanent County Info--{output}',
+            'PERM COUNTY INFO' : f'Permanent County Info--{output[3:]}  (Country code = {output[:3]})',
             'PERM COUNTRY INFO' : f'Permanent Country Info--{output}',
             'PERM ADDR STND' : f'Mailing/Permanent Address Standardized: {output}',
             'CURR COUNTY INFO' : f'Current County CODE Info--{output}',
             'CURR COUNTRY INFO' : f'Current Country Info--{output}',
             'PHYS ADDR STND' : f'Physical Address Standardized: {output}',
-            'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {output}',
-            'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {output}',
-            'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {output}',
+            'FERPA CERT SWITCH' : f'FERPA Certification box checked on: {output[:4]}-{output[4:6]}-{output[6:]}',
+            'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {output[:4]}-{output[4:6]}-{output[6:]}',
+            'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {output[:4]}-{output[4:6]}-{output[6:]}',
             'CONSERVATORSHIP SWITCHES' : None,
             'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? Yes--{output}',
             'HS GED TYPE': None,
@@ -101,20 +103,22 @@ class Values:
             'RES: GUAR': None,
             'SPOKEN LANGUAGES': None,
             'PRE-PROFESSIONAL PGMZ': f'Do you plan to pursue a preprofessional program? {output}--Others',
-            'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? {output}',
+            'PRE-PROFESSIONAL PGMC': f'Do you plan to pursue a preprofessional program? NURSING--{output}',
             'PRE-PROFESSIONAL PGMN': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMD': f'Do you plan to pursue a preprofessional program? {output}',
             'PRE-PROFESSIONAL PGMF': f'Do you plan to pursue a preprofessional program? PHARMACY--{output}',
             'PRE-PROFESSIONAL PGMB': f'Do you plan to pursue a preprofessional program? MEDICINE--{output}',
             'PRE-PROFESSIONAL PGME': f'Do you plan to pursue a preprofessional program? PHYSICAL THERAPY--{output}',
             'PRE-PROFESSIONAL PGMA': f'Do you plan to pursue a preprofessional program? PRELAW--{output}',
-            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output[10:14]}',
+            'APP TYPE INFO': f'You are applying as a/an TRANSFER. Total hours earned: {output[8:11]}',
             'AUTO TRANSFER ADM': f'Automatic Admission for Transfer Applicants Based on Texas Law: {output}',
             'OTHER FIRST NAME1': f"Other first name: {output}",
             'OTHER MIDDLE NAME1': f"Other middle name: {output}",
             'OTHER LAST NAME1': f"Other last name: {output}",
+            'OTHER LAST NAME2': f"Other last name: {output}",
             'OTHER SUFFIX NAME1': f"Other suffix: {output}",
             'FAMILY OBLIGATION INCOME': None,
+            'FAMILY OBLIGATION OTHER': None,
             'ALIEN APP/INT': None,
             'VET STATUS': None,
         }
@@ -320,7 +324,8 @@ class Values:
             'IFOREIGN GRAD APPLICATION ID': 'Interanational Graduate Admission',
             'CREENTRY UNDERGRAD APPLICATION ID': 'U.S. Re-Entry Admission',
             'GUS GRAD APPLICATION ID': 'U.S. Graduate Admission',
-            'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission'
+            'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission',
+            'AFOREIGN TRANSFER APPLICATION ID': 'International Transfer Admission'
         }
 
         return f'App ID: {_list[-2]}|{app_[target]}'

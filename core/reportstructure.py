@@ -162,12 +162,12 @@ class ReportStructure:
             'Citzenship ?': 'Citzenship ?',
             'Text Messaging Option': 'Text Messaging Option',
             'SSN Verification Notice': 'SSN Verification Notice',
-            'Name Verification Notice': 'Name Verification Notice',
-            'Conduct Question: Conviction': 'Conduct Question: Conviction',
+            'Name Verification Notice': f'{_list[-1]}',
+            'Conduct Question: Conviction': f'{_list[-1]}',
             'Conduct Question: Expulsion':'Conduct Question: Expulsion',
             'Conduct: Pending Action': 'Conduct: Pending Action',
             'Consultant/Agency': 'Consultant/Agency',
-            'Submit/Transmit': {_list[-1]}
+            'Submit/Transmit': _list[-1]
         }
 
         three_mark_syntax  = {
@@ -192,8 +192,8 @@ class ReportStructure:
             "TXAPP": "ApplyTexas Application",
             "AT": None,
             "App ID": None,
-            "Date Start": f"Date Start: {_list[-1]}",
-            "Data End": f"Date End: {_list[-1]}",
+            "Date Start": f"Date Start: {_list[-1][:4]}-{_list[-1][4:]}",
+            "Data End": f"Date End: {_list[-1][:4]}-{_list[-1][4:]}",
             "SSN": None,
             "Premanent Residence status": _list[-1],
             "Sir Name": _list[-1],
@@ -213,7 +213,7 @@ class ReportStructure:
             "Current enrolled course": _list,
             "Previous Applicant": f"Previous Applicant: Yes",
             "VISA Info": f"Visa: {_list[-1]}",
-            "VISA end date": f"End date: {_list[-1]}"
+            "VISA end date": f"End date: {_list[-1][:4]}-{_list[-1][4:]}"
         }
 
         one_mark_syntax  = {
@@ -223,7 +223,7 @@ class ReportStructure:
             "Address Two": None,
             "Semester": f"Semester: {_list[-1]}",
             "Question statement": _list[-2:-1],
-            "Grade level": None, # f"Date: {_list[1]}",
+            "Grade level": None,
             "Admissions Test": _list,
             "Post-Secondary Colleges/Universities": f"Institution: {_list[-1]}",
             "Hours Earned": f"Hours Earned: {_list[-1]}",

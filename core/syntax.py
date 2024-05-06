@@ -147,7 +147,7 @@ class Syntax:
                 enrolled_q = f'{sem_start} {output[-1][:4]} - {sem_end}'
 
             resident_q_1 = str(output[-1][-2]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
-            resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided')
+            resident_q_2 = str(output[-1][-1]).replace('R', 'Resident (In-state)').replace('U', 'Not provided').replace('N', "Didn't pay in-state tution.")
 
             return ['Residency Information', '', '1. Residency Information', '',
                     'During the 12 months prior to you applying, did you register',
@@ -155,7 +155,7 @@ class Syntax:
                     'What Texas public college or university did you last attend?',
                     f'{attend_q}', '',
                     'In which terms were you last enrolled?', f'{enrolled_q}', '',
-                    'During you last seemster at a Texa public institution, did you pay resident (in-state)',
+                    'During you last seemster at a Texas public institution, did you pay resident (in-state)',
                     'or nonresident (out-of-state) tution?', f'{resident_q_1}', '',
                     'If you paid in-state tution at your last institution, was it because you were classified',
                     'as a resdient or because you were non-resident who received a wavier?', f'{resident_q_2}']
@@ -374,6 +374,27 @@ class Syntax:
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
+    def family_obj_other_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'FAMILY OBLIGATION OTHER':
+            return
+        
+        syntax = {
+            'N': 'No',
+            'Y': 'Yes'
+        }
+
+        target = syntax.get(_list[-2], _list[-2])
+        last = str(_list[-1]).replace('\\', '')
+
+        if target != 'No':
+            return ['Do you have family obligations that keep you from participating in extracurricular',
+                    'activities?', f'{target}',
+                    'Please Explain:',f'{last}','']
+        
+        return ['Do you have family obligations that keep you from participating in extracurricular',
+                'activities?', f'{target}', '']
+    
     def currently_reside_syntax(self, _list: list) -> list:
 
         if _list[3] != 'INT CURR RESIDE IN US':
@@ -456,26 +477,38 @@ class Syntax:
                 target = value
         
         return ['5. Are you currently on academic suspension from the last college or univeristy attended?',
-                f'{target}']
+                f'{target}', '']
     
     def college_work_syntax(self, _list: list) -> list:
 
         if _list[3] != 'COLLEGE WORK':
             return
         
-        target = str(_list[-1]).replace("\\", "")
+        target = _list[-2:]
 
         syntax = {
-            'N': 'No',
-            'Y': 'Yes'
+            'N\\': 'No',
+            'Y\\': 'Yes',
+            'Y': 'Yes, some or all of my college credit hours have been earned through classwork',
+            'N': 'No'
         }
 
-        for key, value in syntax.items():
-            if key == target:
-                target = value
-        
-        return ['Will you have college credit hours by high school graduation date, if so how many?',
-                f'{target}']
+        for idx in range(len(target)):
+            for key, value in syntax.items():
+                if key == target[idx]:
+                    target[idx] = value
+
+        temp = str(target[1]).replace('\\', '')
+
+        if temp == 'No':
+            return ['Will you have college credit hours by high school graduation date, if so how many?',
+                    f'{temp}',]
+        else:
+            return ['Will you have college credit hours by high school graduation date, if so how many?',
+                    f'{temp}','',
+                    'Are your college credit hours earned (or being earned) through dual credit, concurrent',
+                    'enrollment, or an early college high school?',
+                    f'{target[0]}']
     
     def family_obj_syntax(self, _list: list) -> list:
 
@@ -554,7 +587,9 @@ class Syntax:
         target = str(_list[-1]).replace("\\", "")
 
         syntax = {
-            'Y' : 'Y - Texas Resident'
+            'Y' : 'Y - Texas Resident',
+            'N' : 'N - Non-Texas Resident',
+            'A' : 'Needs Affidavit'
         }
 
         target = syntax.get(target, target)
@@ -570,7 +605,7 @@ class Syntax:
                 'provided for applicants with Texas resident status, if the applicant needs to provide more',
                 'information or verification of status. It is recommended that institutions verify this information.', '',
                 'Note: The residency determination is not visible to the applicant.', '',
-                f'Applytexas Residency Determination: {target}']
+                f'Applytexas Residency Determination: {target}', '']
     
     def residency_claim_syntax(self, _list: list) -> list:
 

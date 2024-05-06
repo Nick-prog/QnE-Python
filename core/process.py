@@ -577,6 +577,6 @@ class Process:
         for idx in range(len(new_list)):
             for key, value in syntax.items():
                 if key == new_list[idx]:
-                    new_list[idx] == value
+                    new_list[idx] = value
 
         return new_list

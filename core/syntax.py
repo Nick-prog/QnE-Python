@@ -374,9 +374,9 @@ class Syntax:
                 '(include brothers and sisiters attending college):',
                  f'{target}']
     
-    def family_obj_other_syntax(self, _list: list) -> list:
+    def family_obj_extra_syntax(self, _list: list) -> list:
 
-        if _list[3] != 'FAMILY OBLIGATION OTHER':
+        if _list[3] != 'FAMILY OBLIGATION OTHER' and _list[3] != 'FAMILY OBLIGATION CARE':
             return
         
         syntax = {

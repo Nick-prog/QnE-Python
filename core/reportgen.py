@@ -416,7 +416,8 @@ class ReportGen:
                         'APPLICATION SHARING': s.app_share_syntax(target),
                         'PHI THETA KAPPA': s.phi_theta_kappa_syntax(target),
                         'INT CURR RESIDE IN US': s.currently_reside_syntax(target),
-                        'FAMILY OBLIGATION OTHER': s.family_obj_other_syntax(target)
+                        'FAMILY OBLIGATION OTHER': s.family_obj_extra_syntax(target),
+                        'FAMILY OBLIGATION CARE': s.family_obj_extra_syntax(target)
                         }
 
                 for key, value in req_syntax.items():

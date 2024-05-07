@@ -160,7 +160,7 @@ if __name__ == "__main__":
     run(file, fileName)
 
     # file, fileName = find_spe_file()
-    # run_target(file, fileName, 'foreign', 2)
+    # run_target(file, fileName, 'domestic', 28)
 
     # filePath_list, fileName_list = find_spe_folder_files()
     # for idx in range(len(filePath_list)):

@@ -87,7 +87,7 @@ class Values:
             'MENINGITIS CERT SWITCH' : f'MENINGITIS Certification box checked on: {output[:4]}-{output[4:6]}-{output[6:]}',
             'TRUTH CERT SWITCH' : f'TRUTH Certification box checked on: {output[:4]}-{output[4:6]}-{output[6:]}',
             'CONSERVATORSHIP SWITCHES' : None,
-            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? Yes--{output}',
+            'TEACHING CERTIFICATE TYPE' : f'Will you seek Teacher Certification? Yes--{_list[-1]}',
             'HS GED TYPE': None,
             'PARENT 1 ED LEVEL RELATIONSHIP': None,
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
@@ -119,6 +119,7 @@ class Values:
             'OTHER SUFFIX NAME1': f"Other suffix: {output}",
             'FAMILY OBLIGATION INCOME': None,
             'FAMILY OBLIGATION OTHER': None,
+            'FAMILY OBLIGATION CARE': None,
             'ALIEN APP/INT': None,
             'VET STATUS': None,
         }

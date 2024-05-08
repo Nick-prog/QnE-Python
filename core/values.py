@@ -12,6 +12,8 @@ class Values:
             'N': 'No',
             'Y\\': 'Yes',
             'N\\': 'No',
+            ' Y\\': 'Yes',
+            ' N\\': 'No',
             'NO RESIDENCY COMMENTS INCLUDED\\': None
         }
 
@@ -72,7 +74,8 @@ class Values:
             'FAMILY OBLIGATIONS': None,
             'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}',
             'NATIVE LANGUAGE': f'What languages do you speak fluently? {output}',
-            'INTL EXIT US': None
+            'INTL EXIT US': None,
+            'INT VISA STATUS CHANGE': None,
         }
 
         long_value = {
@@ -93,7 +96,8 @@ class Values:
             'PARENT 2 ED LEVEL RELATIONSHIP': None,
             'PARENT OR GUARDIAN INFO': None,
             'CTRY SELF': f'Country: {output}',
-            'CTRY SPOUSE': f'Country Spouse: {output}',
+            'CTRY SPOUSE': f'Country Spouse: {output[:3]}-{output[3:]}',
+            'CTRY CHILD': f'Country Child: {output[:3]}-{output[3:]}',
             'FAMILY': None,
             'RES: PREVIOUS ENROLLMENT': None,
             'RES: RESIDENCY CLAIM': None,
@@ -333,7 +337,6 @@ class Values:
     
     def ssn_value(self, _list: list) -> str:
         
-
         target = str(_list[-2:]).replace('\\', '')
         
         if len(target) == 47:
@@ -360,3 +363,7 @@ class Values:
                 target[0] = f'Date: {target[0][:4]}-{target[0][4:]}'
 
         return target
+    
+    def high_school_value(self, _list: list) -> str:
+
+        return f"High School: {_list[-3]}-{_list[-1]}"

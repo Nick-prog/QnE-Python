@@ -161,7 +161,7 @@ class ReportStructure:
             'Alumni ?': 'Alumni ?',
             'Citzenship ?': 'Citzenship ?',
             'Text Messaging Option': 'Text Messaging Option',
-            'SSN Verification Notice': 'SSN Verification Notice',
+            'SSN Verification Notice': _list[-1],
             'Name Verification Notice': f'{_list[-1]}',
             'Conduct Question: Conviction': f'{_list[-1]}',
             'Conduct Question: Expulsion':'Conduct Question: Expulsion',
@@ -209,7 +209,7 @@ class ReportStructure:
             "Email": f"Email: {_list[-1]}",
             "Question Answer": _list[-2:-1],
             "Graduation Date": f"Expected Graduation Date: {_list[-1][:-3]}-{_list[-1][-3:]}",
-            "High School Info": f"School Code: {_list[-1]}",
+            "High School Info": None,
             "Current enrolled course": _list,
             "Previous Applicant": f"Previous Applicant: Yes",
             "VISA Info": f"Visa: {_list[-1]}",
@@ -268,6 +268,8 @@ class ReportStructure:
                         value = v.short_msg_value(_list)
                     elif key == 'Grade level':
                         value = v.grade_level_value(_list)
+                    elif key == 'High School Info':
+                        value = v.high_school_value(_list)
 
                     converted_mark = str(value).replace("\\", "")
                     break

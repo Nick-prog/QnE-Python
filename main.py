@@ -51,7 +51,7 @@ def find_spe_folder_files() -> Union[list, list]:
 
     return filePath_list, fileName_list
 
-def run_target(file: str, fileName: str, key: int, apps: int) -> None:
+def run_target(file: str, fileName: str, key: int, apps: int) -> Union[int, int]:
     """Second run method for all types of .spe files. Targets a specific
     type of application and student.
 
@@ -101,7 +101,9 @@ def run_target(file: str, fileName: str, key: int, apps: int) -> None:
         print(report.names)
         ctypes.windll.user32.MessageBoxW(0, f"run_target() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
-def run(file: str, fileName: str) -> None:
+    return len(domestic), len(foreign)
+
+def run(file: str, fileName: str) -> Union[int, int]:
     """Main run method for all types of .spe files.
 
     :param file: target file location
@@ -154,14 +156,19 @@ def run(file: str, fileName: str) -> None:
         print(report.names)
         ctypes.windll.user32.MessageBoxW(0, "run() error encountered.", (sys.exc_info()[1]), "Warning!", 16)
 
+    return len(domestic), len(foreign)
+
 
 if __name__ == "__main__":
     file, fileName = find_spe_file()
-    run(file, fileName)
+    domestic, foreign = run(file, fileName)
 
     # file, fileName = find_spe_file()
-    # run_target(file, fileName, 'domestic', 28)
+    # domestic, foreign = run_target(file, fileName, 'foreign', 4)
 
     # filePath_list, fileName_list = find_spe_folder_files()
     # for idx in range(len(filePath_list)):
-    #     run(filePath_list[idx], fileName_list[idx])
+    #     domestic, foreign += run(filePath_list[idx], fileName_list[idx])
+
+
+    pymsgbox.alert(f"[{domestic}] U.S. ApplyTexas applications have been generated. [{foreign}] International ApplyTexas Applications have been generated.", "Complete!")

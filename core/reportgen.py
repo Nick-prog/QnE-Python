@@ -376,7 +376,7 @@ class ReportGen:
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 'Text Messaging Option',
-                           'Name Verification Notice', 'Conduct Question: Conviction',
+                           'Name Verification Notice', 'Conduct Question: Conviction', 'SSN Verification Notice',
                            'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?', "Post-Secondary Colleges/Universities",
                            'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
                            'End of App']
@@ -417,7 +417,8 @@ class ReportGen:
                         'PHI THETA KAPPA': s.phi_theta_kappa_syntax(target),
                         'INT CURR RESIDE IN US': s.currently_reside_syntax(target),
                         'FAMILY OBLIGATION OTHER': s.family_obj_extra_syntax(target),
-                        'FAMILY OBLIGATION CARE': s.family_obj_extra_syntax(target)
+                        'FAMILY OBLIGATION CARE': s.family_obj_extra_syntax(target),
+                        'INT VISA STATUS CHANGE': s.int_visa_status_syntax(target),
                         }
 
                 for key, value in req_syntax.items():

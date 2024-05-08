@@ -509,6 +509,21 @@ class Syntax:
                     'Are your college credit hours earned (or being earned) through dual credit, concurrent',
                     'enrollment, or an early college high school?',
                     f'{target[0]}']
+        
+    def int_visa_status_syntax(self, _list: list) -> list:
+
+        if _list[3] != 'INT VISA STATUS CHANGE':
+            return
+        
+        syntax = {
+            'N\\': 'No',
+            'Y\\': 'Yes',
+        }
+
+        target = syntax.get(_list[-1], _list[-1])
+
+        return ['Will you require a change in your visa status?',
+                f'{target}']
     
     def family_obj_syntax(self, _list: list) -> list:
 
@@ -570,14 +585,19 @@ class Syntax:
         
         syntax = {
             'N\\': 'No',
-            'Y\\': 'Yes'
         }
         
-        target = syntax.get(_list[-1], _list[-1])
+        target = syntax.get(_list[-1], "Yes")
         
-        return ['If you are already in the U.S., do you plan to leave the U.S. before enrolling at the',
-                'university to which you are applying?',
-                f'{target}', '']
+        if target != "Yes":
+            return ['If you are already in the U.S., do you plan to leave the U.S. before enrolling at the',
+                    'university to which you are applying? If yes, estimate the date of travel.',
+                    f'{target}', '']
+        else:
+            target = str(_list[-1]).replace('\\', '')
+            return ['If you are already in the U.S., do you plan to leave the U.S. before enrolling at the',
+                    'university to which you are applying? If yes, estimate the date of travel.',
+                    f'{target[:4]}-{target[4:]}', '']
     
     def residency_determ_syntax(self, _list: list) -> list:
 

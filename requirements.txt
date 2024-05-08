@@ -1,0 +1,3 @@
+pdfrw==0.4
+PyMsgBox==1.0.9
+reportlab==4.0.9

@@ -77,6 +77,16 @@ Here's a brief overview of the process:
 
 The detailed instructions provided in the [Publish Python Apps] guide will walk you through each step, enabling you to successfully create a standalone executable from your Python script.
 
+Alternatively, you could package the program with less dependencies by following these steps:
+
+1. **Install PyInstaller and Pipreqs**: Open a terminal or command prompt and use pip to install the library pyinstaller and pipreqs (> pip install ...).
+
+2. **Create Requirements.txt**: Create a `requirements.txt` file in the same directory as your Python script. This will be done with the pipreqs library (> pipreqs .).
+
+3. **Package and Create your executable**: Build your package in a dist folder generated in your Python script directory with the main.py file (> pyinstaller main.py).
+
+The program should be packaged within minutes and be made in a much smaller exectuable file located in the dist folder of your program.
+
 # Contact
 Nickolas Rodriguez | Twitter: @\_Nick_Rod_ | Email: Nickolasrodriguez98@gmail.com | GitHub: Nick-prog
 

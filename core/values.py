@@ -5,7 +5,10 @@ class Values:
     form of a string.
     """
 
-    def short_msg_value(self, _list: list) -> str:
+    def short_msg_value(self, _list: list, key: str) -> str:
+
+        if key != 'Short MSG':
+            return
 
         transform_dict = {
             'Y': 'Yes',
@@ -26,7 +29,7 @@ class Values:
 
         return output
 
-    def long_med_req_value(self, _list: list) -> str:
+    def long_med_req_value(self, _list: list, key: str) -> str:
         """Long and Med REQ value output replacers based on given text.
 
         :param _list: full string of Long or Med REQ
@@ -34,6 +37,11 @@ class Values:
         :return: updated string value for proper display
         :rtype: str
         """
+
+        allowed = ['Med REQ', 'Long REQ']
+
+        if key not in allowed:
+            return
 
         target = _list[3]
 
@@ -75,7 +83,7 @@ class Values:
             'EMERGENCY CONTACT HAS NO PHONE': f'Does the listed emergency contact NOT have a phone? {output}',
             'NATIVE LANGUAGE': f'What languages do you speak fluently? {output}',
             'INTL EXIT US': None,
-            'INT VISA STATUS CHANGE': None,
+            'INT VISA STATUS CHANGE': None
         }
 
         long_value = {
@@ -134,13 +142,13 @@ class Values:
             for key, value in dicts.items():
                 if key == target:
                     if target == 'ULTIMATE DEGREE SOUGHT':
-                        return value + self.additional_value(_list)
+                        return value + self.additional_value(_list, target)
             
                     return value
 
         return _list
     
-    def req_and_or_answer_value(self, _list: list) -> str:
+    def req_and_or_answer_value(self, _list: list, key: str) -> str:
         """Request and or Answer value markdown replacement text. Gives a clearer representation of
         the original question asked.
 
@@ -149,6 +157,9 @@ class Values:
         :return: new string based on dict value
         :rtype: str
         """
+
+        if key != 'Request and/or Answer':
+            return
 
         target = _list[3]
 
@@ -178,7 +189,7 @@ class Values:
 
         return req_[target]
     
-    def additional_value(self, _list: list) -> str:
+    def additional_value(self, _list: list, key: str) -> str:
         """Additional value markdown replacement text. Meant for markdown text that have more than one 
         option to be or semester information.
 
@@ -187,6 +198,11 @@ class Values:
         :return: new string based on dict values
         :rtype: str
         """
+
+        allowed = ['Multi type question', 'Degree Earned', 'Semester', 'ULTIMATE DEGREE SOUGHT']
+
+        if key not in allowed:
+            return
 
         target = _list[-1]
 
@@ -220,7 +236,7 @@ class Values:
                 output = f"{value} {target[:-5]}"
                 return output
     
-    def ethnicity_race_value(self, _list: list) -> str:
+    def ethnicity_race_value(self, _list: list, key: str) -> str:
         """Ethnicity and Race value markdown replacement  text. Gives a clearer representation of the 
         different options students can choose from.
 
@@ -229,6 +245,9 @@ class Values:
         :return: new string based on dict values
         :rtype: str
         """
+
+        if key != 'Ethnicity/Race':
+            return
 
         target = _list[-1]
 
@@ -273,7 +292,10 @@ class Values:
                 if key == target:
                     return value
                 
-    def address_value(self, _list: list) -> str:
+    def address_value(self, _list: list, key: str) -> str:
+        
+        if key != 'Address Two':
+            return
         
         target = []
 
@@ -283,7 +305,7 @@ class Values:
        
         return target
     
-    def gender_value(self, _list: list) -> str:
+    def gender_value(self, _list: list, key: str) -> str:
         """Gender value markdown replacement  text. Gives a clearer representation of the 
         different options students can choose from.
 
@@ -292,6 +314,9 @@ class Values:
         :return: new string based on dict values
         :rtype: str
         """
+
+        if key != 'Student Gender':
+            return
         
         if len(_list) >= 4:
             target = "".join(_list[3]).translate(str.maketrans("", "", "\\0"))
@@ -308,7 +333,10 @@ class Values:
            if key == target:
                return value
            
-    def extra_value(self, _list: list) -> str:
+    def extra_value(self, _list: list, key: str) -> str:
+
+        if key != 'Start Extra Contact Info':
+            return
 
         target = str(_list[-1]).replace('\\', '')
 
@@ -320,7 +348,10 @@ class Values:
 
         return extra_[target]
     
-    def app_value(self, _list: list) -> str:
+    def app_value(self, _list: list, key: str) -> str:
+
+        if key != 'App ID':
+            return
 
         target = str(_list[-1]).replace('\\', '')
 
@@ -330,12 +361,16 @@ class Values:
             'CREENTRY UNDERGRAD APPLICATION ID': 'U.S. Re-Entry Admission',
             'GUS GRAD APPLICATION ID': 'U.S. Graduate Admission',
             'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission',
-            'AFOREIGN TRANSFER APPLICATION ID': 'International Transfer Admission'
+            'AFOREIGN TRANSFER APPLICATION ID': 'International Transfer Admission',
+            'BFOREIGN FRESHMAN APPLICATION ID': 'International Freshman Admission'
         }
 
         return f'App ID: {_list[-2]}|{app_[target]}'
     
-    def ssn_value(self, _list: list) -> str:
+    def ssn_value(self, _list: list, key: str) -> str:
+
+        if key != 'SSN':
+            return
         
         target = str(_list[-2:]).replace('\\', '')
         
@@ -344,7 +379,10 @@ class Values:
 
         return target
     
-    def grade_level_value(self, _list: list) -> str:
+    def grade_level_value(self, _list: list, key: str) -> str:
+
+        if key != 'Grade level':
+            return
 
         target = []
 
@@ -364,6 +402,16 @@ class Values:
 
         return target
     
-    def high_school_value(self, _list: list) -> str:
+    def high_school_value(self, _list: list, key: str) -> str:
+
+        if key != 'High School Info':
+            return
 
         return f"High School: {_list[-3]}-{_list[-1]}"
+    
+    def admissions_value(self, _list: list, key: str) -> str:
+
+        if key != 'Admissions Test':
+            return
+
+        return f'{_list[2]}: Checked--Date taken/plan to take: {_list[-1][:4]}-{_list[-1][4:]}'

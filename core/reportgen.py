@@ -368,6 +368,9 @@ class ReportGen:
 
         #Increment
         yadd = 0
+        senior_found = 0
+        coll_found = 0
+        curr_found = 0
 
         current_idx = last_idx
 
@@ -377,11 +380,11 @@ class ReportGen:
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 'Text Messaging Option',
                            'Name Verification Notice', 'Conduct Question: Conviction', 'SSN Verification Notice',
-                           'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?', "Post-Secondary Colleges/Universities",
+                           'Graduation Date', 'Consultant Agency ?', 'Alumni ?', 'Citzenship ?',
                            'Conduct Question: Expulsion', 'Conduct: Pending Action', 'Multi type question',
                            'End of App']
         
-        req_start = ['Request and/or Answer', 'Long REQ', 'Short REQ', 'Med REQ', "Post-Secondary Colleges/Universities"]
+        req_start = ['Request and/or Answer', 'Long REQ', 'Short REQ', 'Med REQ']
 
         _list = []
 
@@ -389,11 +392,11 @@ class ReportGen:
             current_idx += 1
             _str = self.nested_list[select_app][current_idx]
             struct = core.ReportStructure(_str)
+            target = str(_str).split("!")
 
             if val in paragraph_start:
                 yadd -= 10
             elif val in req_start:
-                target = str(_str).split("!")
 
                 req_syntax = {
                         'PAYMENT RECONCILIATION': s.payment_syntax(target),
@@ -418,22 +421,36 @@ class ReportGen:
                         'INT CURR RESIDE IN US': s.currently_reside_syntax(target),
                         'FAMILY OBLIGATION OTHER': s.family_obj_extra_syntax(target),
                         'FAMILY OBLIGATION CARE': s.family_obj_extra_syntax(target),
-                        'INT VISA STATUS CHANGE': s.int_visa_status_syntax(target),
+                        'INT VISA STATUS CHANGE': s.int_visa_status_syntax(target)
                         }
 
                 for key, value in req_syntax.items():
                     if target[3] == key:
                         _list = value
                         yadd -= 10
+            
+            elif val == 'Post-Secondary Colleges/Universities':
+                _list = s.post_coll_univ_syntax(target, coll_found)
+                coll_found += 1
 
-                if _list != None:
-                    for x in range(len(_list)):
-                        canvas.drawString(xstart, ystart+yadd, str(_list[x]))
-                        yadd -= 10
+            elif val == 'Senior Year Course(s)':
+                _list = s.senior_year_syntax(target, senior_found)
+                senior_found += 1
 
-                _list = []
+            elif val == 'Current enrolled course':
+                _list = s.current_course_syntax(target, curr_found)
+                curr_found += 1
+
+            
+            if _list != None:
+                for x in range(len(_list)):
+                    canvas.drawString(xstart, ystart+yadd, str(_list[x]))
+                    yadd -= 10
+
+            _list = []
 
             conv = struct.transform_page(val)
+
 
             if conv != "None":
                 canvas.drawString(xstart, ystart+yadd, str(conv)) # prints syntax values

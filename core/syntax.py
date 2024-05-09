@@ -25,14 +25,14 @@ class Syntax:
 
         target = _list[-1]
 
-        return [f"Transcation Time: {target[0:8]}",
+        return [f"Transcation Time: {target[0:4]}-{target[4:6]}-{target[6:8]} {target[8:10]}:{target[10:12]}:{target[12:14]}",
                 f"Payment Status: {target[15:19]}",
-                f"Payment Amount: {target[19:24]}",
+                f"Payment Amount: ${target[22:24]}",
                 f"Transcation Trace: {target[24:36]}",
                 f"Customer Reference: {target[36:48]}",
                 f"Card Type: {target[48]}",
                 f"Last 4 digit card number: {target[49:53]}",
-                f"Card Expiration Date: {target[53:57]}", '']
+                f"Card Expiration Date: {target[53:55]}/{target[55:57]}", '']
     
     def hs_diploma_syntax(self, _list: list) -> list:
         """Text fully listing the question given for HS Diploma information including
@@ -98,10 +98,12 @@ class Syntax:
 
         target = target.replace('N', "No").replace('Y', "Yes")
 
+        extra = str(_list[-1]).replace('\\', '')
+
 
         return ['3. If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
-                 f'{target}', '']
+                 f'{target}-{extra}', '']
     
     def prev_syntax(self, _list: list) -> list:
         """Text fully listing the question given from previous college information from
@@ -279,7 +281,7 @@ class Syntax:
         """Text fully listing the question given from country application information from
         students on ApplyTexas.
 
-        :param _list: lsit of designated markdown text
+        :param _list: list of designated markdown text
         :type _list: list
         :return: list of strings to display the proper output
         :rtype: list
@@ -325,6 +327,55 @@ class Syntax:
                 f'{output[0]}', '',
                 'Have you previously applied?',
                 f'{output[1]}']
+    
+    def post_coll_univ_syntax(self, _list: list, found: int) -> list:
+
+        if _list[0] != 'PCL':
+            return
+        
+        institution = str(_list[-1]).replace('\\', '')
+        
+        if found == 0:
+            return ['','1. Please list ALL post-secondary colleges or universities you have previously attended or',
+                    'are presently attending, including for extension, correspondence, and distance learning',
+                    'credit, starting with the most recent. Failure to list all institutions will be considered',
+                    'an intentional omission an may lead to forced withdrawal.', '',
+                    f'Name of Insitition: {institution}', 
+                    f'Code: {_list[1]}/{_list[2]}', 
+                    f'Dates Attended: {_list[4][:4]}/{_list[4][4:6]}{_list[4][6]}{_list[4][7:11]}/{_list[4][11:14]}']
+        
+        return ["",f'Name of Insitition: {institution}', 
+                f'Code: {_list[1]}/{_list[2]}', 
+                f'Dates Attended: {_list[4][:4]}/{_list[4][4:6]}{_list[4][6]}{_list[4][7:11]}/{_list[4][11:14]}']
+    
+    def senior_year_syntax(self, _list: list, found: int) -> list:
+
+        if _list[0] != 'CRS':
+            return
+        
+        target = str(_list[-1]).replace('\\', '')
+        
+        if found == 0:
+            return ['', '4. Please list exact titles of courses to be completed your senior year and the number of',
+                    'credits you will earn for each. Include college coursework you will complete your senior year.', '',
+                    f'{target}', '']
+        
+        return [f'{target}', '']
+    
+    def current_course_syntax(self, _list: list, found: int) -> list:
+
+        if _list[0] != 'CRS':
+            return
+        
+        target = str(_list[-1]).replace('\\', '')
+        course = str(_list[-2]).strip()
+        
+        if found == 0:
+            return ['', '4. Please list the college or university courses you are currently enrolled in and courses',
+                    'you anticipate completing before you transfer', '',
+                    f'{_list[4]} {course}/{target}', '']
+        
+        return [ f'{_list[4]} {course}/{target}', '']
     
     def family_obj_income_syntax(self, _list: list) -> list:
         """Text fully listing the question given from family obligation income information from

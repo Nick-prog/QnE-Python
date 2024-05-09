@@ -183,7 +183,7 @@ class ReportStructure:
             'Long REQ': _list,
             'Short REQ': _list[-1],
             'Med REQ': _list,
-            "Senior Year Course(s)": _list,
+            "Senior Year Course(s)": None,
             "Issued Date": f"Issued: {_list[-1]}"
         }
 
@@ -210,7 +210,7 @@ class ReportStructure:
             "Question Answer": _list[-2:-1],
             "Graduation Date": f"Expected Graduation Date: {_list[-1][:-3]}-{_list[-1][-3:]}",
             "High School Info": None,
-            "Current enrolled course": _list,
+            "Current enrolled course": None,
             "Previous Applicant": f"Previous Applicant: Yes",
             "VISA Info": f"Visa: {_list[-1]}",
             "VISA end date": f"End date: {_list[-1][:4]}-{_list[-1][4:]}"
@@ -224,13 +224,13 @@ class ReportStructure:
             "Semester": f"Semester: {_list[-1]}",
             "Question statement": _list[-2:-1],
             "Grade level": None,
-            "Admissions Test": _list,
-            "Post-Secondary Colleges/Universities": f"Institution: {_list[-1]}",
+            "Admissions Test": None,
+            "Post-Secondary Colleges/Universities": None,
             "Hours Earned": f"Hours Earned: {_list[-1]}",
             "End of App": "End of App",
             "Degree Earned": f"Degree: {_list[-1]}",
-            "Skip": None,
-            'Transfer Information': _list,
+            "Skip": f'Expected Graduation Date: {_list[-1][:4]}-{_list[-1][4:]}',
+            'Transfer Information': None,
             "Language": _list,
             "Old Admission Test Score": _list,
             "Old Admission Test": _list,
@@ -246,30 +246,27 @@ class ReportStructure:
         for idx in range(len(dictionaries)):
             for key, value in dictionaries[idx].items():
                 if key == val:
-                    if key == "Med REQ" or key == "Long REQ":
-                        value = v.long_med_req_value(_list)
-                    elif key == "Request and/or Answer":
-                        value = v.req_and_or_answer_value(_list)
-                    elif key == 'Multi type question' or key == "Degree Earned" or key == 'Semester':
-                        value = v.additional_value(_list)
-                    elif key == 'Ethnicity/Race':
-                        value = v.ethnicity_race_value(_list)
-                    elif key == 'Address Two':
-                        value = v.address_value(_list)
-                    elif key == 'Student Gender':
-                        value = v.gender_value(_list)
-                    elif key == 'Start Extra Contact Info':
-                        value = v.extra_value(_list)
-                    elif key == 'App ID':
-                        value = v.app_value(_list)
-                    elif key == 'SSN':
-                        value = v.ssn_value(_list)
-                    elif key == 'Short MSG':
-                        value = v.short_msg_value(_list)
-                    elif key == 'Grade level':
-                        value = v.grade_level_value(_list)
-                    elif key == 'High School Info':
-                        value = v.high_school_value(_list)
+                    req_start = {
+                        'Med REQ': v.long_med_req_value(_list, key),
+                        'Long REQ': v.long_med_req_value(_list, key),
+                        'Request and/or Answer': v.req_and_or_answer_value(_list, key),
+                        'Multi type question': v.additional_value(_list, key),
+                        'Degree Earned': v.additional_value(_list, key),
+                        'Semester': v.additional_value(_list, key),
+                        'Ethnicity/Race': v.ethnicity_race_value(_list, key),
+                        'Address Two': v.address_value(_list, key),
+                        'Student Gender': v.gender_value(_list, key),
+                        'Start Extra Contact Info': v.extra_value(_list, key),
+                        'App ID': v.app_value(_list, key),
+                        'SSN': v.ssn_value(_list, key),
+                        'Short MSG': v.short_msg_value(_list, key),
+                        'Grade level': v.grade_level_value(_list, key),
+                        'High School Info': v.high_school_value(_list, key),
+                        'Admissions Test': v.admissions_value(_list, key)
+                    }
+                    
+                    if key in req_start:
+                        value = req_start[key]
 
                     converted_mark = str(value).replace("\\", "")
                     break

@@ -364,7 +364,7 @@ class ReportGen:
 
         # Starting points
         xstart = self.xstart
-        ystart = self.ystart+720 # Increase by 80 every 1 inch height
+        ystart = self.ystart+880 # Increase by 80 every 1 inch height
 
         #Increment
         yadd = 0
@@ -375,7 +375,8 @@ class ReportGen:
         current_idx = last_idx
 
         canvas.setFont("Courier", 7)
-        canvas.setPageSize((8.5*inch, 28*inch))
+        canvas.setPageSize((8.5*inch, len(self.page_3)*inch))
+        canvas.setPageSize((8.5*inch, 30*inch))
         # canvas.setFillColor(HexColor('#FFFFFF'))
 
         paragraph_start = ['Faculty Mentor ?', 'Consultant/Agency', 'Text Messaging Option',

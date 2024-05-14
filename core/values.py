@@ -343,7 +343,8 @@ class Values:
         extra_ = {
             '01': 'Spouse Contact Information:',
             '02': 'Child Information:',
-            '51': 'Emergency Contact Information:'
+            '51': 'Emergency Contact Information:',
+            '34': 'Emergency Contact Information:'
         }
 
         return extra_[target]
@@ -362,7 +363,8 @@ class Values:
             'GUS GRAD APPLICATION ID': 'U.S. Graduate Admission',
             'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission',
             'AFOREIGN TRANSFER APPLICATION ID': 'International Transfer Admission',
-            'BFOREIGN FRESHMAN APPLICATION ID': 'International Freshman Admission'
+            'BFOREIGN FRESHMAN APPLICATION ID': 'International Freshman Admission',
+            'SUS TRANSIENT APPLICATION ID': 'Transient Admission'
         }
 
         return f'App ID: {_list[-2]}|{app_[target]}'

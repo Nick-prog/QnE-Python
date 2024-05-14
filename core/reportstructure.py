@@ -37,6 +37,7 @@ class ReportStructure:
             'RQSAQZZ$ 10': 'Conduct Question: Expulsion',
             'RQSAQZZ$ 11': 'Conduct: Pending Action',
             'RQSAQZZ$ 12': 'Consultant/Agency',
+            'RQSAQZZ$ 13': 'Faculty Mentor ?',
             'RQSAQZZAPP SUBMIT/TRANSMIT': 'Submit/Transmit'
         }
 

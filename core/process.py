@@ -475,10 +475,7 @@ class Process:
                 _list.insert(2, _list[1][6:])
                 _list[1] = _list[1][:6]
                 new_list.append(_list[0])
-        else:
-            new_list.append(_list[0])
-
-        if len(_list) == 4:
+        elif len(_list) == 4:
             if len(_list[1]) == 5:
                 new_list.append(_list[1][0])
                 new_list.append(f"{_list[1][1:3]} Years; {_list[1][3:5]} Months")
@@ -538,7 +535,6 @@ class Process:
                 new_list.append(f"{_list[3][9:11]} Years {_list[3][11:13]} Months")
 
         elif len(_list) == 5:
-
             if len(_list[1]) == 5:
                 new_list.append(_list[1][0])
                 new_list.append(f"{_list[1][1:3]} Years; {_list[1][3:5]} Months")
@@ -572,6 +568,34 @@ class Process:
             if len(_list[4]) == 5:
                 new_list.append(_list[3][-1])
                 new_list.append(f"{_list[4][:2]} Years; {_list[4][2:4]} Months")
+
+        elif len(_list) == 6:
+            new_list.append(_list[0])
+
+            if len(_list[1]) == 5:
+                new_list.append(_list[1][0])
+                new_list.append(f"{_list[1][1:3]} Years; {_list[1][3:]} Months")
+                new_list.append('Not provided')
+
+            if len(_list[2]) == 1:
+                new_list.append(_list[2])
+
+            if len(_list[3]) == 14:
+                new_list.append(_list[3][1:7])
+                new_list.append(_list[3][0])
+                new_list.append(_list[3][7])
+
+            if len(_list[4]) == 8:
+                new_list.append(_list[4][-2])
+                new_list.append(_list[4][-1])
+                new_list.append(_list[5][-1])
+
+            if len(_list[5]) == 5:
+                new_list.append(_list[4][:6])
+                new_list.append(f"{_list[5][:2]} Years; {_list[5][2:4]} Months")
+
+        else:
+            new_list.append(_list[0])
 
             
         for idx in range(len(new_list)):

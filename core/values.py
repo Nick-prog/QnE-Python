@@ -252,37 +252,37 @@ class Values:
         target = _list[-1]
 
         hispanic_ = {
-            "Ethnicity=R;Race=S\\": "Hispanic or Latino. White.",
-            "Ethnicity=R;Race=T\\": "Hispanic or Latino. American Indian or Alaska Native.",
-            "Ethnicity=R;Race=Q\\": "Hispanic or Latino. Black or African American.",
-            "Ethnicity=R;Race=U\\": "Hispanic or Latino. Asian.",
-            "Ethnicity=R;Race=V\\": "Hispanic or Latino. Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=R;Race=QS\\": "Hispanic or Latino. Black or African American or White.",
-            "Ethnicity=R;Race=US\\": "Hispanic or Latino. Asian or White.",
-            "Ethnicity=R;Race=UV\\": "Hispanic or Latino. Asian, Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=R;Race=TS\\": "Hispanic or Latino. American Indian, Alaska Native or White.",
-            "Ethnicity=R;Race=ST\\": "Hispanic or Latino. American Indian, Alaska Native or White.",
-            "Ethnicity=R;Race=UST\\": "Hispanic or Latino. Asian, White, American Indian or Alaska Native.",
+            "Ethnicity=R;Race=S\\": "Ethnicity=Hispanic or Latino. Race=White.",
+            "Ethnicity=R;Race=T\\": "Ethnicity=Hispanic or Latino. Race=American Indian or White.",
+            "Ethnicity=R;Race=Q\\": "Ethnicity=Hispanic or Latino. Race=Black or African American.",
+            "Ethnicity=R;Race=U\\": "Ethnicity=Hispanic or Latino. Race=Asian.",
+            "Ethnicity=R;Race=V\\": "Ethnicity=Hispanic or Latino. Race=Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=QS\\": "Ethnicity=Hispanic or Latino. Race=Black or African American or White.",
+            "Ethnicity=R;Race=US\\": "Ethnicity=Hispanic or Latino. Race=Asian or White.",
+            "Ethnicity=R;Race=UV\\": "Ethnicity=Hispanic or Latino. Race=Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=R;Race=TS\\": "Ethnicity=Hispanic or Latino. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=ST\\": "Ethnicity=Hispanic or Latino. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=R;Race=UST\\": "Ethnicity=Hispanic or Latino. Race=Asian, White, American Indian or Alaska Native.",
         }
 
         not_hispanic_ = {
-            "Ethnicity=W\\": "Not Hispanic or Latino. Ethnicity=N/A.",
-            "Ethnicity=W;Race=S\\": "Not Hispanic or Latino. White.",
-            "Ethnicity=W;Race=T\\": "Not Hispanic or Latino. American Indian or Alaska Native.",
-            "Ethnicity=W;Race=Q\\": "Not Hispanic or Latino. Black or African American.",
-            "Ethnicity=W;Race=U\\": "Not Hispanic or Latino. Asian.",
-            "Ethnicity=W;Race=V\\": "Not Hispanic or Latino. Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=W;Race=QS\\": "Not Hispanic or Latino. Black, African American or White.",
-            "Ethnicity=W;Race=US\\": "Not Hispanic or Latino. Asian or White.",
-            "Ethnicity=W;Race=UV\\": "Not Hispanic or Latino. Asian, Native Hawaiian or Other Pacific Islander.",
-            "Ethnicity=W;Race=TS\\": "Not Hispanic or Latino. American Indian, Alaska Native or White.",
-            "Ethnicity=W;Race=ST\\": "Not Hispanic or Latino. American Indian, Alaska Native or White.",
-            "Ethnicity=W;Race=UST\\": "Not Hispanic or Latino. Asian, White, American Indian or Alaska Native.",
+            "Ethnicity=W\\": "Ethncity=Non Hispanic or Latino. Ethnicity=N/A.",
+            "Ethnicity=W;Race=S\\": "Ethncity=Non Hispanic or Latino. Race=White.",
+            "Ethnicity=W;Race=T\\": "Ethncity=Non Hispanic or Latino. Race=American Indian or White.",
+            "Ethnicity=W;Race=Q\\": "Ethncity=Non Hispanic or Latino. Race=Black or African American.",
+            "Ethnicity=W;Race=U\\": "Ethncity=Non Hispanic or Latino. Race=Asian.",
+            "Ethnicity=W;Race=V\\": "Ethncity=Non Hispanic or Latino. Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=QS\\": "Ethncity=Non Hispanic or Latino. Black, African American or White.",
+            "Ethnicity=W;Race=US\\": "Ethncity=Non Hispanic or Latino. Race=Asian or White.",
+            "Ethnicity=W;Race=UV\\": "Ethncity=Non Hispanic or Latino. Race=Asian, Native Hawaiian or Other Pacific Islander.",
+            "Ethnicity=W;Race=TS\\": "Ethncity=Non Hispanic or Latino. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=ST\\": "Ethncity=Non Hispanic or Latino. Race=American Indian, Alaska Native or White.",
+            "Ethnicity=W;Race=UST\\": "Ethncity=Non Hispanic or Latino. Race=Asian, White, American Indian or Alaska Native.",
         }
 
         other_ = {
-            "Ethnicity=\\": "Gender=N/A. Ethnicity=N/A.",
-            "Ethnicity=R\\": "Hispanic or Latino. Ethnicity=N/A.",
+            "Ethnicity=\\": "Ethnicity=N/A. Race=N/A.",
+            "Ethnicity=R\\": "Ethnicity=Hispanic or Latino. Race=N/A.",
         }
 
         dictionaries = [hispanic_, not_hispanic_, other_]
@@ -331,7 +331,7 @@ class Values:
 
         for key, value in gender_.items():
            if key == target:
-               return value
+               return f'DOB: {_list[2][:4]}-{_list[2][4:6]}-{_list[2][6:]} {value}'
            
     def extra_value(self, _list: list, key: str) -> str:
 

@@ -476,6 +476,7 @@ class Process:
                 _list[1] = _list[1][:6]
                 new_list.append(_list[0])
         elif len(_list) == 4:
+            new_list.append(_list[0])
             if len(_list[1]) == 5:
                 new_list.append(_list[1][0])
                 new_list.append(f"{_list[1][1:3]} Years; {_list[1][3:5]} Months")
@@ -535,6 +536,7 @@ class Process:
                 new_list.append(f"{_list[3][9:11]} Years {_list[3][11:13]} Months")
 
         elif len(_list) == 5:
+            new_list.append(_list[0])
             if len(_list[1]) == 5:
                 new_list.append(_list[1][0])
                 new_list.append(f"{_list[1][1:3]} Years; {_list[1][3:5]} Months")

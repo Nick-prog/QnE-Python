@@ -698,11 +698,11 @@ class Syntax:
 
         if output[-1] == '0000':
             return
-        
+
         ans = self.p.process_self(output)
 
         return ['Residency Information - continued:', '',
-                '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are youa foreign national',
+                '4. If you are not a U.S. Citizen or U.S. Permanent Resident, are you a foreign national',
                 'here with a visa eligible to domicile in the United States or are you a Refugee, Asylee,',
                 'Parolee or here under Temporary Protective Status? If so, indicate which:', f'{ans[0]}', '',
                 '5. Do you currently live in Texas?', f'{ans[1]}', '',

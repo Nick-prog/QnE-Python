@@ -164,7 +164,7 @@ if __name__ == "__main__":
     domestic, foreign = run(file, fileName)
 
     # file, fileName = find_spe_file()
-    # domestic, foreign = run_target(file, fileName, 'domestic', 11)
+    # domestic, foreign = run_target(file, fileName, 'domestic', 13)
 
     # filePath_list, fileName_list = find_spe_folder_files()
     # for idx in range(len(filePath_list)):

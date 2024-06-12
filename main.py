@@ -1,13 +1,52 @@
 import core
 
+import os
+import time
 import ctypes
 import sys
-import pymsgbox
-import os
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 from typing import Union
+from pathlib import Path
+from tqdm import tqdm
+
+def find_initial_dir() -> str:
+
+    dl = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    drives = ['%s:' % d for d in dl if os.path.exists('%s:' % d)]
+
+    for idx in range(len(drives)):
+        path = os.path.join(drives[idx], '/Applications')
+        if os.path.exists(os.path.abspath(path)):
+            return path
+        else:
+            return str(os.path.join(Path.home(), "Downloads"))
+
+def find_spe_files() -> Union[list, list]:
+
+    try:
+        spe_default = find_initial_dir()
+
+        tk.Tk().withdraw()
+        dir = askdirectory(initialdir = spe_default, title='Select a folder with SPE files')
+
+        file_paths = []
+        file_names = []
+
+        for file in os.listdir(dir):
+            fileBase, fileName = os.path.split(file)
+
+            if not fileName.endswith('.spe'):
+                raise TypeError(f"Can't process {fileName[-3:]} files.")
+            
+            file_paths.append(os.path.abspath(os.path.join(dir, file)))
+            file_names.append(fileName)
+            
+        return [file_paths, file_names]
+
+    except BaseException as b:
+        ctypes.windll.user32.MessageBoxW(0, f"find_spe_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
 def find_spe_file() -> Union[str, str]:
     """Finder method for target .spe file.
@@ -18,92 +57,22 @@ def find_spe_file() -> Union[str, str]:
     """
 
     try:
-        tk.Tk().withdraw()
-        file = askopenfilename()
-        fileBase, fileName = os.path.split(file)
+        spe_default = find_initial_dir()
 
-        if not fileName.endswith('.spe'):
-            raise TypeError(f"Can't process {fileName[-3:]} files.")
+        tk.Tk().withdraw()
+        file = askopenfilename(initialdir = spe_default, title='Select an SPE file')
+        file_base, file_name = os.path.split(file)
+
+        if not file_name.endswith('.spe'):
+            raise TypeError(f"Can't process {file_name[-3:]} files.")
         
     except BaseException as b:
         ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
     
-    return file, fileName
+    return [file, file_name]
 
-def find_spe_folder_files() -> Union[list, list]:
-
-    filePath_list = []
-    fileName_list = []
-
-    try:
-        tk.Tk().withdraw()
-        folder = askdirectory()
-        
-        for file in os.listdir(folder):
-            if file.endswith(".spe"):
-                filePath = os.path.join(folder, file)
-                filePath_list.append(os.path.abspath(filePath))
-                fileName_list.append(file)
-
-    except BaseException as b:
-        ctypes.windll.user32.MessageBoxW(0, f"find_spe_folder_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
-
-    return filePath_list, fileName_list
-
-def run_target(file: str, fileName: str, key: int, apps: int) -> Union[int, int]:
-    """Second run method for all types of .spe files. Targets a specific
-    type of application and student.
-
-    :param key: type of application
-    :type key: int
-    :param apps: student index
-    :type apps: int
-    """
-
-    try:
-        print('\n' + file)
-        current_dir = os.getcwd()
-        csv_folder= os.path.abspath(f'{current_dir}/core/csv')
-
-        if not os.path.exists(csv_folder):
-                os.makedirs(csv_folder)
-
-        csv_file = os.path.abspath(f'{csv_folder}/all.csv')
-        in_file = f"{current_dir}/core/templates/template_empty.pdf"
-
-        c = core.CSVGen(file, csv_file)
-        c.spe_to_csv()
-
-        p = core.Process(csv_file)
-        p.read_csv_file()
-        foreign, domestic = p.create_data_list(p.data)
-
-        app_types = {
-            "foreign": foreign, 
-            "domestic": domestic
-            }
-        
-        output_folder = os.path.abspath(f"{current_dir}/core/output")
-
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder)
-
-        out_folder = os.path.abspath(f"{output_folder}/{fileName[:-4]}")
-
-        report = core.ReportGen(in_file, app_types[key], apps, key)
-        report.capture_student_names(apps)
-        print(report.names)
-        report.create_pages_structure(apps)
-        report.create_canvas(out_folder, apps)
-    
-    except BaseException as b:
-        print(report.names)
-        ctypes.windll.user32.MessageBoxW(0, f"run_target() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
-
-    return len(domestic), len(foreign)
-
-def run(file: str, fileName: str) -> Union[int, int]:
+def run(file_path: str, file_name: str) -> None:
     """Main run method for all types of .spe files.
 
     :param file: target file location
@@ -113,62 +82,40 @@ def run(file: str, fileName: str) -> Union[int, int]:
     """
 
     try:
-        print('\n' + file)
-        current_dir = os.getcwd()
-        csv_folder= os.path.abspath(f'{current_dir}/core/csv')
+        download_default = str(os.path.join(Path.home(), "Downloads"))
+        tk.Tk().withdraw()
+        folder = askdirectory(initialdir=download_default, title='Select Download Path')
 
-        if not os.path.exists(csv_folder):
-            os.makedirs(csv_folder)
+        p = core.Process(file_path)
+        spe_list = p.read_spe_file()
 
-        csv_file = os.path.abspath(f'{csv_folder}/all.csv')
-        in_file = f"{current_dir}/core/templates/template_empty.pdf"
+        translated_spe = []
 
-        c = core.CSVGen(file, csv_file)
-        c.spe_to_csv()
+        for idx in tqdm (range(len(spe_list))):
+            s = core.Structure(spe_list[idx], idx)
+            translated_spe.append(s.translate())
+        
+        
+        r = core.Report(translated_spe)
+        r.capture_student_name()
+        r.capture_app_type()
 
-        p = core.Process(csv_file)
-        p.read_csv_file()
-        foreign, domestic = p.create_data_list(p.data)
-
-        app_types = {
-            "foreign": foreign, 
-            "domestic": domestic
-            }
-
-        for key in app_types:
-            print(key, len(app_types[key]))
-            for apps in range(len(app_types[key])):
-
-                output_folder = os.path.abspath(f"{current_dir}/core/output")
-
-                if not os.path.exists(output_folder):
-                    os.makedirs(output_folder)
-
-                out_folder = os.path.abspath(f"{output_folder}/{fileName[:-4]}")
-
-                report = core.ReportGen(in_file, app_types[key], apps, key)
-                report.capture_student_names(apps)
-                print(report.names)
-                report.create_pages_structure(apps)
-                report.create_canvas(out_folder, apps)
+        for idx in tqdm (range(len(translated_spe))):
+            _list = r.fit_student_data(translated_spe[idx])
+            r.create_page_structure(folder, file_name, _list, idx)
 
     except BaseException as b:
-        print(report.names)
         ctypes.windll.user32.MessageBoxW(0, "run() error encountered.", (sys.exc_info()[1]), "Warning!", 16)
 
-    return len(domestic), len(foreign)
-
-
 if __name__ == "__main__":
-    file, fileName = find_spe_file()
-    domestic, foreign = run(file, fileName)
 
-    # file, fileName = find_spe_file()
-    # domestic, foreign = run_target(file, fileName, 'domestic', 13)
+    # files = find_spe_files()
+    # for idx, file in enumerate(files):
+    #     print(file[1])
+    #     run(file[0], file[1])
 
-    # filePath_list, fileName_list = find_spe_folder_files()
-    # for idx in range(len(filePath_list)):
-    #     domestic, foreign += run(filePath_list[idx], fileName_list[idx])
+    file = find_spe_file()
+    print(file[1])
+    run(file[0], file[1])
 
-
-    pymsgbox.alert(f"[{domestic}] U.S. ApplyTexas applications have been generated. [{foreign}] International ApplyTexas Applications have been generated.", "Complete!")
+    print('Done')

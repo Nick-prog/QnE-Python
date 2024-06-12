@@ -35,7 +35,7 @@ By focusing on automation and stability, QnE-Python provides a robust solution f
 
 ## Requirements
 
-The QnE-Python application was written in a Python 3.9 environment. However, it can be run with any version of Python above 3.7 due to the main requirements of the reportlab library.
+The QnE-Python application was written in a Python 3.10 environment.
 
 ## How it Works
 

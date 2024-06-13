@@ -1,5 +1,3 @@
-import core
-
 import os
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import HexColor
@@ -7,8 +5,6 @@ from pdfrw import PdfReader
 from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
 from reportlab.lib.units import inch
-
-from datetime import datetime
 
 class Report:
 

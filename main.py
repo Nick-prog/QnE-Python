@@ -1,7 +1,6 @@
 import core
 
 import os
-import time
 import ctypes
 import sys
 import tkinter as tk
@@ -9,7 +8,6 @@ from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 from typing import Union
 from pathlib import Path
-from tqdm import tqdm
 
 def find_initial_dir() -> str:
 
@@ -90,18 +88,20 @@ def run(file_path: str, file_name: str) -> None:
         spe_list = p.read_spe_file()
 
         translated_spe = []
+        markdown_spe = []
 
-        for idx in tqdm (range(len(spe_list))):
-            s = core.Structure(spe_list[idx], idx)
+        for idx, item in enumerate(spe_list):
+            s = core.Structure(item, idx)
             translated_spe.append(s.translate())
+            markdown_spe.append(s.markdown)
         
         
         r = core.Report(translated_spe)
         r.capture_student_name()
         r.capture_app_type()
 
-        for idx in tqdm (range(len(translated_spe))):
-            _list = r.fit_student_data(translated_spe[idx])
+        for idx, item in enumerate(translated_spe):
+            _list = r.fit_student_data(item)
             r.create_page_structure(folder, file_name, _list, idx)
 
     except BaseException as b:

@@ -1,7 +1,5 @@
 import core
 
-from typing import Union
-
 class Structure:
 
     def __init__(self, _list: list, idx: int):
@@ -10,6 +8,10 @@ class Structure:
 
         self.target = []
         self.output = []
+        self.markdown = []
+
+        self.student_idx = 0
+        self.semester_check = 0
 
         self.current_idx = 0
         self.post_check = 0
@@ -46,7 +48,7 @@ class Structure:
                 'DMG': self.translate_DMG(),
                 'DTP': self.translate_DTP(),
                 'FOS': self.translate_FOS(),
-                'IN1': self.translate_IN1(),
+                'IN1': self.translate_IN1(idx),
                 'IN2': self.translate_IN2(),
                 'IND': self.translate_IND(),
                 'MSG': self.translate_MSG(),
@@ -74,6 +76,7 @@ class Structure:
             result = _translate.get(self.target[0], 'Other')
             self.error_handler('Translate', result)
             self.output.append(result)
+            self.markdown.append(self.target[0])
 
         return self.output
 
@@ -169,8 +172,6 @@ class Structure:
         if self.target[0] != 'DEG':
             return
         
-        sep = str(self.target[-1]).replace('\\', '')
-        
         _translate = {
             '2.2': 'Certificate:',
             '2.3': 'Compeleted:',
@@ -181,13 +182,13 @@ class Structure:
         }
 
         if len(self.target) == 2:
-            translate = _translate.get(sep, "Other")
+            translate = _translate.get(self.target[-1], "Other")
             self.error_handler('DEG', translate)
             return f'{translate}'
         else:
             translate = _translate.get(self.target[1], 'Other')
             self.error_handler('DEG', translate)
-            return f'{translate} {sep}'
+            return f'{translate} {self.target[-1]}'
         
     def translate_DMG(self) -> str:
 
@@ -235,8 +236,6 @@ class Structure:
 
         if self.target[0] != 'FOS':
             return
-        
-        last = str(self.target[-1]).replace('\\', '')
 
         _translate = {
             'M': 'Major',
@@ -245,13 +244,13 @@ class Structure:
 
         sep = _translate.get(self.target[1], "Other")
         self.error_handler('FOS', sep)
-
-        if sep == 'M':
-            return f'{sep}: [{self.target[3]}] {last}'
-        else:
-            return f'{sep}: {last}'
         
-    def translate_IN1(self) -> list:
+        if sep == 'Major':
+            return self.output.insert(self.student_idx+2, f'{sep}: [{self.target[3]}] {self.target[-1]}')
+        else:
+            return f'{sep}: {self.target[-1]}'
+        
+    def translate_IN1(self, idx: int) -> list:
 
         if self.target[0] != 'IN1':
             return
@@ -263,6 +262,9 @@ class Structure:
 
         contact = _translate.get(self.target[2], "Other")
         self.error_handler('IN1', contact)
+
+        if contact == 'Student Contact:':
+            self.student_idx = idx
 
         _translate = {
             'PG1': 'Parent Guardian 1',
@@ -297,7 +299,10 @@ class Structure:
         sep = _translate.get(self.target[1], "Other")
         self.error_handler('IN2', sep)
 
-        return f'{sep}: {self.target[-1].upper()}'
+        if len(self.target) != 2:
+            return f'{sep}: {self.target[-1].upper()}'
+        
+        return
     
     def translate_IND(self) -> str:
 
@@ -495,12 +500,12 @@ class Structure:
             return s.OTHER_NAME()
         
         if self.target[3] == 'APP SUBMIT/TRANSMIT':
-            self.output.insert(2, ['', self.target[-1], ''])
+            return self.output.insert(2, ['', self.target[-1], ''])
         
         basic_output = s._syntax.get(self.target[-1], self.target[-1])
         
         _translate = {
-            'APP SUBMIT/TRANSMIT': '',
+            'APP SUBMIT/TRANSMIT': None,
             'PERM COUNTRY INFO': [f'Permanent Country Info--{self.target[-1]}'],
             'PERM COUNTY INFO': [f'Permanent County Info--{self.target[-1][3:]} (Country code = {self.target[-1][:3]})'],
             'PERM ADDR STND': [f'Mailing/Permanent Address Standardized: {basic_output}'],
@@ -554,7 +559,7 @@ class Structure:
             'FAMILY OBLIGATION OTHER': None,
             'FAMILY OBLIGATIONS': ['Do you have family obligations that keep you from participating in extracurricular activities?', 
                                    basic_output, ''],
-            'DUAL CREDIT': ['Are you applyting to take college courses to be completed while you are still', 
+            'DUAL CREDIT': ['', 'Are you applyting to take college courses to be completed while you are still', 
                             'a high school student (Dual Credit or Concurrent Enrollment)?',
                             basic_output, ''],
             'GRADUATE AWARD': None,
@@ -568,8 +573,8 @@ class Structure:
             'INT CURR RESIDE IN US': ['Are you currently residing in the U.S.?',
                                       basic_output, ''],
             'VET STATUS': s.VET_STATUS(),
-            'CTRY SPOUSE': [f"Spouse's Country (Code): ({self.target[-1][:3]}) {self.target[-1][3:]}"],
-            'CTRY CHILD': [f"Child's Country (Code): ({self.target[-1][:3]}) {self.target[-1][3:]}"],
+            'CTRY SPOUSE': None, # [f"Spouse's Country (Code): ({self.target[-1][:3]}) {self.target[-1][3:]}"],
+            'CTRY CHILD': None, # [f"Child's Country (Code): ({self.target[-1][:3]}) {self.target[-1][3:]}"],
             'CUR COLLEGE ATT': ['5. Name of Institution Presently Attending:', 
                                 self.target[-1], ''],
             'CUR COLLEGE CRS': ['6. List courses to be completed during the present semester (if applicable). If you will',
@@ -657,11 +662,16 @@ class Structure:
 
         _translate = {
             '0901': 'Fall',
-            '0601': 'Spring'
+            '0601': 'Spring',
+            '0101': 'Spring'
         }
 
         if len(self.target) == 2:
             sep = _translate.get(self.target[-1][4:], self.target[-1][4:])
+            if self.semester_check == 0:
+                self.semester_check = 1
+                self.output.insert(self.student_idx, f'{sep} {self.target[-1][:4]}')
+                return self.output.insert(self.student_idx, '')
             return f'{sep} {self.target[-1][:4]}'
         elif self.target[-1] == 'ZZZ':
             return f'(Attendance dates: {self.target[1][4:6]}/{self.target[1][:4]} - {self.target[2][4:6]}/{self.target[2][:4]})'

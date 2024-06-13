@@ -187,7 +187,7 @@ class Syntax:
                 'provided for applicants with Texas resident status, if the applicant needs to provide more',
                 'information or verification of status. It is recommended that institutions verify this information.', '',
                 'Note: The residency determination is not visible to the applicant.', '',
-                f'Applytexas Residency Determination: {_syntax.get(self.target[-1], self.target[-1])}', ''] 
+                f'Applytexas Residency Determination: {_syntax.get(self.target[-1], "U - Unable to determine")}', ''] 
 
     def RES_HS_DIPLOMA_OR_GED(self) -> list:
 

@@ -30,8 +30,10 @@ jobs:
     - name: Build executable
       run: |
         pyinstaller --onefile main.py
+    - name: List contents of dist directory
+      run: ls -R dist
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: your-script-executable
+        name: QnE-Python executable
         path: dist/QnE-Python

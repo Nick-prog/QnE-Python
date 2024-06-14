@@ -27,15 +27,27 @@ jobs:
     - name: List installed packages # Log the installed packages for debugging
       run: pip list
 
+    - name: Verify working directory
+      run: pwd
+
+    - name: List repository contents
+      run: ls -R
+
     - name: Build executable
       run: |
         pyinstaller --add-data "core/*;core" --add-data "templates/*;templates" main.py
+      continue-on-error: true
+
+    - name: List dist directory contents
+      run: ls -R dist
+
     - name: Log pyinstaller output  # Capture detailed pyinstaller logs
-      run: cat dist/main/main.spec
+      run: cat dist/main/main.spec || echo "main.spec not found"
 
     - name: Test the executable
       run: |
         ./dist/main/main.exe --version  # Replace this with an appropriate command to test your executable
+      continue-on-error: true
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

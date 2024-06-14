@@ -49,16 +49,19 @@ jobs:
       run: ls -R
 
     - name: List dist directory contents
+      shell: pwsh
       run: |
-        if [ -d "dist" ]; then ls -R dist; else echo "dist directory not found"; fi
+        if (Test-Path dist) { ls -R dist } else { Write-Output "dist directory not found" }
 
     - name: List main directory contents
+      shell: pwsh
       run: |
-        if [ -d "dist/main" ]; then ls -R dist/main; else echo "dist/main directory not found"; fi
+        if (Test-Path dist/main) { ls -R dist/main } else { Write-Output "dist/main directory not found" }
 
     - name: Test the executable
+      shell: pwsh
       run: |
-        if [ -f "dist/main/main.exe" ]; then ./dist/main/main.exe --version; else echo "Executable not found"; fi
+        if (Test-Path dist/main/main.exe) { ./dist/main/main.exe --version } else { Write-Output "Executable not found" }
       continue-on-error: true
 
     - name: Upload artifact

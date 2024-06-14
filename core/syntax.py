@@ -80,7 +80,7 @@ class Syntax:
         final = str(self.target[-1]).replace('\\', '')
 
 
-        return ['3. If you did not graduate from high school, do you have a DEG or have you completed',
+        return ['', '3. If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
                  f'{target}-{final}', '']
     
@@ -316,7 +316,7 @@ class Syntax:
                 '(a) How long has he or she been living here?', f'{_list[39]}{_list[40]} Months; {_list[37]}{_list[38]} Years', '',
                 "(b) What is your parent's or legal guardian's main purpose for being in the state?", _syntax.get(_list[41], _list[41]), '',
                 '7. If your parent or legal guardian is a member of the U.S. military:', '',
-                '(a) Is Texas his or her Home of Record?', f'{_list[42]}', '',
+                '(a) Is Texas his or her Home of Record?', f'{_syntax.get(_list[42], _list[42])}', '',
                 '(b) What state is listed as his or her military legal residence for tax purposes on his or',
                 'her Leave and Earnings Statement?', f'{_list[43]}{_list[44]}', '',
                 '8. Do any of the following apply ot your parent or legal guardian?', '',

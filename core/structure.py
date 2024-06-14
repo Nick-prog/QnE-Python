@@ -130,7 +130,8 @@ class Structure:
 
         _translate = {
             'CP': 'Cell Phone',
-            'HP': 'Home Phone'
+            'HP': 'Home Phone',
+            'P': 'Preferred'
         }
 
         trans_suffix = _translate.get(sep[-1], sep[-1])

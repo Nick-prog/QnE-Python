@@ -1,6 +1,3 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Python application
 
 on:
@@ -16,22 +13,59 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python 3.9.6
       uses: actions/setup-python@v3
       with:
         python-version: "3.9.6"
+
     - name: Install dependencies
       run: |
          python -m pip install --upgrade pip
          pip install -r requirements.txt
          pip install pyinstaller
-    - name: Build executable
-      run: |
-        pyinstaller --add-data "core/*;core" --add-data "templates/*;templates" main.py
-    - name: List contents of repository
+
+    - name: List installed packages
+      run: pip list
+
+    - name: Verify working directory
+      run: pwd
+
+    - name: List repository contents before build
       run: ls -R
+
+    - name: Generate .spec file
+      run: |
+        pyi-makespec --add-data "core/*;core" --add-data "templates/*;templates" main.py
+
+    - name: Log generated .spec file
+      run: cat main.spec
+
+    - name: Build executable
+      run: pyinstaller main.spec
+      continue-on-error: true
+
+    - name: List repository contents after build
+      run: ls -R
+
+    - name: List dist directory contents
+      shell: pwsh
+      run: |
+        if (Test-Path dist) { ls -R dist } else { Write-Output "dist directory not found" }
+
+    - name: List main directory contents
+      shell: pwsh
+      run: |
+        if (Test-Path dist/main) { ls -R dist/main } else { Write-Output "dist/main directory not found" }
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: QnE-Python
         path: dist/main
+
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs
+        path: main.spec

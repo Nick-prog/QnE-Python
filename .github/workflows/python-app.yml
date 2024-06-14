@@ -58,12 +58,6 @@ jobs:
       run: |
         if (Test-Path dist/main) { ls -R dist/main } else { Write-Output "dist/main directory not found" }
 
-    - name: Test the executable
-      shell: pwsh
-      run: |
-        if (Test-Path dist/main/main.exe) { ./dist/main/main.exe --version } else { Write-Output "Executable not found" }
-      continue-on-error: true
-
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:

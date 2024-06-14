@@ -24,29 +24,41 @@ jobs:
          python -m pip install --upgrade pip
          pip install -r requirements.txt
          pip install pyinstaller
-    - name: List installed packages # Log the installed packages for debugging
+
+    - name: List installed packages
       run: pip list
 
     - name: Verify working directory
       run: pwd
 
-    - name: List repository contents
+    - name: List repository contents before build
       run: ls -R
 
-    - name: Build executable
+    - name: Generate .spec file
       run: |
-        pyinstaller --add-data "core/*;core" --add-data "templates/*;templates" main.py
+        pyi-makespec --add-data "core/*;core" --add-data "templates/*;templates" main.py
+
+    - name: Log generated .spec file
+      run: cat main.spec
+
+    - name: Build executable
+      run: pyinstaller main.spec
       continue-on-error: true
 
-    - name: List dist directory contents
-      run: ls -R dist
+    - name: List repository contents after build
+      run: ls -R
 
-    - name: Log pyinstaller output  # Capture detailed pyinstaller logs
-      run: cat dist/main/main.spec || echo "main.spec not found"
+    - name: List dist directory contents
+      run: |
+        if [ -d "dist" ]; then ls -R dist; else echo "dist directory not found"; fi
+
+    - name: List main directory contents
+      run: |
+        if [ -d "dist/main" ]; then ls -R dist/main; else echo "dist/main directory not found"; fi
 
     - name: Test the executable
       run: |
-        ./dist/main/main.exe --version  # Replace this with an appropriate command to test your executable
+        if [ -f "dist/main/main.exe" ]; then ./dist/main/main.exe --version; else echo "Executable not found"; fi
       continue-on-error: true
 
     - name: Upload artifact
@@ -59,4 +71,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: logs
-        path: dist/main/main.spec
+        path: main.spec

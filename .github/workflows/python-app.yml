@@ -36,10 +36,10 @@ jobs:
 
     - name: Generate installer
       run: |
-        python ./setup.py bdist_msi
+        python setup.py build
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: QnE-Python
-        path: dist
+        path: build

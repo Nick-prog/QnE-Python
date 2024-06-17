@@ -1,69 +1,72 @@
-from setuptools import setup, find_packages
-import cx_Freeze
-import sys
 import os
-import re
+import sys
+from cx_Freeze import setup, Executable
+from setuptools import setup, find_packages
 
-# Read and parse requirements from requirements.txt
+# Function to read requirements from requirements.txt
 def parse_requirements(filename):
-    requirements = []
-    with open(filename, 'r') as file:
-        for line in file:
-            # Strip any leading/trailing whitespace and replace multiple spaces with single space
-            line = re.sub(r'\s+', ' ', line.strip())
-            # Split into parts based on space
-            parts = line.split(' ')
-            if len(parts) == 2:
-                requirement = f'{parts[0]}=={parts[1]}'
-                requirements.append(requirement)
-            elif len(parts) > 2:
-                # If there are more than 2 parts, assume the package name has spaces
-                package_name = ' '.join(parts[:-1])
-                requirement = f'{package_name}=={parts[-1]}'
-                requirements.append(requirement)
-            else:
-                raise ValueError(f"Invalid requirement line: {line}")
+    with open(filename, 'r') as f:
+        lines = (line.strip() for line in f)
+        requirements = [line for line in lines if line and not line.startswith('#')]
     return requirements
 
-requirements = parse_requirements('requirements.txt')
+# Function to include an entire directory and its contents
+def collect_files(source):
+    files = []
+    for root, _, filenames in os.walk(source):
+        for filename in filenames:
+            files.append((os.path.join(root, filename), os.path.relpath(os.path.join(root, filename), source)))
+    return files
 
-# Base directory
-base_dir = os.path.abspath(os.path.dirname(__file__))
+# Get current directory
+current_dir = os.path.abspath(os.path.dirname(__file__))
 
-# Main script
-main_script = 'main.py'
+# Get packages
+packages = find_packages(exclude=['tests'])
 
-# Base options for cx_Freeze
-base = None
-if sys.platform == 'win32':
-    base = 'Win32GUI'  # Use 'Console' for console applications on Windows
-elif sys.platform == 'darwin':
-    base = 'Console'  # Use 'Console' for console applications on macOS
+# Read requirements
+install_requires = parse_requirements(os.path.join(current_dir, 'requirements.txt'))
 
-# Options for cx_Freeze
-build_exe_options = {
-    'packages': [],
-    'includes': [],
-    'excludes': [],
-    'include_files': [],
+# Define base setup options
+base_options = {
+    'name': 'QnE-Python',
+    'version': '1.0',
+    'packages': packages,
+    'install_requires': install_requires,
+    'author': 'Nickolas Rodriguez',
+    'author_email': 'Nickolas.ryan.rodriguez@outlook.com',
+    'description': 'Python counterpart for the Java application',
+    'url': 'https://github.com/Nick-prog/QnE-Python',
+    'keywords': 'python, setuptools, cx_Freeze, installer, packaging',
+    'classifiers': [
+        'Programming Language :: Python :: 3',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+    ],
 }
 
-# cx_Freeze setup
-cx_Freeze.setup(
-    name="QnE-Python",
-    version="1.0",
-    description="Python application equivalent to the Java Quick-N-Easy (QnE) counterpart",
-    options={"build_exe": build_exe_options},
-    executables=[cx_Freeze.Executable(main_script, base=base)]
-)
+# Additional options for cx_Freeze
+if sys.platform == 'win32':
+    # Windows-specific options
+    executables = [ Executable('main.py', base='Win32GUI', icon=None)]
+else:
+    # Unix/Linux specific options (not detailed in this example)
+    executables = [ Executable('main.py', base=None, icon=None)]
 
-# setuptools setup
-setup(
-    name='QnE-Python',
-    version='1.0',
-    description='Python application equivalent to the Java Quick-N-Easy (QnE) counterpart',
-    author='Nickolas Rodriguez',
-    author_email='Nickolas.ryan.rodriguez@outlook.com',
-    packages=find_packages(),
-    install_requires=requirements,
-)
+options = {
+    'build_exe': {
+        'packages': packages,
+        'include_files': "template_1.pdf",  # Add any additional files/directories here if needed
+        'includes': ['core'],       # Add any additional modules to include here
+    },
+    'package_data':{
+        '': ['templates/*']
+    }
+}
+
+# Merge base options with cx_Freeze options
+setup_options = {**base_options, **options}
+
+# Setup command
+setup(**setup_options, 
+      executables=executables)

@@ -28,12 +28,8 @@ jobs:
       run: |
         python setup.py build
         
-    - name: Package distribution with setuptools
-      run: |
-        python setup.py sdist bdist_wheel
-        
     - name: Upload Package
       uses: actions/upload-artifact@v2
       with:
         name: packaged-files
-        path: dist/
+        path: build/

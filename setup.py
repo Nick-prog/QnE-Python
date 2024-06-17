@@ -8,8 +8,6 @@ import re
 def parse_requirements(filename):
     requirements = []
     with open(filename, 'r') as file:
-        next(file)  # Skip header line
-        next(file)
         for line in file:
             # Strip any leading/trailing whitespace and replace multiple spaces with single space
             line = re.sub(r'\s+', ' ', line.strip())

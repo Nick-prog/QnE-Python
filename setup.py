@@ -56,11 +56,11 @@ else:
 options = {
     'build_exe': {
         'packages': packages,
-        'include_files': "template_1.pdf",  # Add any additional files/directories here if needed
+        'include_files': "",  # Add any additional files/directories here if needed
         'includes': ['core'],       # Add any additional modules to include here
     },
     'package_data':{
-        '': ['templates/*']
+        '': []
     }
 }
 

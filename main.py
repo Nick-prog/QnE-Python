@@ -44,7 +44,8 @@ def find_spe_files() -> Union[list, list]:
         return [file_paths, file_names]
 
     except BaseException as b:
-        ctypes.windll.user32.MessageBoxW(0, f"find_spe_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
+        tk.messagebox.showerror("find_spe_files() error", f"{sys.exc_info()[1]}")
+        # ctypes.windll.user32.MessageBoxW(0, f"find_spe_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
 def find_spe_file() -> Union[str, str]:
     """Finder method for target .spe file.
@@ -65,7 +66,8 @@ def find_spe_file() -> Union[str, str]:
             raise TypeError(f"Can't process {file_name[-3:]} files.")
         
     except BaseException as b:
-        ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
+        tk.messagebox.showerror("find_spe_file() error", f"{sys.exc_info()[1]}")
+        # ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
     
     return [file, file_name]
@@ -105,7 +107,8 @@ def run(file_path: str, file_name: str) -> None:
             r.create_page_structure(folder, file_name, _list, idx)
 
     except BaseException as b:
-        ctypes.windll.user32.MessageBoxW(0, "run() error encountered.", (sys.exc_info()[1]), "Warning!", 16)
+        tk.messagebox.showerror("run() error", f"{sys.exc_info()[1]}")
+        # ctypes.windll.user32.MessageBoxW(0, "run() error encountered.", (sys.exc_info()[1]), "Warning!", 16)
 
 if __name__ == "__main__":
 

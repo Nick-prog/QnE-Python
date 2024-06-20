@@ -177,7 +177,7 @@ class Syntax:
             'A' : 'Needs Affidavit'
         }
 
-        return ['To assist colleges or universities in residency determinations, the ApplyTexas System asks',
+        return ['', 'To assist colleges or universities in residency determinations, the ApplyTexas System asks',
                 'applicants a series of core questions. Based on answers to these questions, the System estimates',
                 'the residency of each applicant. College or university administrators should make final residency',
                 'determinations based on rules set out in the Texas Administrative Code Title 19, Part 1, Chapter 21,',

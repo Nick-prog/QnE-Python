@@ -23,6 +23,8 @@ class Structure:
             'RZZ': 0,
             'QZZ': 0
         }
+        self.cur_college_crs_check = 0
+        self.general_comments_check = 0
 
     def error_handler(self, markdown: str, text: str) -> None:
         
@@ -503,12 +505,24 @@ class Structure:
         if self.target[3] == 'APP SUBMIT/TRANSMIT':
             return self.output.insert(2, ['', self.target[-1], ''])
         
+        if self.target[3] == 'CUR COLLEGE CRS':
+            if self.cur_college_crs_check == 0:
+                self.cur_college_crs_check = 1
+                return ['6. List courses to be completed during the present semester (if applicable). If you will',
+                                    'complete an additional term before enrolling at Texas A&M University-Kingsville (TAMKI),',
+                                    'list those courses also. If you need to list more than 10 courses, please send a list',
+                                    'directly to the graduate admissions office at Texas A&M University-Kingsville (TAMKI). Be',
+                                    'sure to include your full name, application ID number and date of birth on any documents',
+                                    'you send to the admissions office.', 
+                                    self.target[-1], '']
+            return [self.target[-1], '']
+        
         basic_output = s._syntax.get(self.target[-1], self.target[-1])
         
         _translate = {
             'APP SUBMIT/TRANSMIT': None,
             'PERM COUNTRY INFO': [f'Permanent Country Info--{self.target[-1]}'],
-            'PERM COUNTY INFO': [f'Permanent County Info--{self.target[-1][3:]} (Country code = {self.target[-1][:3]})'],
+            'PERM COUNTY INFO': ['', f'Permanent County Info--{self.target[-1][3:]} (Country code = {self.target[-1][:3]})'],
             'PERM ADDR STND': [f'Mailing/Permanent Address Standardized: {basic_output}'],
             'CURR COUNTY INFO': [f'Current County Info-{self.target[-1]}'],
             'CURR COUNTRY INFO': [f'Current Country Info: {self.target[-1]}'],
@@ -578,13 +592,7 @@ class Structure:
             'CTRY CHILD': None, # [f"Child's Country (Code): ({self.target[-1][:3]}) {self.target[-1][3:]}"],
             'CUR COLLEGE ATT': ['5. Name of Institution Presently Attending:', 
                                 self.target[-1], ''],
-            'CUR COLLEGE CRS': ['6. List courses to be completed during the present semester (if applicable). If you will',
-                                 'complete an additional term before enrolling at Texas A&M University-Kingsville (TAMKI),',
-                                 'list those courses also. If you need to list more than 10 courses, please send a list',
-                                 'directly to the graduate admissions office at Texas A&M University-Kingsville (TAMKI). Be',
-                                 'sure to include your full name, application ID number and date of birth on any documents',
-                                 'you send to the admissions office.', 
-                                 self.target[-1], ''],
+            'CUR COLLEGE CRS': None,
             'INTL EXIT US': ['If you are already in the U.S., do you plan to leave the U.S. before enrolling at the',
                              'university to which you are applying?', 
                              basic_output, ''],
@@ -633,6 +641,12 @@ class Structure:
                     if not str(temp[0]).isspace():
                         _list.append(str(temp).strip())
                     temp = ''
+
+            if temp:
+                if self.general_comments_check == 0:
+                    self.general_comments_check = 1
+                    return ['General Comments:', self.target[-1]]
+                return [self.target[-1]]
 
             _list.insert(0, '9. Mailing/Permanent Address:')
             _list.append('')

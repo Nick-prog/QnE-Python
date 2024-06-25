@@ -128,11 +128,13 @@ class Structure:
         while ("" in sep):
             sep.remove("")
 
-        sep[-1] = str(sep[-1]).replace('\\', '')
+        if len(sep) < 1:
+            return
 
         _translate = {
             'CP': 'Cell Phone',
             'HP': 'Home Phone',
+            'WP': 'Work Phone',
             'P': 'Preferred'
         }
 
@@ -141,8 +143,10 @@ class Structure:
 
         if len(sep) >= 2:
             return f'{trans_prefix}: {sep[:-1]} {trans_suffix}'
-        else:
-            return f'{trans_prefix}: {sep}'
+        elif sep[0] == 'P' or sep[0] == '':
+            return
+    
+        return f'{trans_prefix}: {sep}'
         
     def translate_CRS(self) -> str:
 

@@ -1,7 +1,6 @@
 import core
 
 import os
-import ctypes
 import sys
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
@@ -45,7 +44,6 @@ def find_spe_files() -> Union[list, list]:
 
     except BaseException as b:
         tk.messagebox.showerror("find_spe_files() error", f"{sys.exc_info()[1]}")
-        # ctypes.windll.user32.MessageBoxW(0, f"find_spe_files() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
 def find_spe_file() -> Union[str, str]:
     """Finder method for target .spe file.
@@ -67,7 +65,6 @@ def find_spe_file() -> Union[str, str]:
         
     except BaseException as b:
         tk.messagebox.showerror("find_spe_file() error", f"{sys.exc_info()[1]}")
-        # ctypes.windll.user32.MessageBoxW(0, f"find_spe_file() error encountered. {b}", (sys.exc_info()[1]), "Warning!", 16)
 
     
     return [file, file_name]
@@ -96,8 +93,7 @@ def run(file_path: str, file_name: str) -> None:
             s = core.Structure(item, idx)
             translated_spe.append(s.translate())
             markdown_spe.append(s.markdown)
-        
-        
+    
         r = core.Report(translated_spe)
         r.capture_student_name()
         r.capture_app_type()
@@ -108,7 +104,6 @@ def run(file_path: str, file_name: str) -> None:
 
     except BaseException as b:
         tk.messagebox.showerror("run() error", f"{sys.exc_info()[1]}")
-        # ctypes.windll.user32.MessageBoxW(0, "run() error encountered.", (sys.exc_info()[1]), "Warning!", 16)
 
 if __name__ == "__main__":
 

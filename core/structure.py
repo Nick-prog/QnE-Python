@@ -24,7 +24,7 @@ class Structure:
             'QZZ': 0
         }
         self.cur_college_crs_check = 0
-        self.general_comments_check = 0
+        self.res_comments_check = 0
 
     def error_handler(self, markdown: str, text: str) -> None:
         
@@ -160,7 +160,11 @@ class Structure:
                 self.crs_check = 1
                 _list = ['', '4. Please list exact titles of courses to be completed your senior year and the number of',
                          'credits you will earn for each. Include college coursework you will complete your senior',
-                         'year.', '', self.target[-1]]
+                         'year.', '', 
+                         'AP|Sem(s) or                               Dual Cred/',
+                         'IB|Tri(s)                                  Concurrrent',
+                         '  1|2   Senior Courses                     Enrollment',
+                         self.target[-1]]
             else:
                 _list.append(self.target[-1])
         else:
@@ -447,17 +451,17 @@ class Structure:
 
         if self.post_check == 0:
             self.post_check = 1
-            return ['', '1. Please list ALL post-secondary colleges or universities you have previously attended or',
+            return ['', '4. Please list ALL post-secondary colleges or universities you have previously attended or',
                     'are presently attending, including for extension, correspondence, and distance learning',
                     'credit, starting with the most recent. Failure to list all institutions will be considered',
                     'an intentional omission an may lead to forced withdrawal.', '',
                     f'Name of Insitition: {institution}', 
                     f'Code: {code}', 
-                    f'Dates Attended: {dates}', '']
+                    f'Dates Attended: {dates}']
         
-        return [f'Name of Insitition: {institution}', 
+        return ['', f'Name of Insitition: {institution}', 
                 f'Code: {code}', 
-                f'Dates Attended: {dates}', '']
+                f'Dates Attended: {dates}']
     
     def translate_REF(self) -> str:
 
@@ -513,12 +517,22 @@ class Structure:
             if self.cur_college_crs_check == 0:
                 self.cur_college_crs_check = 1
                 return ['6. List courses to be completed during the present semester (if applicable). If you will',
-                                    'complete an additional term before enrolling at Texas A&M University-Kingsville (TAMKI),',
-                                    'list those courses also. If you need to list more than 10 courses, please send a list',
-                                    'directly to the graduate admissions office at Texas A&M University-Kingsville (TAMKI). Be',
-                                    'sure to include your full name, application ID number and date of birth on any documents',
-                                    'you send to the admissions office.', 
-                                    self.target[-1], '']
+                         'complete an additional term before enrolling at Texas A&M University-Kingsville (TAMKI),',
+                         'list those courses also. If you need to list more than 10 courses, please send a list',
+                         'directly to the graduate admissions office at Texas A&M University-Kingsville (TAMKI). Be',
+                         'sure to include your full name, application ID number and date of birth on any documents',
+                         'you send to the admissions office.', 
+                         self.target[-1], '']
+            return [self.target[-1], '']
+        
+        if self.target[3] == 'RES: COMMENTS':
+            if self.res_comments_check == 0:
+                self.res_comments_check = 1
+                return ['General Comments:',
+                        'Is there any additional information that you believe your college should know in',
+                        'evaluating your eligibility to be classified as a resident? If so, please provide it',
+                        'below.', 
+                         self.target[-1], '']
             return [self.target[-1], '']
         
         basic_output = s._syntax.get(self.target[-1], self.target[-1])
@@ -646,11 +660,11 @@ class Structure:
                         _list.append(str(temp).strip())
                     temp = ''
 
-            if temp:
-                if self.general_comments_check == 0:
-                    self.general_comments_check = 1
-                    return ['General Comments:', self.target[-1]]
-                return [self.target[-1]]
+            # if temp:
+            #     if self.general_comments_check == 0:
+            #         self.general_comments_check = 1
+            #         return ['General Comments:', self.target[-1]]
+            #     return [self.target[-1]]
 
             _list.insert(0, '9. Mailing/Permanent Address:')
             _list.append('')

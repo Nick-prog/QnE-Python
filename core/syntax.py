@@ -3,6 +3,13 @@ import core
 class Syntax:
 
     def __init__(self, target: list):
+        """Syntax class handles more in-depth translations that require more decoupling to make a clearer
+        explanation typically for RQS markdown text. A _syntax dict is created to hold general translations 
+        for most method self.target lines.
+
+        :param target: current line for translation
+        :type target: list
+        """
         self.target = target
 
         self._syntax = {
@@ -14,6 +21,12 @@ class Syntax:
         }
 
     def PRE_PROFESSIONAL(self) -> list:
+        """PRE PROFESSIONAL text for the markdown RQS. Contains information for the
+        preprofessional program question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
         
         _list = core.Process().process_str_with_blank(self.target[3])
         
@@ -31,6 +44,12 @@ class Syntax:
         return ['Do you plan to pursue a preprofessional program?', f'{_syntax.get(_list[1], _list[1])}', '']
 
     def CERT_SWITCH(self) -> list:
+        """CERT SWITCH text for the markdown RQS. Contains information for the
+        certification statements.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         _syntax = {
             'FERPA CERT SWITCH': 'FERPA certification box checked on', 
@@ -54,6 +73,12 @@ class Syntax:
         return output
 
     def CONSERVATORSHIP_SWITCHES(self) -> list:
+        """CONSERVATORSHIP SWITCHES text for the markdown RQS. Contains information for the
+        conservatorship question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'CONSERVATORSHIP SWITCHES':
             return
@@ -72,6 +97,12 @@ class Syntax:
                 f'{second}', '']
     
     def HS_GED_TYPE(self) -> list:
+        """HS GED TYPE text for the markdown RQS. Contains information for the
+        high school equivalency program question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'HS GED TYPE':
             return
@@ -85,6 +116,12 @@ class Syntax:
                  f'{target}-{final}', '']
     
     def COLLEGE_WORK(self) -> list:
+        """COLLEGE WORK text for the markdown RQS. Contains information for the
+        college credit hour question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'COLLEGE WORK':
             return
@@ -100,6 +137,12 @@ class Syntax:
                 f'{self.target[-1]}', '']
 
     def RES_PREVIOUS_ENROLLMENT(self) -> list:
+        """RES PREVIOUS ENROLLMENT text for the markdown RQS. Contains information for the
+        residency question: previous enrollment.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: PREVIOUS ENROLLMENT':
             return
@@ -143,6 +186,12 @@ class Syntax:
                 'for a public college or university in Texas?', f'{self._syntax.get(self.target[-1][0], self.target[-1][0])}', '']
     
     def RES_BASIS_OF_CLAIM(self) -> list:
+        """RES BASIS OF CLIAM text for the markdown RQS. Contains information for the
+        residcency question: basis of claim.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: BASIS OF CLAIM':
             return
@@ -167,6 +216,12 @@ class Syntax:
                 'by a parent or court-appointed legal guardian?', f'{self._syntax.get(self.target[-1][1], self.target[-1][1])}', '']
     
     def RES_DETERM(self) -> list:
+        """RES DETERM text for the markdown RQS. Contains information for the
+        residency question: determination.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: DETERM':
             return
@@ -190,17 +245,29 @@ class Syntax:
                 f'Applytexas Residency Determination: {_syntax.get(self.target[-1], "U - Unable to determine")}', ''] 
 
     def RES_HS_DIPLOMA_OR_GED(self) -> list:
+        """RES HS DIPLOMA OR GED text for the markdown RQS. Contains information for the
+        residency question: high school name and graduation.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: HS DIPLOMA OR GED':
             return
 
-        return [f'Previous High School Name: {self.target[-1][:-2]}',
+        return [f'Previous High School Name: {self.target[-1][:-2]}','',
                 'Did you live or will you have lived in Texas the 36 months leading up',
                 'to high school graduation or completion of the GED?', f'{self._syntax.get(self.target[-1][-2:][0], self.target[-1][-2:][0])}', '',
                 'When you begin the semester for which you are applying, will you have lived',
                 'in Texas for the previous 12 months?', f'{self._syntax.get(self.target[-1][-2:][1], self.target[-1][-2:][1])}', '']
 
     def RES_RESIDENCY_CLAIM(self) -> list:
+        """RES RESIDENCY CLAIM text for the markdown RQS. Contains information for the
+        residency question: state/country claim.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: RESIDENCY CLAIM':
             return
@@ -210,6 +277,12 @@ class Syntax:
                 f'{self.target[-2]}--{self.target[-1]}', '']
 
     def RES_SELF(self) -> list:
+        """RES SELF text for the markdown RQS. Contains information for the
+        residency question: self indicated.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: SELF':
             return
@@ -278,6 +351,12 @@ class Syntax:
                 f'{_list[33]}{_list[34]} Years {_list[35]}{_list[36]} Months', '']
 
     def RES_GUAR(self) -> list:
+        """RES GUAR text for the markdown RQS. Contains information for the
+        residency question: parent or guardian indicated.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'RES: GUAR':
             return
@@ -336,6 +415,12 @@ class Syntax:
                 '(b) How long has your parent or legal guardian been married to the Texas Resident?', f'{_list[71]}{_list[72]} Months; {_list[69]}{_list[70]} Years', '']
 
     def FORMER_STUDENT(self) -> list:
+        """FORMER STUDENT text for the markdown RQS. Contains information for the
+        previous student question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'FORMER STUDENT':
             return
@@ -346,6 +431,12 @@ class Syntax:
                 f'{self._syntax.get(self.target[-1][-1], self.target[-1][-1])}', '']
     
     def ULTIMATE_DEGREE_SOUGHT(self) -> list:
+        """ULTIMATE DEGREE SOUGHT text for the markdown RQS. Contains information for the
+        degree goal question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'ULTIMATE DEGREE SOUGHT':
             return
@@ -358,6 +449,12 @@ class Syntax:
         return ['Ultimate Degree Sought:', f'{_syntax.get(self.target[-1], self.target[-1])}', '']
 
     def CTRY_SELF(self) -> list:
+        """CTRY SELF text for the markdown RQS. Contains information for the
+        citizen residence question.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'CTRY SELF':
             return
@@ -372,6 +469,12 @@ class Syntax:
                 f'Country of legal Permanent Residence: {_list[1]}', '']
 
     def PAYMENT_RECONCILIATION(self) -> list:
+        """PAYMENT RECONILATION text for the markdown RQS. Contains information for the
+        application fee information.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'PAYMENT RECONCILIATION':
             return
@@ -389,6 +492,12 @@ class Syntax:
                 f"Card Expiration Date: {target[53:55]}/{target[55:57]}", '']
     
     def VET_STATUS(self) -> list:
+        """VET STATUS text for the markdown RQS. Contains information for the
+        veteran infomration.
+
+        :return: tranlasted list
+        :rtype: list
+        """
 
         if self.target[3] != 'VET STATUS':
             return
@@ -414,6 +523,12 @@ class Syntax:
         return _list.append('')
     
     def OTHER_NAME(self) -> list:
+        """OTHER NAME text for the markdown RQS. Contains information for the
+        other names listed.
+
+        :return: tranlasted list
+        :rtype: list
+        """
         
         if len(self.target) != 6:
             return

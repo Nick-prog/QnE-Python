@@ -3,6 +3,16 @@ import core
 class Structure:
 
     def __init__(self, _list: list, idx: int):
+        """Structure Class handles all methods related to initially translating markdown text into a readable
+        format. Several class list are initialized for the purpose of holding final (self.output) and current
+        (self.markdown) translations, as well as, tracking line by line inputs (self.target). Class variables
+        hold a check flag for later return separations and student name capturing. 
+
+        :param _list: list of lines captured from the selected .spe file
+        :type _list: list
+        :param idx: current nested list's idx
+        :type idx: int
+        """
         self._list = _list
         self.idx = idx
 
@@ -27,6 +37,15 @@ class Structure:
         self.res_comments_check = 0
 
     def error_handler(self, markdown: str, text: str) -> None:
+        """Class error handler for missing translations found at any given
+        method.
+
+        :param markdown: Method's designated markdown translation
+        :type markdown: str
+        :param text: flag indicator to invoke ReferenceError
+        :type text: str
+        :raises ReferenceError: Returns the method along with the inputted line and student name where error occurrd.
+        """
         
         if text == 'Other':
             r = core.Report([self.output])
@@ -34,6 +53,12 @@ class Structure:
             raise ReferenceError(f'{markdown} translation missing in structure: {self.target}, {self.idx}, {r.student_name}')
 
     def translate(self) -> list:
+        """Main method created to handle translation distrubtion amongst the rest of the created
+        methods.
+
+        :return: final list of translated values
+        :rtype: list
+        """
 
         for idx, item in enumerate(self._list):
             self.target = str(item).split('!')
@@ -83,6 +108,11 @@ class Structure:
         return self.output
 
     def translate_ATV(self) -> list:
+        """Method for ATV markdown text: EXtra Curricular, Community, Employment, and Honor information.
+
+        :return: translated list
+        :rtype: list
+        """
         
         if self.target[0] != 'ATV':
             return
@@ -109,6 +139,11 @@ class Structure:
         return _list
     
     def translate_COM(self) -> str:
+        """Method for COM markdown text: Email and Phone information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'COM':
             return
@@ -149,6 +184,11 @@ class Structure:
         return f'{trans_prefix}: {sep}'
         
     def translate_CRS(self) -> str:
+        """Method for CRS markdown text: Course information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'CRS':
             return
@@ -179,6 +219,11 @@ class Structure:
         return _list
     
     def translate_DEG(self) -> str:
+        """Method for DEG markdown text: Previous Degree and Major information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'DEG':
             return
@@ -202,6 +247,11 @@ class Structure:
             return f'{translate} {self.target[-1]}'
         
     def translate_DMG(self) -> str:
+        """Method for DMG markdown text: Date of Birth and Gender information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'DMG':
             return
@@ -222,6 +272,11 @@ class Structure:
         return f'Date of Birth: {dob} Gender={gender}'
     
     def translate_DTP(self) -> str:
+        """Method for DTP markdown text: Date and Time information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'DTP':
             return
@@ -244,6 +299,11 @@ class Structure:
             return f'{sep}: {date[4:6]}-{date[:4]}'
         
     def translate_FOS(self) -> str:
+        """Method for FOS markdown text: Application Major and Interest information.
+
+        :return: translated string [moves Major up for clearer presentation]
+        :rtype: str
+        """
 
         if self.target[0] != 'FOS':
             return
@@ -262,6 +322,13 @@ class Structure:
             return f'{sep}: {self.target[-1]}'
         
     def translate_IN1(self, idx: int) -> list:
+        """Method for IN1 markdown text: Student and Emergency Contact information.
+
+        :param idx:: current idx [for later student name capturing]
+        :param type: int
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'IN1':
             return
@@ -283,15 +350,22 @@ class Structure:
             '': ''
         }
 
-        parent = _translate.get(self.target[3], "Other")
-        self.error_handler('IN1', parent)
+        contact_type = _translate.get(self.target[3], "Other")
+        self.error_handler('IN1', contact_type)
 
-        if parent == '':
+        if contact_type == '':
+            if int(self.target[-1]) < 30 and contact != 'Student Contact:':
+                return ['', f'{contact} Child {int(self.target[-1])}']
             return ['', f'{contact}']
         else:
-            return ['', f'{contact} {parent}']
+            return ['', f'{contact} {contact_type}']
         
     def translate_IN2(self) -> str:
+        """Method for IN2 markdown text: Name information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'IN2':
             return
@@ -316,6 +390,11 @@ class Structure:
         return
     
     def translate_IND(self) -> str:
+        """Method for IND markdown text: Place of Birth and Country/City information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'IND':
             return
@@ -328,24 +407,13 @@ class Structure:
         pob = ' '.join(pob)
 
         return f'Place of Birth: {pob[:2]}, Country/City: {pob[2:]}'
-    
-    def translate_MSG(self) -> str:
-
-        if self.target[0] != 'MSG':
-            return
-        
-        _translate = {
-            'AT\\': 'paragraph',
-            'DS\\': 'answer',
-        }
-
-        if self.target[-1] in _translate:
-           return f'{self.target[-2]}'
-        else:
-            address = str(self.target[-1]).replace('\\', '')
-            return f'{address}'
         
     def translate_N1(self) -> str:
+        """Method for N1 markdown text: Header or Subject Text information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'N1':
             return
@@ -369,6 +437,11 @@ class Structure:
             return f'{sep}'
         
     def translate_N3_N4(self) -> str:
+        """Method for N3 and N4 markdown text: Address information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'N3' and self.target[0] != 'N4':
             return
@@ -392,6 +465,11 @@ class Structure:
             return f'Secondary Address: {address}'
         
     def translate_NTE(self) -> list:
+        """Method for NTE markdown text: Ethnicity and Race information.
+
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'NTE':
             return
@@ -411,8 +489,7 @@ class Structure:
             'V': 'Native Hawaiian or Other Pacific Islander'
         }
 
-        ethnicity[-1] = _translate.get(ethnicity[-1], "Other")
-        self.error_handler('NTE', ethnicity[-1])
+        ethnicity[-1] = _translate.get(ethnicity[-1], ethnicity)
 
         if len(split) == 1:
             return [f'{ethnicity[0]}={ethnicity[-1]}.']
@@ -441,6 +518,11 @@ class Structure:
             return [f'{ethnicity[0]}={ethnicity[-1]}.', f'{race[0]}={race[-1]}']
         
     def translate_PCL(self) -> list:
+        """Method for PCL markdown text: College information.
+
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'PCL':
             return 
@@ -464,6 +546,11 @@ class Structure:
                 f'Dates Attended: {dates}']
     
     def translate_REF(self) -> str:
+        """Method for REF markdown text: Important Person/App Specific information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'REF':
             return
@@ -497,6 +584,11 @@ class Structure:
         return f'{ref}: {self.target[2]}| {app}'
     
     def translate_RQS(self) -> list:
+        """Method for RQS markdown text: Sevearl Unique Reqeust/Answer type information.
+
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'RQS':
             return
@@ -526,14 +618,20 @@ class Structure:
             return [self.target[-1], '']
         
         if self.target[3] == 'RES: COMMENTS':
+            if self.target[-1] == 'RES: COMMENTS':
+                self.res_comments_check = 1
+                return ['General Comments:',
+                        'Is there any additional information that you believe your college should know in',
+                        'evaluating your eligibility to be classified as a resident? If so, please provide it',
+                        'below.']
             if self.res_comments_check == 0:
                 self.res_comments_check = 1
                 return ['General Comments:',
                         'Is there any additional information that you believe your college should know in',
                         'evaluating your eligibility to be classified as a resident? If so, please provide it',
-                        'below.', 
-                         self.target[-1], '']
-            return [self.target[-1], '']
+                        'below.',
+                         self.target[-1]]
+            return [self.target[-1]]
         
         basic_output = s._syntax.get(self.target[-1], self.target[-1])
         
@@ -627,15 +725,18 @@ class Structure:
         return output
     
     def translate_MSG(self) -> list:
+        """Method for MSG markdown text: Several Short Message information.
+
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'MSG':
             return
-        
-        _str = str(self.target[-1]).replace('\\', '')
 
         _list = []
 
-        if _str in ['AT', 'DS']:
+        if self.target[-1] in ['AT', 'DS']:
             for idx, items in enumerate(self.target):
                 if idx != 0 and idx != len(self.target)-1:
                     _list.append(items)
@@ -643,15 +744,15 @@ class Structure:
                     if len(items) <= 3:
                         _list.append('')
         elif len(self.target) == 2 and len(self.target[1]) <= 31:
-            if (_str != 'NO RESIDENCY COMMENTS INCLUDED'):
+            if (self.target[-1]  != 'NO RESIDENCY COMMENTS INCLUDED'):
                 s = core.Syntax(None)
-                _list.append(s._syntax.get(_str, _str))
+                _list.append(s._syntax.get(self.target[-1] , self.target[-1] ))
                 _list.append('')
         else:
             temp = ''
             prev_char = [0, 0]
 
-            for idx, char in enumerate(_str):
+            for idx, char in enumerate(self.target[-1] ):
                 temp += char
                 prev_char[idx%2] = char
 
@@ -660,11 +761,8 @@ class Structure:
                         _list.append(str(temp).strip())
                     temp = ''
 
-            # if temp:
-            #     if self.general_comments_check == 0:
-            #         self.general_comments_check = 1
-            #         return ['General Comments:', self.target[-1]]
-            #     return [self.target[-1]]
+            if temp:
+                return [self.target[-1], '']
 
             _list.insert(0, '9. Mailing/Permanent Address:')
             _list.append('')
@@ -672,6 +770,11 @@ class Structure:
         return _list
     
     def translate_SES(self) -> str:
+        """Method for SES markdown text: Specific Date Formatting or Degree information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'SES':
             return
@@ -689,6 +792,11 @@ class Structure:
             return f'Date: {date}, Degree: {self.target[-1]}'
         
     def translate_SSE(self) -> str:
+        """Method for SSE markdown text: Semester and Date information.
+
+        :return: translated string [moved Semester info up for better structure]
+        :rtype: str
+        """
 
         if self.target[0] != 'SSE':
             return
@@ -710,6 +818,11 @@ class Structure:
             return f'(Attendance dates: {self.target[1][4:6]}/{self.target[1][:4]} - {self.target[2][4:6]}/{self.target[2][:4]})'
         
     def translate_SST(self) -> list:
+        """Method for SST markdown text: Graduation Date information.
+
+        :return: translated list
+        :rtype: lisr
+        """
 
         if self.target[0] != 'SST':
             return
@@ -720,6 +833,11 @@ class Structure:
         return ['Expected Graduation Date:', f'{self.target[-1][4:]}/{self.target[-1][:4]}', '']
     
     def translate_SUM(self) -> str:
+        """Method for SUM markdown text: Hours Earned information.
+
+        :return: translated string
+        :rtype: str
+        """
 
         if self.target[0] != 'SUM':
             return
@@ -727,6 +845,11 @@ class Structure:
         return f'Hours Earned {self.target[-1]}'
     
     def translate_TST(self) -> list:
+        """Method for TST markdown text: Test (ACT/SAT) information.
+
+        :return: translated list
+        :rtype: list
+        """
 
         if self.target[0] != 'TST':
             return

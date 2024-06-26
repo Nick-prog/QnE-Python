@@ -35,7 +35,7 @@ By focusing on automation and stability, QnE-Python provides a robust solution f
 
 ## Requirements
 
-The QnE-Python application was written in a Python 3.10 environment. Read the requirments.txt file for more information on the program's current dependencies.
+The QnE-Python application was written in a Python 3.9.6 environment. Read the requirments.txt file for more information on the program's current dependencies.
 
 ## How it Works
 

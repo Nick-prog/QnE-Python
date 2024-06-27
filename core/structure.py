@@ -385,8 +385,9 @@ class Structure:
         self.error_handler('IN2', sep)
 
         if len(self.target) != 2:
-            return f'{sep}: {self.target[-1].upper()}'
-        
+            if sep == 'Suffix':
+                return f'{sep}: {self.target[-1].upper()}'
+            return f'{sep}: {self.target[-1]}'
         return
     
     def translate_IND(self) -> str:

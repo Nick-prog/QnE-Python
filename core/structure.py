@@ -260,7 +260,8 @@ class Structure:
 
         _translate = {
             'M': 'Male',
-            'F': 'Female'
+            'F': 'Female',
+            'U': 'Prefer not to say'
         }
 
         if len(self.target) > 3:
@@ -742,7 +743,7 @@ class Structure:
                 if idx != 0 and idx != len(self.target)-1:
                     _list.append(items)
 
-                    if len(items) <= 3:
+                    if self.target[-1] == 'DS':
                         _list.append('')
         elif len(self.target) == 2 and len(self.target[1]) <= 31:
             if (self.target[-1]  != 'NO RESIDENCY COMMENTS INCLUDED'):

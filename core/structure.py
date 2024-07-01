@@ -460,6 +460,8 @@ class Structure:
 
         address = ', '.join(self.target[1:])
 
+        if address == '':
+            return
 
         if self.target[0] == 'N4':
             return f'Primary Address: {address}'

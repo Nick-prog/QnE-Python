@@ -97,7 +97,9 @@ class Structure:
                 'GE': None,
                 'IEA': None,
                 'ISA': None,
-                'GS': None
+                'GS': None,
+                'SBT': None,
+                'SRE': None,
                 }
             
             result = _translate.get(self.target[0], 'Other')
@@ -134,7 +136,7 @@ class Structure:
             _list.append('')
             _list.append(translate)
 
-        _list.append(f'\t{self.target[3]}')
+        _list.append(f'\t{self.target[3:4]} {self.target[-1]}')
 
         return _list
     
@@ -233,6 +235,7 @@ class Structure:
             '2.3': 'Compeleted:',
             '2.4': 'Major:',
             '3.1': 'Degree: Professional',
+            '4.1': 'No Degree',
             '4.2': 'Degree: Masters (M.)',
             '4.4': 'Degree: Doctoral (PhD)',
         }

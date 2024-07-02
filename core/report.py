@@ -1,10 +1,12 @@
 import os
+import pandas as pd
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.colors import HexColor
 from pdfrw import PdfReader
 from pdfrw.buildxobj import pagexobj
 from pdfrw.toreportlab import makerl
 from reportlab.lib.units import inch
+from pathlib import Path
 
 class Report:
 
@@ -28,6 +30,8 @@ class Report:
         self.page_size = (8.5*inch, 11*inch)
         self.font_type = "Courier"
         self.font_size = 7
+
+        self.student_flag = 0
 
     def capture_student_name(self) -> None:
         """Method for capturing the student names from the given nested list. Locates the start of student information
@@ -82,7 +86,6 @@ class Report:
 
         for idx, items in enumerate(app_data):
             if items != None:
-
                 if type(items) == list:
                     for nested in items:
                         _list.append(nested)
@@ -163,7 +166,42 @@ class Report:
 
         for idx, items in enumerate(_list):
             if self.start <= idx < self.end:
+                if str(items).startswith('\t'):
+                    canvas.setFont(self.font_type, 6)
+                else:
+                    canvas.setFont(self.font_type, self.font_size)
+
                 canvas.drawString(self.x_start, self.y_start, items)
                 self.y_start = self.y_start - 10
 
         self.y_start = 750
+
+    def find_consultant_agency(self, app_data: list, filename: str) -> list:
+
+        _list = []
+
+        for idx, items in enumerate(app_data):
+            if str(items) == 'Consultant/Agency':
+                _list.append(app_data[idx+3])
+            elif str(items).startswith('Student Contact'):
+                self.student_flag = 1
+            elif self.student_flag == 1 and str(items).startswith('Date of Birth'):
+                self.student_flag = 0
+                _list.append(items)
+        _list.append(filename)
+
+        return _list
+    
+    def generate_xlsx_sheet(self, _list: list, filename: str) -> None:
+        _temp = []
+
+        for idx, items in enumerate(_list):
+            if len(items[0]) >= 3:
+                _temp.append([items[0][0], items[0][1], items[0][2], items[1]])
+
+
+        if len(_temp) != 0:
+            df = pd.DataFrame(_temp)
+            download_default = str(os.path.join(Path.home(), "Downloads"))
+            filepath = f'{download_default}/{filename}.xlsx'
+            df.to_excel(filepath, index=False, header= ["DOB", "Info", "Filename", "Name"])

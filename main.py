@@ -7,7 +7,6 @@ import glob
 import pandas as pd
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
-from typing import Union
 from pathlib import Path
 
 def find_initial_dir() -> str:
@@ -74,11 +73,7 @@ def run(file_path: str, filename: str) -> None:
     """
 
     try:
-        download_default = str(os.path.join(Path.home(), "Downloads"))
-        # tk.Tk().withdraw()
-        # folder = askdirectory(initialdir=download_default, title='Select Download Path')
-        folder = download_default
-
+        folder = str(os.path.join(Path.home(), "Downloads"))
         p = core.Process(file_path)
         spe_list = p.read_spe_file()
 
@@ -94,7 +89,7 @@ def run(file_path: str, filename: str) -> None:
         r.capture_student_name()
         r.capture_app_type()
 
-        # create_xlsx(translated_spe, filename)
+        create_xlsx(translated_spe, filename)
 
         for idx, item in enumerate(translated_spe):
             _list = r.fit_student_data(item)
@@ -122,38 +117,35 @@ def create_xlsx(translated_spe: list, filename: str)-> None:
 
 def merge_xlsx()-> None:
     # specifying the path to csv files
-    path = str(os.path.join(Path.home(), "Downloads"))
+    input_folder = str(os.path.join(Path.home(), "Downloads"))
+    output_file = str(os.path.join(input_folder, 'total.xlsx'))
     
-    # csv files in the path
-    file_list = glob.glob(path + "/*.xlsx")
-    
-    # list of excel files we want to merge.
-    # pd.read_excel(file_path) reads the excel
-    # data into pandas dataframe.
-    excl_list = []
-    
-    for file in file_list:
-        excl_list.append(pd.read_excel(os.path.abspath(file)))
-    
-    # create a new dataframe to store the 
-    # merged excel file.
-    excl_merged = pd.DataFrame()
-    
-    for excl_file in excl_list:
-        
-        # appends the data into the excl_merged 
-        # dataframe.
-        excl_merged = excl_merged.append(
-        excl_file, ignore_index=True)
-    
-    # exports the dataframe into excel file with
-    # specified name.
-    excl_merged.to_excel(f'{path}/total.xlsx', index=False)
+    # Create a list to hold the dataframes
+    dfs = []
+
+    # Iterate over all Excel files in the specified folder
+    for file_name in os.listdir(input_folder):
+        if file_name.endswith('.xlsx') or file_name.endswith('.xls'):
+            file_path = os.path.join(input_folder, file_name)
+            # Read all sheets from the Excel file
+            xls = pd.ExcelFile(file_path, engine='openpyxl')
+            for sheet_name in xls.sheet_names:
+                df = pd.read_excel(file_path, sheet_name=sheet_name)
+                dfs.append(df)
+
+    # Concatenate all dataframes into one
+    merged_df = pd.concat(dfs, ignore_index=True)
+
+    # Drop duplicate rows
+    merged_df = merged_df.drop_duplicates()
+
+    # Save the merged dataframe to a new Excel file
+    merged_df.to_excel(output_file, index=False, engine='openpyxl')
 
 if __name__ == "__main__":
 
     # find_spe_files() # Multiple .spe files
-    find_spe_file() # Singluar .spe file
-    print('Done')
-    # merge_xlsx()
-    # print('Done Done')
+    # find_spe_file() # Singluar .spe file
+    # print('Done')
+    merge_xlsx()
+    print('Done Done')

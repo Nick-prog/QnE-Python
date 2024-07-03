@@ -118,7 +118,7 @@ def create_xlsx(translated_spe: list, filename: str)-> None:
 def merge_xlsx()-> None:
     # specifying the path to csv files
     input_folder = str(os.path.join(Path.home(), "Downloads"))
-    output_file = str(os.path.join(input_folder, 'total.xlsx'))
+    output_file = str(os.path.join(input_folder, 'Spring 2024 total.xlsx'))
     
     # Create a list to hold the dataframes
     dfs = []
@@ -145,7 +145,8 @@ def merge_xlsx()-> None:
 if __name__ == "__main__":
 
     # find_spe_files() # Multiple .spe files
-    # find_spe_file() # Singluar .spe file
-    # print('Done')
-    merge_xlsx()
-    print('Done Done')
+    find_spe_file() # Singluar .spe file
+    print('Done')
+    
+    # merge_xlsx()
+    # print('Done Done')

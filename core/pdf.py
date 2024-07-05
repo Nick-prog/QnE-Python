@@ -8,7 +8,7 @@ from pdfrw.toreportlab import makerl
 from reportlab.lib.units import inch
 from pathlib import Path
 
-class Report:
+class PDF:
 
     def __init__(self, nested_list: list):
         """Report class handles all PDF generation methods and fits the translated list (nested_list)
@@ -56,8 +56,7 @@ class Report:
                         name += f'{input} '
 
                 elif student_check == 1 and str(item).startswith(tuple(['Nickname', 'Place of Birth', 'Date of Birth'])):
-                    # name += str(idx)
-                    self.student_name.append(name)
+                    self.student_name.append(name[:-1])
                     name = ''
                     student_check = 0
 
@@ -70,7 +69,7 @@ class Report:
             for item in app:
                 if str(item).startswith('App ID'):
                     app_type = str(item).split('| ')
-                    self.app_type.append(app_type[-1])
+                    self.app_type.append(app_type[-1][:-1])
 
     def fit_student_data(self, app_data: list) -> list:
         """Method for fitting the nested lists data of list and strings into a coherent list of strings.

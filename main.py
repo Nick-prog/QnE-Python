@@ -72,7 +72,7 @@ def run(file_path: str, filename: str) -> None:
             translated_spe.append(s.translate())
             markdown_spe.append(s.markdown)
     
-        r = core.Report(translated_spe)
+        r = core.PDF(translated_spe)
         r.capture_student_name()
         r.capture_app_type()
 
@@ -131,8 +131,8 @@ def merge_xlsx()-> None:
 
 if __name__ == "__main__":
 
-    # find_spe_files() # Multiple .spe files
-    find_spe_file() # Singluar .spe file
+    find_spe_files() # Multiple .spe files
+    # find_spe_file() # Singluar .spe file
     print('Done')
     
     # merge_xlsx()

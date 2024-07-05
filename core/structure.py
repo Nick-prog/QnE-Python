@@ -48,7 +48,7 @@ class Structure:
         """
         
         if text == 'Other':
-            r = core.Report([self.output])
+            r = core.PDF([self.output])
             r.capture_student_name()
             raise ReferenceError(f'{markdown} translation missing in structure: {self.target}, {self.idx}, {r.student_name}')
 

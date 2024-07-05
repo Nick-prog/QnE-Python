@@ -3,28 +3,15 @@ import core
 import os
 import sys
 import tkinter as tk
-import glob
 import pandas as pd
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import askdirectory
 from pathlib import Path
 
-def find_initial_dir() -> str:
-
-    dl = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    drives = ['%s:' % d for d in dl if os.path.exists('%s:' % d)]
-
-    for idx in range(len(drives)):
-        path = os.path.join(drives[idx], '/Applications')
-        if os.path.exists(os.path.abspath(path)):
-            return path
-        else:
-            return str(os.path.join(Path.home(), "Downloads"))
-
 def find_spe_files() -> None:
 
     try:
-        spe_default = find_initial_dir()
+        spe_default = str(os.path.join(Path.home(), "Downloads"))
 
         tk.Tk().withdraw()
         dir = askdirectory(initialdir = spe_default, title='Select a folder with SPE files')
@@ -48,7 +35,7 @@ def find_spe_file() -> None:
     """
 
     try:
-        spe_default = find_initial_dir()
+        spe_default = str(os.path.join(Path.home(), "Downloads"))
 
         tk.Tk().withdraw()
         file = askopenfilename(initialdir = spe_default, title='Select an SPE file')
@@ -89,7 +76,7 @@ def run(file_path: str, filename: str) -> None:
         r.capture_student_name()
         r.capture_app_type()
 
-        create_xlsx(translated_spe, filename)
+        # create_xlsx(translated_spe, filename)
 
         for idx, item in enumerate(translated_spe):
             _list = r.fit_student_data(item)

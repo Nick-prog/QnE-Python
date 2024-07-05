@@ -76,8 +76,6 @@ def run(file_path: str, filename: str) -> None:
         r.capture_student_name()
         r.capture_app_type()
 
-        # create_xlsx(translated_spe, filename)
-
         for idx, item in enumerate(translated_spe):
             _list = r.fit_student_data(item)
             r.create_page_structure(folder, filename, _list, idx)
@@ -85,55 +83,8 @@ def run(file_path: str, filename: str) -> None:
     except BaseException as b:
         tk.messagebox.showerror("run() error", f"{sys.exc_info()[1]}")
 
-def create_xlsx(translated_spe: list, filename: str)-> None:
-
-    _xlsx = []
-
-    r = core.Report(translated_spe)
-    r.capture_student_name()
-    r.capture_app_type()
-
-    for idx, item in enumerate(translated_spe):
-        _list = r.fit_student_data(item)
-        _xlsx.append(r.find_consultant_agency(_list, filename))
-
-    for idx, item in enumerate(r.student_name):
-            _xlsx[idx] = (_xlsx[idx], item)
-
-    r.generate_xlsx_sheet(_xlsx, filename[:-4])
-
-def merge_xlsx()-> None:
-    # specifying the path to csv files
-    input_folder = str(os.path.join(Path.home(), "Downloads"))
-    output_file = str(os.path.join(input_folder, 'Spring 2024 total.xlsx'))
-    
-    # Create a list to hold the dataframes
-    dfs = []
-
-    # Iterate over all Excel files in the specified folder
-    for file_name in os.listdir(input_folder):
-        if file_name.endswith('.xlsx') or file_name.endswith('.xls'):
-            file_path = os.path.join(input_folder, file_name)
-            # Read all sheets from the Excel file
-            xls = pd.ExcelFile(file_path, engine='openpyxl')
-            for sheet_name in xls.sheet_names:
-                df = pd.read_excel(file_path, sheet_name=sheet_name)
-                dfs.append(df)
-
-    # Concatenate all dataframes into one
-    merged_df = pd.concat(dfs, ignore_index=True)
-
-    # Drop duplicate rows
-    merged_df = merged_df.drop_duplicates()
-
-    # Save the merged dataframe to a new Excel file
-    merged_df.to_excel(output_file, index=False, engine='openpyxl')
-
 if __name__ == "__main__":
 
     find_spe_files() # Multiple .spe files
     # find_spe_file() # Singluar .spe file
     print('Done')
-    
-    # merge_xlsx()
-    # print('Done Done')

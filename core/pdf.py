@@ -174,35 +174,3 @@ class PDF:
                 self.y_start = self.y_start - 10
 
         self.y_start = 750
-
-    def find_consultant_agency(self, app_data: list, filename: str) -> list:
-
-        _list = []
-
-        for idx, items in enumerate(app_data):
-            if items == 'Spring 2025':
-                _list.append(items)
-            elif str(items) == 'Consultant/Agency':
-                _list.append(app_data[idx+3])
-            elif str(items).startswith('Student Contact'):
-                self.student_flag = 1
-            elif self.student_flag == 1 and str(items).startswith('Date of Birth'):
-                self.student_flag = 0
-                _list.append(items[15:25])
-                _list.append(items[33:])
-        _list.append(filename)
-
-        return _list
-    
-    def generate_xlsx_sheet(self, _list: list, filename: str) -> None:
-        _temp = []
-
-        for idx, items in enumerate(_list):
-            if len(items[0]) >= 5:
-                _temp.append([items[0][0], items[0][1], items[0][2], items[0][3], items[0][4], items[1]])
-
-        if len(_temp) != 0:
-            df = pd.DataFrame(_temp)
-            download_default = str(os.path.join(Path.home(), "Downloads"))
-            filepath = f'{download_default}/{filename}.xlsx'
-            df.to_excel(filepath, index=False, header= ["Semester", "DOB", "Gender", "Info", "Filename", "Name"])

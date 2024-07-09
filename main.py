@@ -85,6 +85,6 @@ def run(file_path: str, filename: str) -> None:
 
 if __name__ == "__main__":
 
-    find_spe_files() # Multiple .spe files
-    # find_spe_file() # Singluar .spe file
+    # find_spe_files() # Multiple .spe files
+    find_spe_file() # Singluar .spe file
     print('Done')

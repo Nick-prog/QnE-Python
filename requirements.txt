@@ -8,3 +8,4 @@ pillow==10.3.0
 reportlab==4.2.0
 typing-extensions==4.12.2
 wkhtmltopdf==0.2
+pymupdf==1.24.7

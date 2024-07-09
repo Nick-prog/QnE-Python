@@ -56,7 +56,7 @@ class PDF:
                         name += f'{input} '
 
                 elif student_check == 1 and str(item).startswith(tuple(['Nickname', 'Place of Birth', 'Date of Birth'])):
-                    self.student_name.append(name[:-1])
+                    self.student_name.append(f'{name[:-1]}_{idx}')
                     name = ''
                     student_check = 0
 

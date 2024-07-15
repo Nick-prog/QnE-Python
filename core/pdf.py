@@ -69,7 +69,7 @@ class PDF:
             for item in app:
                 if str(item).startswith('App ID'):
                     app_type = str(item).split('| ')
-                    self.app_type.append(app_type[-1][:-1])
+                    self.app_type.append(app_type[-1])
 
     def fit_student_data(self, app_data: list) -> list:
         """Method for fitting the nested lists data of list and strings into a coherent list of strings.

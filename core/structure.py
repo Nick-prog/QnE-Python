@@ -35,6 +35,7 @@ class Structure:
         }
         self.cur_college_crs_check = 0
         self.res_comments_check = 0
+        self.ref_check = 0
 
     def error_handler(self, markdown: str, text: str) -> None:
         """Class error handler for missing translations found at any given
@@ -100,6 +101,7 @@ class Structure:
                 'GS': None,
                 'SBT': None,
                 'SRE': None,
+                'LT': self.translate_LT()
                 }
             
             result = _translate.get(self.target[0], 'Other')
@@ -426,7 +428,8 @@ class Structure:
         _translate = {
             'TM': 'ApplyTexas Appication',
             'AT': 'Date',
-            'HS': 'High School Info:'
+            'HS': 'High School Info:',
+            'BU': 'Organization'
         }
 
         sep = _translate.get(self.target[1], "Other")
@@ -437,6 +440,8 @@ class Structure:
         if sep == 'High School Info:':
             return f'{sep}: {self.target[2]} {last}'
         elif sep == 'Date':
+            return f'{sep}: {last}'
+        elif sep == 'Organization':
             return f'{sep}: {last}'
         else:
             return f'{sep}'
@@ -871,3 +876,13 @@ class Structure:
 
         return _list.append('')
     
+    def translate_LT(self) -> list:
+
+        if self.target[0] != 'LT':
+            return
+        
+        if self.ref_check == 0:
+            self.ref_check = 1
+            return ['3. References:', '', f'Name: {self.target[3]}', f'Position: {self.target[4]}']
+        
+        return ['', f'Name: {self.target[3]}', f'Position: {self.target[4]}']

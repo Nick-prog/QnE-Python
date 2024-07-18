@@ -111,7 +111,7 @@ class Syntax:
         final = str(self.target[-1]).replace('\\', '')
 
 
-        return ['', '3. If you did not graduate from high school, do you have a DEG or have you completed',
+        return ['3. If you did not graduate from high school, do you have a DEG or have you completed',
                 'another high school equivalency program?',
                  f'{target}-{final}', '']
     
@@ -273,7 +273,7 @@ class Syntax:
             return
         
 
-        return ['', 'Of what state or country are you a resident?',
+        return ['Of what state or country are you a resident?',
                 f'{self.target[-2]}--{self.target[-1]}', '']
 
     def RES_SELF(self) -> list:

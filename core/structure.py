@@ -428,7 +428,7 @@ class Structure:
         _translate = {
             'TM': 'ApplyTexas Appication',
             'AT': 'Date',
-            'HS': 'High School Info:',
+            'HS': 'High School Info',
             'BU': 'Organization'
         }
 
@@ -437,7 +437,7 @@ class Structure:
 
         last = str(self.target[-1]).replace('\\', '')
 
-        if sep == 'High School Info:':
+        if sep == 'High School Info':
             return f'{sep}: {self.target[2]} {last}'
         elif sep == 'Date':
             return f'{sep}: {last}'
@@ -625,9 +625,9 @@ class Structure:
                          'list those courses also. If you need to list more than 10 courses, please send a list',
                          'directly to the graduate admissions office at Texas A&M University-Kingsville (TAMKI). Be',
                          'sure to include your full name, application ID number and date of birth on any documents',
-                         'you send to the admissions office.', 
-                         self.target[-1], '']
-            return [self.target[-1], '']
+                         'you send to the admissions office.', '', 
+                         self.target[-1]]
+            return [self.target[-1]]
         
         if self.target[3] == 'RES: COMMENTS':
             if self.target[-1] == 'RES: COMMENTS':

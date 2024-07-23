@@ -650,7 +650,7 @@ class Structure:
         _translate = {
             'APP SUBMIT/TRANSMIT': None,
             'PERM COUNTRY INFO': [f'Permanent Country Info--{self.target[-1]}'],
-            'PERM COUNTY INFO': ['', f'Permanent County Info--{self.target[-1][3:]} (Country code = {self.target[-1][:3]})'],
+            'PERM COUNTY INFO': [f'Permanent County Info--{self.target[-1][3:]} (Country code = {self.target[-1][:3]})'],
             'PERM ADDR STND': [f'Mailing/Permanent Address Standardized: {basic_output}'],
             'CURR COUNTY INFO': [f'Current County Info-{self.target[-1]}'],
             'CURR COUNTRY INFO': [f'Current Country Info: {self.target[-1]}'],

@@ -68,7 +68,7 @@ class Structure:
             self.target[-1] = str(self.target[-1]).replace('\\', '')
 
             _translate = {
-                'ATV': self.translate_ATV(),
+                'ATV': None,
                 'BGN': "********** START OF APPLICATION **********",
                 'COM': self.translate_COM(),
                 'CRS': self.translate_CRS(),
@@ -301,6 +301,8 @@ class Structure:
 
         if sep == 'Issued':
             return f'{sep}: {date[4:6]}-{date[6:8]}-{date[:4]}'
+        elif sep == 'Start' or sep == 'End':
+            return
         else:
             return f'{sep}: {date[4:6]}-{date[:4]}'
         
@@ -440,7 +442,7 @@ class Structure:
         if sep == 'High School Info':
             return f'{sep}: {self.target[2]} {last}'
         elif sep == 'Date':
-            return f'{sep}: {last}'
+            return
         elif sep == 'Organization':
             return f'{sep}: {last}'
         else:
@@ -581,7 +583,7 @@ class Structure:
 
         _tranlsate = {
             'FFRESHMAN APPLICATION ID': 'U.S. Freshman Admission',
-            'IFOREIGN GRAD APPLICATION ID': 'Interanational Graduate Admission',
+            'IFOREIGN GRAD APPLICATION ID': 'International Graduate Admission',
             'CREENTRY UNDERGRAD APPLICATION ID': 'U.S. Re-Entry Admission',
             'GUS GRAD APPLICATION ID': 'U.S. Graduate Admission',
             'TUS TRANSFER APPLICATION ID': 'U.S. Transfer Admission',

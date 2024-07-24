@@ -67,7 +67,12 @@ def run(file_path: str, filename: str) -> None:
         translated_spe = []
         markdown_spe = []
 
-        for idx, item in enumerate(spe_list):
+        new_list = p.rearrange_markdown_list(spe_list)
+
+        from pprint import pprint
+        pprint(new_list)
+
+        for idx, item in enumerate(new_list):
             s = core.Structure(item, idx)
             translated_spe.append(s.translate())
             markdown_spe.append(s.markdown)

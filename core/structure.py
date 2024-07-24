@@ -69,7 +69,7 @@ class Structure:
 
             _translate = {
                 'ATV': None,
-                'BGN': "********** START OF APPLICATION **********",
+                'BGN': None,
                 'COM': self.translate_COM(),
                 'CRS': self.translate_CRS(),
                 'DEG': self.translate_DEG(),
@@ -88,7 +88,7 @@ class Structure:
                 'REF': self.translate_REF(),
                 'RQS': self.translate_RQS(),
                 'MSG': self.translate_MSG(),
-                'SE': "********** END OF APPLICATION **********",
+                'SE': None,
                 'SES': self.translate_SES(),
                 'SSE': self.translate_SSE(),
                 'SST': self.translate_SST(),
@@ -325,7 +325,8 @@ class Structure:
         self.error_handler('FOS', sep)
         
         if sep == 'Major':
-            return self.output.insert(self.student_idx+2, f'{sep}: [{self.target[3]}] {self.target[-1]}')
+            return f'{sep}: [{self.target[3]}] {self.target[-1]}'
+            # return self.output.insert(self.student_idx+2, f'{sep}: [{self.target[3]}] {self.target[-1]}')
         else:
             return f'{sep}: {self.target[-1]}'
         
@@ -473,10 +474,11 @@ class Structure:
         if address == '':
             return
 
-        if self.target[0] == 'N4':
-            return f'Primary Address: {address}'
-        else:
-            return f'Secondary Address: {address}'
+        return address
+        # if self.target[0] == 'N4':
+        #     return [address, '']
+        # else:
+        #     return ['', address]
         
     def translate_NTE(self) -> list:
         """Method for NTE markdown text: Ethnicity and Race information.
@@ -617,6 +619,7 @@ class Structure:
             return s.OTHER_NAME()
         
         if self.target[3] == 'APP SUBMIT/TRANSMIT':
+            return ['', self.target[-1], '']
             return self.output.insert(2, ['', self.target[-1], ''])
         
         if self.target[3] == 'CUR COLLEGE CRS':
@@ -825,8 +828,8 @@ class Structure:
             sep = _translate.get(self.target[-1][4:], self.target[-1][4:])
             if self.semester_check == 0:
                 self.semester_check = 1
-                self.output.insert(self.student_idx, f'{sep} {self.target[-1][:4]}')
-                return self.output.insert(self.student_idx, '')
+                # self.output.insert(self.student_idx, f'{sep} {self.target[-1][:4]}')
+                # return self.output.insert(self.student_idx, '')
             return f'{sep} {self.target[-1][:4]}'
         elif self.target[-1] == 'ZZZ':
             return f'(Attendance dates: {self.target[1][4:6]}/{self.target[1][:4]} - {self.target[2][4:6]}/{self.target[2][:4]})'

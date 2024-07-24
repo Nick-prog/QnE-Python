@@ -98,3 +98,61 @@ class Process:
                 _list[idx] = self.create_uniform_item(item, max_char[idx])
 
         return _list
+
+    def filter_markdown_text(self, _list: list) -> list:
+
+        output = []
+
+        for apps in _list:
+            current = []
+            for items in apps:
+                markdown = str(items).split('!')
+                current.append("!".join(markdown[:-1]))
+            output.append(current)
+
+        return output
+            
+    def rearrange_markdown_list(self, _list: list) -> list:
+
+        example = [
+            'BGN!00!',
+            'N1!TM!!ZZ!TXAPP',
+            'RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!',
+            'REF!48!',
+            'REF!SY!',
+            'SSE!',
+            'FOS!',
+            'RQS!AQ!ZZ!FORMER STUDENT!',
+            'N1!HS!', 'HIGH SCHOOL LOCATION SKIP',
+            
+
+        ]
+
+        insert_no_matter_what = [
+            'RQS!AQ!ZZ!FORMER STUDENT!'
+        ]
+
+        output = _list.copy()
+
+        for apps in output:
+            for idx, item in enumerate(apps):
+                for e_idx, e_item in enumerate(example):
+                    # if e_item not in apps and e_item in insert_no_matter_what:
+                    #     print(f'Item {item} was not found!, inserting at index {e_idx} anyways.')
+                    #     apps.insert(e_idx, e_item)
+                    if str(item).startswith(e_item):
+
+                        if e_item == 'N1!HS!':
+                            hs_name = apps.pop(idx)
+                            hs_loc = apps.pop(idx)
+                            apps.insert(e_idx, hs_name)
+                            apps.insert(e_idx+1, hs_loc)
+
+                        else:
+                            # print(f'\n{item} found in example list, {e_item}')
+                            # print(f'Popping item idx {idx} from apps list')
+                            apps.pop(idx) # Remove from list before moving
+                            # print(f'Inserting {item} at index {e_idx} for apps list')
+                            apps.insert(e_idx, item) # Move removed item to correct spot in list
+
+        return output

@@ -64,28 +64,29 @@ def run(file_path: str, filename: str) -> None:
         p = core.Process(file_path)
         spe_list = p.read_spe_file()
 
-        translated_spe = []
-        markdown_spe = []
-
         new_list = p.rearrange_markdown_list(spe_list)
 
-        from pprint import pprint
-        pprint(new_list)
+        # from pprint import pprint
+        # pprint(new_list)
 
-        for idx, item in enumerate(new_list):
-            s = core.Structure(item, idx)
-            translated_spe.append(s.translate())
-            markdown_spe.append(s.markdown)
+        # translated_spe = []
+        # markdown_spe = []
+
+        # for idx, item in enumerate(new_list):
+        #     s = core.Structure(item, idx)
+        #     translated_spe.append(s.translate())
+        #     markdown_spe.append(s.markdown)
     
-        r = core.PDF(translated_spe)
-        r.capture_student_name()
-        r.capture_app_type()
+        # r = core.PDF(translated_spe)
+        # r.capture_student_name()
+        # r.capture_app_type()
 
-        for idx, item in enumerate(translated_spe):
-            _list = r.fit_student_data(item)
-            r.create_page_structure(folder, filename, _list, idx)
+        # for idx, item in enumerate(translated_spe):
+        #     _list = r.fit_student_data(item)
+        #     r.create_page_structure(folder, filename, _list, idx)
 
     except BaseException as b:
+        print(sys.exc_info())
         tk.messagebox.showerror("run() error", f"{sys.exc_info()[1]}")
 
 if __name__ == "__main__":

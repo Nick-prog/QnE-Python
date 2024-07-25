@@ -22,6 +22,83 @@ class Process:
 
         return spe_list[1:]
     
+    def process_str_with_num(self, _str: str) -> list:
+
+            _list = []
+
+            for idx, item in enumerate(_str):
+                if item.isnumeric():
+                    sep_idx = idx
+                    break
+
+            _list.append(str(_str[:sep_idx]).strip())
+            _list.append(_str[sep_idx:])
+
+            return _list
+    
+    def process_str_with_blank(self, _str: str) -> list:
+
+        _list = []
+
+        for idx, item in enumerate(_str):
+            if item.isspace():
+                sep_idx = idx
+                break
+
+        _list.append(_str[:sep_idx])
+        _list.append(str(_str[sep_idx:]).strip())
+
+        return _list
+    
+    def process_str_with_blanks(self, _str: str) -> list:
+
+        sep_idx = []
+        _list = []
+        last = 0
+
+        for idx, item in enumerate(_str):
+            if item.isspace():
+                sep_idx.append(idx)
+
+        sep_idx.append(len(_str)-1)
+
+        for indicies in sep_idx:
+            _list.append(_str[last:indicies])
+            last = indicies
+
+        return [str(item).strip() for item in _list if item != " "]
+    
+    def create_uniform_list(self, _list: list, max_items: int, max_chars: int) -> list:
+
+        for idx, item in enumerate(_list):
+            if len(item) > max_chars:
+                del(_list[idx])
+                _list.insert(idx, item[:max_chars])
+                _list.insert(idx+1, item[max_chars:])
+
+        while len(_list) < max_items:
+            if len(_list) == max_items-1:
+                _list.append('0')
+            else:
+                _list.append('000000')
+
+        return _list
+    
+    def create_uniform_item(self, _str: str, max_char: int) -> str:
+
+        while len(_str) < max_char:
+            _str = _str + '0'
+
+        return _str
+    
+    def create_uniform_items(self, _list: list, max_char: list) -> list:
+
+        for idx, item in enumerate(_list):
+            if len(item) != max_char[idx]:
+                _list[idx] = self.create_uniform_item(item, max_char[idx])
+
+        return _list
+
     def check_for_new_markdown(self, _list: list) -> bool:
 
         _translate = ['ATV','BGN','COM','CRS','DEG','DMG','DTP','FOS',
@@ -68,56 +145,3 @@ class Process:
                     _apps.append(_tranlsate.get(str(item).split('!')[-1].strip('\\'), 'Other'))
 
         return _apps
-            
-    def rearrange_markdown_list(self, _list: list) -> list:
-
-        app_list = self.find_app_types(_list)
-        updated_list = self.remove_markdown_items(_list)
-
-        from pprint import pprint
-        pprint(updated_list)
-
-        _example = [
-            'N1!TM!!ZZ!TXAPP',
-            'RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!',
-            'REF!48!',
-            'REF!SY!',
-            'SSE!',
-            'FOS!',
-            'RQS!AQ!ZZ!FORMER STUDENT!',
-            'N1!HS!',
-        ]
-
-        for idx, sublist in enumerate(updated_list):
-            sublist[:] = [item for item in sublist if any(str(item).startswith(add) for add in _example)]
-
-        return updated_list
-
-        # insert_no_matter_what = [
-        #     'RQS!AQ!ZZ!FORMER STUDENT!'
-        # ]
-
-        # output = _list.copy()
-
-        # for apps in output:
-        #     for idx, item in enumerate(apps):
-        #         for e_idx, e_item in enumerate(example):
-        #             # if e_item not in apps and e_item in insert_no_matter_what:
-        #             #     print(f'Item {item} was not found!, inserting at index {e_idx} anyways.')
-        #             #     apps.insert(e_idx, e_item)
-        #             if str(item).startswith(e_item):
-
-        #                 if e_item == 'N1!HS!':
-        #                     hs_name = apps.pop(idx)
-        #                     hs_loc = apps.pop(idx)
-        #                     apps.insert(e_idx, hs_name)
-        #                     apps.insert(e_idx+1, hs_loc)
-
-        #                 else:
-        #                     # print(f'\n{item} found in example list, {e_item}')
-        #                     # print(f'Popping item idx {idx} from apps list')
-        #                     apps.pop(idx) # Remove from list before moving
-        #                     # print(f'Inserting {item} at index {e_idx} for apps list')
-        #                     apps.insert(e_idx, item) # Move removed item to correct spot in list
-
-        # return output

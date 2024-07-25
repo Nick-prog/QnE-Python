@@ -235,7 +235,7 @@ class Structure:
         _translate = {
             '2.2': 'Certificate:',
             '2.3': 'Compeleted:',
-            '2.4': 'Major:',
+            '2.4': 'Major(s):',
             '3.1': 'Degree: Professional',
             '4.1': 'No Degree',
             '4.2': 'Degree: Masters (M.)',
@@ -326,7 +326,6 @@ class Structure:
         
         if sep == 'Major':
             return f'{sep}: [{self.target[3]}] {self.target[-1]}'
-            # return self.output.insert(self.student_idx+2, f'{sep}: [{self.target[3]}] {self.target[-1]}')
         else:
             return f'{sep}: {self.target[-1]}'
         
@@ -573,7 +572,7 @@ class Structure:
 
         _translate = {
             '48': 'App ID',
-            'SY': 'SSN Info',
+            'SY': '1.   Social Security Number',
             'V2': 'F-1 status',
             'PSM': 'Previous App',
             'ZZ': 'Premanent Residence status'
@@ -619,8 +618,7 @@ class Structure:
             return s.OTHER_NAME()
         
         if self.target[3] == 'APP SUBMIT/TRANSMIT':
-            return ['', self.target[-1], '']
-            return self.output.insert(2, ['', self.target[-1], ''])
+            return ['', f'APPLICATION {self.target[-1][:28]}', f'APPLICATION {self.target[-1][30:]}', '']
         
         if self.target[3] == 'CUR COLLEGE CRS':
             if self.cur_college_crs_check == 0:
@@ -707,7 +705,7 @@ class Structure:
             'FAMILY OBLIGATION OTHER': None,
             'FAMILY OBLIGATIONS': ['Do you have family obligations that keep you from participating in extracurricular activities?', 
                                    basic_output, ''],
-            'DUAL CREDIT': ['', 'Are you applyting to take college courses to be completed while you are still', 
+            'DUAL CREDIT': ['Biographical Information', '', 'Are you applyting to take college courses to be completed while you are still', 
                             'a high school student (Dual Credit or Concurrent Enrollment)?',
                             basic_output, ''],
             'GRADUATE AWARD': None,
@@ -828,9 +826,7 @@ class Structure:
             sep = _translate.get(self.target[-1][4:], self.target[-1][4:])
             if self.semester_check == 0:
                 self.semester_check = 1
-                # self.output.insert(self.student_idx, f'{sep} {self.target[-1][:4]}')
-                # return self.output.insert(self.student_idx, '')
-            return f'{sep} {self.target[-1][:4]}'
+            return f'Semester Applied For:  {sep} {self.target[-1][:4]}'
         elif self.target[-1] == 'ZZZ':
             return f'(Attendance dates: {self.target[1][4:6]}/{self.target[1][:4]} - {self.target[2][4:6]}/{self.target[2][:4]})'
         

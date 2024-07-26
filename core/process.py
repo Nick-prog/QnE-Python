@@ -124,6 +124,18 @@ class Process:
 
         return _list
     
+    def find_student_name(self, _list: list) -> str:
+
+        name = ''
+        
+        for idx, item in enumerate(_list):
+            if str(item).startswith('IN1!1!02!!!'):
+                last = str(_list[idx+1]).split('!')[-1][:-1]
+                first = str(_list[idx+2]).split('!')[-1][:-1]
+                name = f'{last}, {first}'
+
+        return name
+
     def find_app_types(self, _list: list) -> list:
         
         _apps = []
@@ -145,3 +157,60 @@ class Process:
                     _apps.append(_tranlsate.get(str(item).split('!')[-1].strip('\\'), 'Other'))
 
         return _apps
+    
+    def move_list_item(self, apps: list, item: str, insert_idx: int, pop_idx: int) -> list:
+
+        apps.pop(pop_idx)
+        apps.insert(insert_idx, item)
+
+        # print(f'Moving {item} to {insert_idx}')
+
+        return apps
+    
+    def rearrange_list(self, _list: list) -> list:
+
+        store_info = ('', 0)
+
+        for apps in _list:
+            temp = []
+            for idx, item in enumerate(apps):
+                if str(item).startswith('RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!'):
+                    self.move_list_item(apps, item, 1, idx)
+                elif str(item).startswith('SSE!'):
+                    self.move_list_item(apps, item, 5, idx)
+                elif str(item).startswith('FOS!'):
+                    self.move_list_item(apps, item, 6, idx)
+                elif str(item).startswith('DMG!D8!'):
+                    store_info = (item, idx)
+                elif str(item).startswith('COM!TE!'):
+                    if store_info[1] != 0:
+                        self.move_list_item(apps, store_info[0], idx, store_info[1])
+                        store_info = ('', 0)
+                elif str(item).startswith('RQS!AQ!ZZ!DUAL CREDIT!'):
+                    store_info = (item, idx)
+                elif str(item).startswith('RQS!AQ!ZZ!FORMER STUDENT!'):
+                    self.move_list_item(apps, item, store_info[1], idx)
+                    store_info = (item, idx)
+                elif str(item).startswith('RQS!AQ!ZZ!RES: HS'):
+                    self.move_list_item(apps, item, store_info[1], idx)
+                    store_info = (item, store_info[1])
+                elif str(item).startswith('N1!HS!'):
+                    self.move_list_item(apps, item, store_info[1], idx)
+                    store_info = (item, store_info[1])
+                    if str(apps[idx+1]).startswith('N4!'):
+                        self.move_list_item(apps, apps[idx+1], store_info[1]+1, idx+1)
+                        store_info = (item, store_info[1]+1)
+                        self.move_list_item(apps, apps[idx+1], store_info[1]+1, idx+1)
+                        store_info = (item, store_info[1]+2)
+                # insert for college info later
+                elif str(item).startswith('RQS!AQ!ZZ!FERPA CERT SWITCH!'):
+                    # print(f'Current: {apps[idx]}, {idx}')
+                    self.move_list_item(apps, item, len(apps), idx)
+                    self.move_list_item(apps, apps[idx+1], len(apps), idx)
+                    self.move_list_item(apps, apps[idx+2], len(apps), idx)
+                    # print(f'After: {apps[idx]}, {idx}')
+
+        from pprint import pprint
+        pprint(_list)
+        print(len(_list))
+        return _list

@@ -22,6 +22,8 @@ class Structure:
 
         self.student_idx = 0
         self.semester_check = 0
+        self.semester_idx = 0
+        self.address_count = 0
 
         self.current_idx = 0
         self.post_check = 0
@@ -90,10 +92,11 @@ class Structure:
                 'MSG': self.translate_MSG(),
                 'SE': None,
                 'SES': self.translate_SES(),
-                'SSE': self.translate_SSE(),
+                'SSE': self.translate_SSE(idx),
                 'SST': self.translate_SST(),
                 'SUM': self.translate_SUM(),
                 'TST': self.translate_TST(),
+                'EMS': self.translate_EMS(),
                 'LUI': None,
                 'GE': None,
                 'IEA': None,
@@ -157,7 +160,9 @@ class Structure:
         _translate = {
             'EM': 'Email Address',
             'TE': 'Telephone',
-            'AP': 'Preferred'
+            'AP': 'Preferred',
+            'WP': 'Work Phone',
+            'WF': 'Fax'
         }
 
         trans_prefix = _translate.get(sep, "Other")
@@ -293,7 +298,9 @@ class Structure:
             '196': 'Start',
             '197': 'End',
             '102': 'Issued',
-            '036': 'If an expiration date is indicated on you form I-94, please enter it'
+            '036': 'If an expiration date is indicated on you form I-94, please enter it',
+            '336': 'From',
+            '337': 'To'
         }
 
         sep = _translate.get(self.target[1], 'Other')
@@ -305,7 +312,14 @@ class Structure:
             return
         else:
             return f'{sep}: {date[4:6]}-{date[:4]}'
+
+    def translate_EMS(self) -> list:
+
+        if self.target[0] != 'EMS':
+            return
         
+        return [f'Type of Work/Job Title: {self.target[1]}', f'Job Category: {self.target[2]}', f'Industry Code: {self.target[3]}']
+
     def translate_FOS(self) -> str:
         """Method for FOS markdown text: Application Major and Interest information.
 
@@ -325,6 +339,7 @@ class Structure:
         self.error_handler('FOS', sep)
         
         if sep == 'Major':
+            # return self.output.insert(self.student_idx, f'{sep}: [{self.target[3]}] {self.target[-1]}')
             return f'{sep}: [{self.target[3]}] {self.target[-1]}'
         else:
             return f'{sep}: {self.target[-1]}'
@@ -431,7 +446,8 @@ class Structure:
             'TM': 'ApplyTexas Appication',
             'AT': 'Date',
             'HS': 'High School Info',
-            'BU': 'Organization'
+            'BU': 'Organization',
+            '36': 'Current or most recent Employer'
         }
 
         sep = _translate.get(self.target[1], "Other")
@@ -443,7 +459,7 @@ class Structure:
             return f'{sep}: {self.target[2]} {last}'
         elif sep == 'Date':
             return
-        elif sep == 'Organization':
+        elif sep == 'Organization' or 'Current or most recent Employer':
             return f'{sep}: {last}'
         else:
             return f'{sep}'
@@ -472,12 +488,11 @@ class Structure:
 
         if address == '':
             return
-
+        
+        if self.address_count == 0 or self.address_count % 3 == 0:
+            self.address_count += 1
+            return ['', 'Mailing/Permanent Address:', address]
         return address
-        # if self.target[0] == 'N4':
-        #     return [address, '']
-        # else:
-        #     return ['', address]
         
     def translate_NTE(self) -> list:
         """Method for NTE markdown text: Ethnicity and Race information.
@@ -572,7 +587,7 @@ class Structure:
 
         _translate = {
             '48': 'App ID',
-            'SY': '1.   Social Security Number',
+            'SY': '1. Social Security Number',
             'V2': 'F-1 status',
             'PSM': 'Previous App',
             'ZZ': 'Premanent Residence status'
@@ -618,6 +633,7 @@ class Structure:
             return s.OTHER_NAME()
         
         if self.target[3] == 'APP SUBMIT/TRANSMIT':
+            # return self.output.insert(1, ['', f'APPLICATION {self.target[-1][:28]}', f'APPLICATION {self.target[-1][30:]}', ''])
             return ['', f'APPLICATION {self.target[-1][:28]}', f'APPLICATION {self.target[-1][30:]}', '']
         
         if self.target[3] == 'CUR COLLEGE CRS':
@@ -806,7 +822,7 @@ class Structure:
         else:
             return f'Date: {date}, Degree: {self.target[-1]}'
         
-    def translate_SSE(self) -> str:
+    def translate_SSE(self, idx) -> str:
         """Method for SSE markdown text: Semester and Date information.
 
         :return: translated string [moved Semester info up for better structure]
@@ -826,6 +842,8 @@ class Structure:
             sep = _translate.get(self.target[-1][4:], self.target[-1][4:])
             if self.semester_check == 0:
                 self.semester_check = 1
+                self.semester_idx = idx
+            # return self.output.insert(self.student_idx, f'Semester Applied For:  {sep} {self.target[-1][:4]}')
             return f'Semester Applied For:  {sep} {self.target[-1][:4]}'
         elif self.target[-1] == 'ZZZ':
             return f'(Attendance dates: {self.target[1][4:6]}/{self.target[1][:4]} - {self.target[2][4:6]}/{self.target[2][:4]})'

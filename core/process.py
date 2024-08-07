@@ -1,8 +1,10 @@
+from typing import Union
 
 class Process:
 
     def __init__(self, file_path: str=None):
         self.file_path = file_path
+        self.list = []
 
     def read_spe_file(self) -> list:
 
@@ -119,6 +121,14 @@ class Process:
         _translate = ['ATV','BGN','SE','LUI','GE','IEA',
                       'ISA','GS','SBT','SRE']
         
+        # Adding because it wasn't specified if needed
+        _translate.append('CRS')
+        _translate.append('RQS!AQ!ZZ!PARENT')
+        _translate.append('DTP!196!')
+        _translate.append('DTP!197!')
+        _translate.append('REF!PSM!')
+        _translate.append('IN2!18!')
+        
         for sublist in _list:
             sublist[:] = [item for item in sublist if not any(str(item).startswith(remove) for remove in _translate)]
 
@@ -214,3 +224,68 @@ class Process:
         pprint(_list)
         print(len(_list))
         return _list
+    
+    def new_rearrange_list(self, _list: list, app_type: str) -> list:
+
+        new_list = []
+
+        cert_list_holder = []
+        conduct_list_holder = []
+        submit_transmit_app = []
+        residency_list_holder = []
+
+        _types = self.find_app_types(_list)
+
+        # Focuses on only one app_type at a time
+        for idx, app in enumerate(_types):
+            if app == app_type:
+                new_list.append(_list[idx])
+
+        # Remove the sections of each list to move easily relocate later
+        for idx, apps in enumerate(new_list):
+            cert_idx = 0
+            conduct_idx = 0
+            semester_idx = 0
+            for idx, items in enumerate(apps):
+                # Capturing Cert Questions
+                if str(items).startswith('RQS!AQ!ZZ!FERPA CERT SWITCH!'):
+                    cert_idx = idx
+                elif str(items).startswith('RQS!AQ!ZZ!TRUTH CERT SWITCH!'):
+                    cert_list_holder.append(apps[cert_idx: idx+1])
+                    for idx in range((idx+1)-cert_idx):
+                         apps.pop(cert_idx)
+                # Capturing Conduct Questions
+                elif str(items).startswith('RQS!AQ!ZZ!$  4!!'):
+                    conduct_idx = idx
+                elif str(items).startswith('RQS!AQ!ZZ!$ 11!!'):
+                    conduct_list_holder.append(apps[conduct_idx:idx+5])
+                    for idx in range((idx+5)-conduct_idx):
+                        apps.pop(conduct_idx)
+                # Capturing SUBMIT/TRANSMIT times and Major|Term Information
+                elif str(items).startswith('SSE!'):
+                    semester_idx = idx
+                elif str(items).startswith('RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!'):
+                    submit_transmit_app.append(apps[semester_idx:idx+1])
+                    for idx in range((idx+1)-semester_idx):
+                        apps.pop(semester_idx)
+             # Capturing Residency Questions
+                elif str(items).startswith('RQS!AQ!ZZ!RES:'):
+                    print(items)
+                    residency_list_holder.append(items) 
+
+        # Relocate each item in the separated list into the proper index
+        for idx, apps in enumerate(new_list):
+            for items in submit_transmit_app[idx]:
+                apps.insert(0, items)
+            # for items in residency_list_holder[idx]:
+            #     apps.append(items)
+            for items in conduct_list_holder[idx]:
+                apps.append(items)
+            for items in cert_list_holder[idx]:
+                apps.append(items)
+
+        from pprint import pprint
+        #pprint(residency_list_holder)
+        pprint(new_list)
+
+        return new_list

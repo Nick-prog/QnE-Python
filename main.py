@@ -65,7 +65,7 @@ def run(file_path: str, filename: str) -> None:
         spe_list = p.read_spe_file()
 
         clean_list = p.remove_markdown_items(spe_list)
-        new_list = p.new_rearrange_list(clean_list, 'U.S. Freshman Admission')
+        new_list = p.new_rearrange_list(clean_list, 'International Graduate Admission')
         # new_list = p.rearrange_list(clean_list)
 
         # translated_spe = []

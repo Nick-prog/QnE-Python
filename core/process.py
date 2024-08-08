@@ -1,10 +1,20 @@
 from typing import Union
+from pprint import pprint
 
 class Process:
 
     def __init__(self, file_path: str=None):
         self.file_path = file_path
-        self.list = []
+
+        self.cert_list = []
+        self.submit_list = []
+        self.conduct_list = []
+        self.residency_list = []
+
+        self.consultant_list = []
+        self.new_consultant_list = []
+        self.concentration_list = []
+        self.faculty_list = []
 
     def read_spe_file(self) -> list:
 
@@ -122,12 +132,21 @@ class Process:
                       'ISA','GS','SBT','SRE']
         
         # Adding because it wasn't specified if needed
-        _translate.append('CRS')
-        _translate.append('RQS!AQ!ZZ!PARENT')
-        _translate.append('DTP!196!')
-        _translate.append('DTP!197!')
+        _translate.append('CRS') # CRS work info
+        _translate.append('RQS!AQ!ZZ!PARENT') # Parent education info, can't translate properly
+        _translate.append('DTP!196!') # Start date for extra curriculars
+        _translate.append('DTP!197!') # End date ^
         _translate.append('REF!PSM!')
         _translate.append('IN2!18!')
+        _translate.append('RQS!AQ!ZZ!CTRY SPOUSE!!') # Spouse info
+        _translate.append('RQS!AQ!ZZ!CTRY CHILD') # Child info
+        _translate.append('RQS!AQ!ZZ!TEST1 SENT!') # GRE Test scores that aren't used
+        _translate.append('RQS!AQ!ZZ!TEST2 SENT!') # ^
+        _translate.append('RQS!AQ!ZZ!SPOKEN LANGUAGES!!') # Languages spoken, not translated anymore
+        _translate.append('RQS!AQ!ZZ!OPTIONAL MODULES!!') # Extra course moudles info, not needed
+        _translate.append('RQS!AQ!ZZ!CUR COLLEGE') # Current college course work, not needed
+        _translate.append('RQS!AQ!ZZ!ALIEN APP/INT\\') # Always empty, remove
+        _translate.append('RQS!AQ!ZZ!FAMILY!!') # Can't properly translate, remove
         
         for sublist in _list:
             sublist[:] = [item for item in sublist if not any(str(item).startswith(remove) for remove in _translate)]
@@ -225,14 +244,59 @@ class Process:
         print(len(_list))
         return _list
     
+    def separate_list_section(self, apps: list, start: tuple, end: str, end_lines: int, separate_list: list) -> None:
+
+        start_idx = 0
+        change_check_flag = 0
+
+        for idx, items in enumerate(apps):
+            if str(items).startswith(start) and change_check_flag == 0:
+                start_idx = idx
+                change_check_flag = 1
+            elif str(items).startswith(end):
+                if change_check_flag != 0:
+                    # raise IndexError('Could not find a start point to separate.')
+                    separate_list.append(apps[start_idx:idx+end_lines])
+                    for remove in range((idx+end_lines)-start_idx):
+                        apps.pop(start_idx)
+                else:
+                    separate_list.append([])
+
+    def separate_list_question(self, apps: list, app_idx: int, start: list, end_lines: int, separate_list: list) -> None:
+
+        change_check_flag = 0
+        
+        for idx, items in enumerate(apps):
+            if str(items).startswith(start) or str(items).endswith(start):
+                change_check_flag = 1
+
+                while not str(apps[idx+end_lines]).startswith('MSG!'):
+                    end_lines = end_lines - 1
+                
+                separate_list.append((apps[idx:idx+end_lines+1], app_idx))
+
+                for remove in range((idx+end_lines+1)-idx):
+                    apps.pop(idx)
+
+        if change_check_flag == 0:
+            separate_list.append([])
+
+    def merge_list_question(self, separate_list: list) -> list:
+
+        # Dictionary to group sublists by their ending number
+        grouped_data = {}
+
+        for sublist, group_num in separate_list:
+            if group_num not in grouped_data:
+                grouped_data[group_num] = []
+            grouped_data[group_num].append(sublist)
+
+        # Convert dictionary values to a list of lists
+        return list(grouped_data.values())
+
     def new_rearrange_list(self, _list: list, app_type: str) -> list:
 
         new_list = []
-
-        cert_list_holder = []
-        conduct_list_holder = []
-        submit_transmit_app = []
-        residency_list_holder = []
 
         _types = self.find_app_types(_list)
 
@@ -241,51 +305,40 @@ class Process:
             if app == app_type:
                 new_list.append(_list[idx])
 
-        # Remove the sections of each list to move easily relocate later
         for idx, apps in enumerate(new_list):
-            cert_idx = 0
-            conduct_idx = 0
-            semester_idx = 0
-            for idx, items in enumerate(apps):
-                # Capturing Cert Questions
-                if str(items).startswith('RQS!AQ!ZZ!FERPA CERT SWITCH!'):
-                    cert_idx = idx
-                elif str(items).startswith('RQS!AQ!ZZ!TRUTH CERT SWITCH!'):
-                    cert_list_holder.append(apps[cert_idx: idx+1])
-                    for idx in range((idx+1)-cert_idx):
-                         apps.pop(cert_idx)
-                # Capturing Conduct Questions
-                elif str(items).startswith('RQS!AQ!ZZ!$  4!!'):
-                    conduct_idx = idx
-                elif str(items).startswith('RQS!AQ!ZZ!$ 11!!'):
-                    conduct_list_holder.append(apps[conduct_idx:idx+5])
-                    for idx in range((idx+5)-conduct_idx):
-                        apps.pop(conduct_idx)
-                # Capturing SUBMIT/TRANSMIT times and Major|Term Information
-                elif str(items).startswith('SSE!'):
-                    semester_idx = idx
-                elif str(items).startswith('RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!'):
-                    submit_transmit_app.append(apps[semester_idx:idx+1])
-                    for idx in range((idx+1)-semester_idx):
-                        apps.pop(semester_idx)
-             # Capturing Residency Questions
-                elif str(items).startswith('RQS!AQ!ZZ!RES:'):
-                    print(items)
-                    residency_list_holder.append(items) 
+            self.separate_list_section(apps, 'RQS!AQ!ZZ!FERPA CERT SWITCH!', 'RQS!AQ!ZZ!TRUTH CERT SWITCH!', 1, self.cert_list)
+            self.separate_list_section(apps, 'SSE!', 'RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!', 1, self.submit_list)
+            self.separate_list_section(apps, ('RQS!AQ!ZZ!$  4!!', 'RQS!AQ!ZZ!$  9!!'), 'RQS!AQ!ZZ!$ 11!!', 5, self.conduct_list)
+            self.separate_list_section(apps, ('RQS!AQ!ZZ!RES: PREVIOUS ENROLLMENT!!'), 'RQS!AQ!ZZ!RES: DETERM!', 1, self.residency_list)
+            self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
+            self.new_consultant_list = self.merge_list_question(self.consultant_list)
+            self.separate_list_question(apps, idx, 'RQS!AQ!ZZ!$  1!!', 4, self.concentration_list)
+            self.separate_list_question(apps, idx, 'Faculty Mentor\\', 4, self.faculty_list)
+
+        pprint(self.new_consultant_list)
+        print(len(self.new_consultant_list))
+        # print(len(self.faculty_list))
+        # print(len(self.concentration_list))
+        # pprint(new_list[4])
+        # print(len(new_list))
+
+        # for apps in new_list:
+        #     print(len(apps))
 
         # Relocate each item in the separated list into the proper index
-        for idx, apps in enumerate(new_list):
-            for items in submit_transmit_app[idx]:
-                apps.insert(0, items)
-            # for items in residency_list_holder[idx]:
-            #     apps.append(items)
-            for items in conduct_list_holder[idx]:
-                apps.append(items)
-            for items in cert_list_holder[idx]:
-                apps.append(items)
+        # for idx, apps in enumerate(new_list):
+        #     for items in submit_transmit_app[idx]:
+        #         apps.insert(0, items)
+        #     # for items in residency_list_holder[idx]:
+        #     #     apps.append(items)
+        #     for items in conduct_list_holder[idx]:
+        #         apps.append(items)
+        #     for items in cert_list_holder[idx]:
+        #         apps.append(items)
 
-        from pprint import pprint
-        #pprint(residency_list_holder)
-        pprint(new_list)
+        # from pprint import pprint
+        # pprint(residency_list_holder)
+        # pprint(new_list[15])
+        # print(len(new_list))
 
         return new_list

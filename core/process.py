@@ -311,16 +311,19 @@ class Process:
             self.separate_list_section(apps, ('RQS!AQ!ZZ!$  4!!', 'RQS!AQ!ZZ!$  9!!'), 'RQS!AQ!ZZ!$ 11!!', 5, self.conduct_list)
             self.separate_list_section(apps, ('RQS!AQ!ZZ!RES: PREVIOUS ENROLLMENT!!'), 'RQS!AQ!ZZ!RES: DETERM!', 1, self.residency_list)
             self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
-            self.new_consultant_list = self.merge_list_question(self.consultant_list)
             self.separate_list_question(apps, idx, 'RQS!AQ!ZZ!$  1!!', 4, self.concentration_list)
             self.separate_list_question(apps, idx, 'Faculty Mentor\\', 4, self.faculty_list)
 
-        pprint(self.new_consultant_list)
+        if len(self.consultant_list) != len(new_list):
+                self.new_consultant_list = self.merge_list_question(self.consultant_list)
+
+        # pprint(self.consultant_list)
+        pprint(len(self.consultant_list))
         print(len(self.new_consultant_list))
-        # print(len(self.faculty_list))
-        # print(len(self.concentration_list))
+        print(len(self.faculty_list))
+        print(len(self.concentration_list))
         # pprint(new_list[4])
-        # print(len(new_list))
+        print(len(new_list))
 
         # for apps in new_list:
         #     print(len(apps))

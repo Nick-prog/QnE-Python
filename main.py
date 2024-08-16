@@ -65,24 +65,24 @@ def run(file_path: str, filename: str) -> None:
         spe_list = p.read_spe_file()
 
         clean_list = p.remove_markdown_items(spe_list)
-        new_list = p.new_rearrange_list(clean_list, 'U.S. Transfer Admission')
+        new_list = p.new_rearrange_list('U.S. Freshman Admission', clean_list)
         # new_list = p.rearrange_list(clean_list)
 
-        # translated_spe = []
-        # markdown_spe = []
+        translated_spe = []
+        markdown_spe = []
 
-        # for idx, item in enumerate(new_list):
-        #     s = core.Structure(item, idx)
-        #     translated_spe.append(s.translate())
-        #     markdown_spe.append(s.markdown)
+        for idx, item in enumerate(new_list):
+            s = core.Structure(item, idx)
+            translated_spe.append(s.translate())
+            markdown_spe.append(s.markdown)
     
-        # r = core.PDF(translated_spe)
-        # r.capture_student_name()
-        # r.capture_app_type()
+        r = core.PDF(translated_spe)
+        r.capture_student_name()
+        r.capture_app_type()
 
-        # for idx, item in enumerate(translated_spe):
-        #     _list = r.fit_student_data(item)
-        #     r.create_page_structure(folder, filename, _list, idx)
+        for idx, item in enumerate(translated_spe):
+            _list = r.fit_student_data(item)
+            r.create_page_structure(folder, filename, _list, idx)
 
     except BaseException as b:
         print(sys.exc_info())

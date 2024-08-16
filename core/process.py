@@ -10,6 +10,7 @@ class Process:
         self.submit_list = []
         self.conduct_list = []
         self.residency_list = []
+        self.test_list = []
 
         self.consultant_list = []
         self.new_consultant_list = []
@@ -253,21 +254,28 @@ class Process:
             if str(items).startswith(start) and change_check_flag == 0:
                 start_idx = idx
                 change_check_flag = 1
-            elif str(items).startswith(end):
+            elif str(items).startswith(end) or start_idx == len(apps)-1:
+                end_idx = idx+end_lines
                 if change_check_flag != 0:
-                    # raise IndexError('Could not find a start point to separate.')
-                    separate_list.append(apps[start_idx:idx+end_lines])
+                    if start_idx == len(apps)-1:
+                        end_idx = len(apps)
+                    separate_list.append(apps[start_idx:end_idx])
                     for remove in range((idx+end_lines)-start_idx):
                         apps.pop(start_idx)
-                else:
-                    separate_list.append([])
+                        return
 
-    def separate_list_question(self, apps: list, app_idx: int, start: list, end_lines: int, separate_list: list) -> None:
+        if change_check_flag == 0:
+            separate_list.append([])
+            return
+        
+        separate_list.append([])
+
+    def separate_list_question(self, apps: list, app_idx: int, start_end: list, end_lines: int, separate_list: list) -> None:
 
         change_check_flag = 0
         
         for idx, items in enumerate(apps):
-            if str(items).startswith(start) or str(items).endswith(start):
+            if str(items).startswith(start_end) or str(items).endswith(start_end):
                 change_check_flag = 1
 
                 while not str(apps[idx+end_lines]).startswith('MSG!'):
@@ -294,54 +302,64 @@ class Process:
         # Convert dictionary values to a list of lists
         return list(grouped_data.values())
 
-    def new_rearrange_list(self, _list: list, app_type: str) -> list:
+    def new_rearrange_list(self, app_type: str, _list: list) -> list:
 
-        new_list = []
+        if app_type == 'None':
+            new_list = _list.copy()
+        else:
+            new_list = []
 
-        _types = self.find_app_types(_list)
+            _types = self.find_app_types(_list)
 
-        # Focuses on only one app_type at a time
-        for idx, app in enumerate(_types):
-            if app == app_type:
-                new_list.append(_list[idx])
+            # Focuses on only one app_type at a time
+            for idx, app in enumerate(_types):
+                if app == app_type:
+                    new_list.append(_list[idx])
+
+        pprint(new_list[-7])
 
         for idx, apps in enumerate(new_list):
             self.separate_list_section(apps, 'RQS!AQ!ZZ!FERPA CERT SWITCH!', 'RQS!AQ!ZZ!TRUTH CERT SWITCH!', 1, self.cert_list)
             self.separate_list_section(apps, 'SSE!', 'RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!', 1, self.submit_list)
             self.separate_list_section(apps, ('RQS!AQ!ZZ!$  4!!', 'RQS!AQ!ZZ!$  9!!'), 'RQS!AQ!ZZ!$ 11!!', 5, self.conduct_list)
-            self.separate_list_section(apps, ('RQS!AQ!ZZ!RES: PREVIOUS ENROLLMENT!!'), 'RQS!AQ!ZZ!RES: DETERM!', 1, self.residency_list)
-            self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
+            self.separate_list_section(apps, 'RQS!AQ!ZZ!RES: PREVIOUS ENROLLMENT!!', 'RQS!AQ!ZZ!RES: DETERM!', 1, self.residency_list)
+            self.separate_list_section(apps, 'TST!', 'PCL', 0, self.test_list)
+            # self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
             self.separate_list_question(apps, idx, 'RQS!AQ!ZZ!$  1!!', 4, self.concentration_list)
             self.separate_list_question(apps, idx, 'Faculty Mentor\\', 4, self.faculty_list)
 
-        if len(self.consultant_list) != len(new_list):
-                self.new_consultant_list = self.merge_list_question(self.consultant_list)
+        # if len(self.consultant_list) != len(new_list):
+        #         self.new_consultant_list = self.merge_list_question(self.consultant_list)
 
-        # pprint(self.consultant_list)
-        pprint(len(self.consultant_list))
-        print(len(self.new_consultant_list))
-        print(len(self.faculty_list))
-        print(len(self.concentration_list))
-        # pprint(new_list[4])
-        print(len(new_list))
+        # print(len(self.cert_list), len(self.submit_list), len(self.conduct_list), len(self.residency_list), len(self.test_list), len(self.consultant_list), len(self.concentration_list), len(self.faculty_list))
+        # print(len(new_list))
 
-        # for apps in new_list:
-        #     print(len(apps))
+        # pprint(self.residency_list[-7])
+        # print(len(self.residency_list))
 
         # Relocate each item in the separated list into the proper index
-        # for idx, apps in enumerate(new_list):
-        #     for items in submit_transmit_app[idx]:
-        #         apps.insert(0, items)
-        #     # for items in residency_list_holder[idx]:
-        #     #     apps.append(items)
-        #     for items in conduct_list_holder[idx]:
-        #         apps.append(items)
-        #     for items in cert_list_holder[idx]:
-        #         apps.append(items)
-
-        # from pprint import pprint
-        # pprint(residency_list_holder)
-        # pprint(new_list[15])
+        for idx, apps in enumerate(new_list):
+            for items in range(len(self.concentration_list[idx])-1):
+                for internals in self.concentration_list[idx][items]:
+                    apps.insert(0, internals)
+            for items in self.submit_list[idx]:
+                apps.insert(0, items)
+            # for items in range(len(self.consultant_list[idx])-1):
+            #     for internals in self.consultant_list[idx][items]:
+            #         apps.append(internals)
+            for items in range(len(self.faculty_list[idx])-1):
+                for internals in self.faculty_list[idx][items]:
+                    apps.append(internals)
+            for items in self.test_list[idx]:
+                apps.append(items)
+            for items in self.residency_list[idx]:
+                apps.append(items)
+            for items in self.conduct_list[idx]:
+                apps.append(items)
+            for items in self.cert_list[idx]:
+                apps.append(items)
+            
+        # pprint(new_list[-7])
         # print(len(new_list))
 
         return new_list

@@ -65,13 +65,13 @@ def run(file_path: str, filename: str) -> None:
         spe_list = p.read_spe_file()
 
         clean_list = p.remove_markdown_items(spe_list)
-        new_list = p.new_rearrange_list('U.S. Freshman Admission', clean_list)
+        # new_list = p.new_rearrange_list('International Freshman Admission', clean_list)
         # new_list = p.rearrange_list(clean_list)
 
         translated_spe = []
         markdown_spe = []
 
-        for idx, item in enumerate(new_list):
+        for idx, item in enumerate(clean_list):
             s = core.Structure(item, idx)
             translated_spe.append(s.translate())
             markdown_spe.append(s.markdown)

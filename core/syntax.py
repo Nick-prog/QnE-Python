@@ -65,10 +65,10 @@ class Syntax:
 
         output = [f'{_type} {self.target[-1][4:6]}/{self.target[-1][6:8]}/{self.target[-1][:4]}']
 
-        if self.target[3] == 'TRUTH CERT SWITCH':
-            output.append('')
-        elif self.target[3] == 'FERPA CERT SWITCH':
-            output.insert(0, '')
+        # if self.target[3] == 'TRUTH CERT SWITCH':
+        #     output.append('')
+        # elif self.target[3] == 'FERPA CERT SWITCH':
+        #     output.insert(0, '')
 
         return output
 

@@ -450,6 +450,9 @@ class Structure:
             '36': 'Current or most recent Employer'
         }
 
+        if self.target[1] == 'TM':
+            return
+
         sep = _translate.get(self.target[1], "Other")
         self.error_handler('N1', sep)
 

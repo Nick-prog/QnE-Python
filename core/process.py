@@ -316,37 +316,34 @@ class Process:
                 if app == app_type:
                     new_list.append(_list[idx])
 
-        pprint(new_list[-7])
-
         for idx, apps in enumerate(new_list):
             self.separate_list_section(apps, 'RQS!AQ!ZZ!FERPA CERT SWITCH!', 'RQS!AQ!ZZ!TRUTH CERT SWITCH!', 1, self.cert_list)
             self.separate_list_section(apps, 'SSE!', 'RQS!AQ!ZZ!APP SUBMIT/TRANSMIT!!', 1, self.submit_list)
             self.separate_list_section(apps, ('RQS!AQ!ZZ!$  4!!', 'RQS!AQ!ZZ!$  9!!'), 'RQS!AQ!ZZ!$ 11!!', 5, self.conduct_list)
             self.separate_list_section(apps, 'RQS!AQ!ZZ!RES: PREVIOUS ENROLLMENT!!', 'RQS!AQ!ZZ!RES: DETERM!', 1, self.residency_list)
             self.separate_list_section(apps, 'TST!', 'PCL', 0, self.test_list)
-            # self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
+            self.separate_list_question(apps, idx, ('Consultant Agency\\', 'Consultant/Agency\\'), 3, self.consultant_list)
             self.separate_list_question(apps, idx, 'RQS!AQ!ZZ!$  1!!', 4, self.concentration_list)
             self.separate_list_question(apps, idx, 'Faculty Mentor\\', 4, self.faculty_list)
 
-        # if len(self.consultant_list) != len(new_list):
-        #         self.new_consultant_list = self.merge_list_question(self.consultant_list)
+        if len(self.consultant_list) != len(new_list):
+                self.new_consultant_list = self.merge_list_question(self.consultant_list)
 
-        # print(len(self.cert_list), len(self.submit_list), len(self.conduct_list), len(self.residency_list), len(self.test_list), len(self.consultant_list), len(self.concentration_list), len(self.faculty_list))
-        # print(len(new_list))
+        print(len(self.cert_list), len(self.submit_list), len(self.conduct_list), len(self.residency_list), len(self.test_list), len(self.consultant_list), len(self.concentration_list), len(self.faculty_list))
+        print(len(new_list))
 
-        # pprint(self.residency_list[-7])
-        # print(len(self.residency_list))
+        # pprint(self.concentration_list)
 
         # Relocate each item in the separated list into the proper index
         for idx, apps in enumerate(new_list):
             for items in range(len(self.concentration_list[idx])-1):
-                for internals in self.concentration_list[idx][items]:
-                    apps.insert(0, internals)
-            for items in self.submit_list[idx]:
+                for int_idx, internals in enumerate(self.concentration_list[idx][items]):
+                    apps.insert(0,self.concentration_list[idx][items][len(self.concentration_list[idx][items])-int_idx-1])
+            for sub_idx, items in enumerate(self.submit_list[idx]):
                 apps.insert(0, items)
-            # for items in range(len(self.consultant_list[idx])-1):
-            #     for internals in self.consultant_list[idx][items]:
-            #         apps.append(internals)
+            for items in range(len(self.consultant_list[idx])-1):
+                for internals in self.consultant_list[idx][items]:
+                    apps.append(internals)
             for items in range(len(self.faculty_list[idx])-1):
                 for internals in self.faculty_list[idx][items]:
                     apps.append(internals)
@@ -358,8 +355,5 @@ class Process:
                 apps.append(items)
             for items in self.cert_list[idx]:
                 apps.append(items)
-            
-        # pprint(new_list[-7])
-        # print(len(new_list))
 
         return new_list
